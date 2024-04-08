@@ -94,7 +94,7 @@ final class SigninView: UIView {
         return button
     }()
     
-    private let signinWithKakao: AnimationButton = {
+    let signinWithKakao: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "kakao_sigin_logo"), for: .normal)
