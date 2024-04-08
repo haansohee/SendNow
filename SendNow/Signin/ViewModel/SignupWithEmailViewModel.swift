@@ -6,15 +6,21 @@
 //
 
 import Foundation
+import UIKit
+import RxSwift
 
 final class SignupWithEmailViewModel {
+    private let memberService = MemberService()
     private(set) var isEnabledSignupButton: Bool?
+    let isDuplicatedID = PublishSubject<Bool>()
     
     func setIsEnabledSignupButton(_ isEnabledSignupButton: Bool) {
         self.isEnabledSignupButton = isEnabledSignupButton
     }
     
-    func searchEmptyTextField() {
-        
+    func checkDuplicateID(nickname: String) {
+        memberService.getSearchID(with: nickname) {[weak self] result in
+            self?.isDuplicatedID.onNext(!result.isEmpty)
+        }
     }
 }

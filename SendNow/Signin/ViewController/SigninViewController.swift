@@ -12,6 +12,7 @@ import RxCocoa
 
 final class SigninViewController: UIViewController {
     private let signinView = SigninView()
+    private let signinViewModel = SigninViewModel()
     private let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
@@ -45,6 +46,8 @@ extension SigninViewController {
     
     private func bindAll() {
         bindSignupWithEmailButton()
+        bindSigninWithKakaoButton()
+        bindRegistrationRequired()
     }
     
     private func bindSignupWithEmailButton() {
@@ -52,6 +55,25 @@ extension SigninViewController {
             .asDriver()
             .drive(onNext: {[weak self] _ in
                 self?.navigationController?.pushViewController(SignupWithEmailViewController(), animated: true)
+                
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindSigninWithKakaoButton() {
+        signinView.signinWithKakao.rx.tap
+            .subscribe(onNext: {[weak self] _ in
+                self?.signinViewModel.signinWithKakao()
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindRegistrationRequired() {
+        signinViewModel.isRegisteredKakaoMember
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isRegisteredKakaoMember in
+                guard isRegisteredKakaoMember else { return }
+                self?.navigationController?.pushViewController(SettingSearchIDViewController(), animated: true)
             })
             .disposed(by: disposeBag)
     }

@@ -146,7 +146,7 @@ final class SignupWithEmailView: UIScrollView {
     
     let idLabel: SignupDescriptionLabel = {
         let label = SignupDescriptionLabel()
-        label.text = "사용할 아이디를 입력해 주세요."
+        label.text = "친구 검색 시 사용될 아이디를 입력해 주세요. \n 영문자, 숫자, 특수문자만 입력 가능해요."
         label.numberOfLines = 0
         return label
     }()
@@ -183,8 +183,6 @@ final class SignupWithEmailView: UIScrollView {
         textField.backgroundColor = .systemGray6
         textField.placeholder = "NICKNAME"
         textField.font = .systemFont(ofSize: 12.0, weight: .light)
-        textField.keyboardType = .asciiCapable
-        textField.isSecureTextEntry = true
         return textField
     }()
     
