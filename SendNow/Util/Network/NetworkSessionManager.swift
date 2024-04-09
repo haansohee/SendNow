@@ -20,7 +20,7 @@ final class NetworkSessionManager {
         AF.request(url,
                    method: .get,
                    headers: ["Content-Type": "application/json"]
-        ).validate(statusCode: 200..<500).responseDecodable(of: T.self) { response in
+        ).validate(statusCode: 200..<500).responseDecodable(of: requestDTO) { response in
             switch response.result {
             case .success(let value):
                 completion(.success(value))

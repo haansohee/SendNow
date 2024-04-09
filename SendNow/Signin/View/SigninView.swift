@@ -28,7 +28,7 @@ final class SigninView: UIView {
         return label
     }()
     
-    private let emailTextField: PaddingTextField = {
+    let emailTextField: PaddingTextField = {
         let textField = PaddingTextField()
         textField.backgroundColor = .systemGray6
         textField.placeholder = "EMAIL"
@@ -38,7 +38,7 @@ final class SigninView: UIView {
         return textField
     }()
     
-    private let passwordTextField: PaddingTextField = {
+    let passwordTextField: PaddingTextField = {
         let textField = PaddingTextField()
         textField.backgroundColor = .systemGray6
         textField.placeholder = "PASSWORD"
@@ -49,7 +49,7 @@ final class SigninView: UIView {
         return textField
     }()
     
-    private let signinButton: AnimationButton = {
+    let signinButton: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("로그인", for: .normal)

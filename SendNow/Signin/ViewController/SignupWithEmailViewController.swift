@@ -72,7 +72,13 @@ extension SignupWithEmailViewController {
     
     private func bindAll() {
         bindEmailAddressButton()
+        bindSendAuthCodeAutton()
+        bindSignupButton()
+        bindIsDuplicatedEmail()
         bindEmailAuthButton()
+        bindIdDuplicateButton()
+        bindIsDuplicatedID()
+        bindIsCompletedSignup()
     }
     
     private func bindEmailAddressButton() {
@@ -105,8 +111,8 @@ extension SignupWithEmailViewController {
             .disposed(by: disposeBag)
     }
     
-    private func bindEmailAuthButton() {
-        signupWithEmailView.emailAuthButton.rx.tap
+    private func bindSendAuthCodeAutton() {
+        signupWithEmailView.sendAuthCodeButton.rx.tap
             .asDriver()
             .drive(onNext: {[weak self] _ in
                 guard let email = self?.signupWithEmailView.emailTextField.text,
@@ -114,9 +120,116 @@ extension SignupWithEmailViewController {
                 guard !email.isEmpty && !emailAddress.isEmpty else {
                     self?.signupWithEmailView.emailAuthSuccessLabel.text = "이메일을 입력한 후 인증을 진행해 주세요."
                     return }
+                self?.signupWithEmailViewModel.sendEmailAuthCode(email: "\(email)@\(emailAddress)")
                 self?.signupWithEmailView.emailAuthSuccessLabel.text = "인증번호를 보내는 중이에요."
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func bindIsDuplicatedEmail() {
+        signupWithEmailViewModel.isDuplicatedEmail
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isDuplicatedEmail in
+                guard isDuplicatedEmail else {
+                    self?.signupWithEmailView.emailAuthSuccessLabel.text = "메일이 도착했어요! 인증번호를 입력해 주세요."
+                    return }
+                self?.signupWithEmailView.emailAuthSuccessLabel.text = "이미 가입된 이메일이에요. 🥲"
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindEmailAuthButton() {
+        signupWithEmailView.emailAuthButton.rx.tap
+            .asDriver()
+            .drive(onNext: {[weak self] _ in
+                guard let inputAuthCode = self?.signupWithEmailView.emailAuthTextField.text,
+                      !inputAuthCode.isEmpty,
+                      let authCode = self?.signupWithEmailViewModel.emailAuthCodeInfo?.authCode else {
+                    return }
+                self?.signupWithEmailViewModel.setIsCheckedAuthCode(Int(inputAuthCode) == authCode)
+                guard Int(inputAuthCode) == authCode else {
+                    self?.signupWithEmailView.emailAuthSuccessLabel.text = "인증번호가 일치하지 않아요. 🥲"
+                    return }
+                self?.signupWithEmailView.emailAuthSuccessLabel.text = "이메일 인증이 완료되었어요!"
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindIdDuplicateButton() {
+        signupWithEmailView.idDuplicateButton.rx.tap
+            .subscribe(onNext: {[weak self] _ in
+                guard let id = self?.signupWithEmailView.idTextField.text,
+                      !id.isEmpty else { return }
+                self?.signupWithEmailViewModel.checkDuplicateID(nickname: id)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindIsDuplicatedID() {
+        signupWithEmailViewModel.isDuplicatedID
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isDuplicatedID in
+                self?.signupWithEmailViewModel.setIsCheckedDuplicatedID(isDuplicatedID)
+                guard isDuplicatedID else {
+                    self?.signupWithEmailView.idLabel.text = "중복된 아이디예요."
+                    self?.signupWithEmailViewModel.setIsCheckedDuplicatedID(false)
+                    return }
+                self?.signupWithEmailView.idLabel.text = "사용 가능한 아이디예요."
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindSignupButton() {
+        signupWithEmailView.signupButton.rx.tap
+            .asDriver()
+            .drive(onNext: {[weak self] _ in
+                guard let searchID = self?.signupWithEmailView.idTextField.text,
+                      let nickname = self?.signupWithEmailView.nicknameTextField.text,
+                      let email = self?.signupWithEmailView.emailTextField.text,
+                      let emailAddress = self?.signupWithEmailView.emailAddressTextField.text,
+                      let password = self?.signupWithEmailView.passwordTextField.text,
+                      !(searchID.isEmpty),
+                      !(nickname.isEmpty),
+                      !(email.isEmpty),
+                      !(emailAddress.isEmpty),
+                      !(password.isEmpty) else {
+                    self?.blankAlert(title: "바로보내 회원가입", message: "이메일, 아이디, 비밀번호, 닉네임을 모두 입력해 주세요.")
+                    return }
+                
+                guard let isCheckedAuthCode = self?.signupWithEmailViewModel.isCheckedAuthCode,
+                      let isCheckedDuplicatedID = self?.signupWithEmailViewModel.isCheckedDuplicatedID,
+                      let isEnabledSignupButton = self?.signupWithEmailViewModel.isEnabledSignupButton else { return }
+                guard isCheckedAuthCode,
+                      isCheckedDuplicatedID,
+                      isEnabledSignupButton else {
+                    self?.blankAlert(title: "바로보내 회원가입", message: "이메일 인증 및 아이디 중복 검사, 정확한 비밀번호 작성 등 모두 진행해 주세요!")
+                    return }
+                
+                let signinWithEmailInfo = SigninWithEmailDomain(searchID: searchID,
+                                                                nickname: nickname,
+                                                                email: "\(email)@\(emailAddress)",
+                                                                password: password)
+                self?.signupWithEmailViewModel.signupWithEmail(signinWithEmailInfo)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindIsCompletedSignup() {
+        signupWithEmailViewModel.isCompletedSignup
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isCompletedSignup in
+                guard isCompletedSignup else { return }
+                self?.blankAlert(title: "회원가입 완료!", message: "로그인을 진행해 주세요!")
+                self?.navigationController?.popViewController(animated: true)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func blankAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let doneAction = UIAlertAction(title: "확인", style: .cancel) { _ in }
+        alertController.addAction(doneAction)
+        self.present(alertController, animated: true)  
     }
 }
 
@@ -133,7 +246,6 @@ extension SignupWithEmailViewController: UITextFieldDelegate {
             } else {
                 signupWithEmailView.passwordLabel.text = "사용할 비밀번호를 영어 대소문자, 숫자, 특수문자를 조합하여 \n 8~30자로 입력해 주세요."
             }
-            signupWithEmailViewModel.setIsEnabledSignupButton(newPassword.isValidPassword)
             return true
             
         case signupWithEmailView.rePasswordTextField:
@@ -150,7 +262,7 @@ extension SignupWithEmailViewController: UITextFieldDelegate {
                 signupWithEmailView.passwordLabel.text = "비밀번호가 일치하지 않아요."
                 signupWithEmailViewModel.setIsEnabledSignupButton(false)
             }
-            
+            signupWithEmailViewModel.setIsEnabledSignupButton(newPassword.isValidPassword)
             return true
             
         case signupWithEmailView.idTextField:
@@ -170,6 +282,7 @@ extension SignupWithEmailViewController: UITextFieldDelegate {
             }
             signupWithEmailViewModel.setIsEnabledSignupButton(newID.isValidID)
             return true
+            
         default:
             return true
         }

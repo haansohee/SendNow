@@ -18,8 +18,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         window?.backgroundColor = .systemBackground
         window?.makeKeyAndVisible()
+//        guard UserDefaults.standard.string(forKey: MemberInfoField.email.rawValue) != nil else {
+//            window?.rootViewController = UINavigationController(rootViewController: SigninViewController())
+//            return
+//        }
+//        window?.rootViewController = UINavigationController(rootViewController: MainTabBarController())
         window?.rootViewController = UINavigationController(rootViewController: SigninViewController())
-        return
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
@@ -31,3 +35,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 }
 
+extension SceneDelegate {
+    func changeRootViewController(_ viewController: UIViewController, animated: Bool) {
+        guard let window = self.window else { return }
+        window.rootViewController = viewController
+        UIView.transition(with: window, duration: 0.2, options: [.transitionCrossDissolve],animations: nil, completion: nil)
+    }
+}

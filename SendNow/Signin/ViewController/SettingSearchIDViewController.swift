@@ -10,11 +10,31 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+enum SigninType {
+    case kakao
+    case apple
+}
+
 final class SettingSearchIDViewController: UIViewController {
     private let settingSearchIDView = SettingSearchIDView()
     private let signupWithEmailViewModel = SignupWithEmailViewModel()
     private let signinViewModel = SigninViewModel()
     private let disposeBag = DisposeBag()
+    private var signinType: SigninType?
+    
+    init(appleMemberInfo: SigninWithAppleDomain? = nil) {
+        super.init(nibName: nil, bundle: nil)
+        guard let appleMemberInfo = appleMemberInfo else {
+            self.signinType = .kakao
+            return
+        }
+        signinViewModel.setSignupWithAppleInfo(appleMemberInfo)
+        self.signinType = .apple
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,6 +71,7 @@ extension SettingSearchIDViewController {
         bindIsDuplicatedID()
         bindSignupButton()
         bindIsSuccessedSignupWithKakao()
+        bindIsSuccessedUpdatedSearchID()
     }
     
     private func bindIdDuplicateButton() {
@@ -84,7 +105,15 @@ extension SettingSearchIDViewController {
             .subscribe(onNext: {[weak self] _ in
                 guard let id = self?.settingSearchIDView.idTextField.text,
                       !id.isEmpty else { return }
-                self?.signinViewModel.signupWithKakao(id: id)
+                switch self?.signinType {
+                case .kakao:
+                    self?.signinViewModel.signupWithKakao(id: id)
+                case .apple:
+                    guard let appleToken = self?.signinViewModel.signupWithAppleInfo?.appleToken else { return }
+                    let updateSearchIdInfo = UpdateSearchIdDomain(searchID: id, email: nil, token: appleToken)
+                    self?.signinViewModel.updateSearchID(updateSearchIdInfo)
+                default: return
+                }
             })
             .disposed(by: disposeBag)
     }
@@ -92,8 +121,24 @@ extension SettingSearchIDViewController {
     private func bindIsSuccessedSignupWithKakao() {
         signinViewModel.isSuccessedSignupWithKakao
             .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {isSuccessedSignupWithKakao in
+            .drive(onNext: {[weak self] isSuccessedSignupWithKakao in
                 guard isSuccessedSignupWithKakao else { return }
+                let rootViewController = MainTabBarController()
+                guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+                sceneDelegate.changeRootViewController(rootViewController, animated: true)
+                self?.navigationController?.popViewController(animated: true)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindIsSuccessedUpdatedSearchID() {
+        signinViewModel.isSuccessedUpdatedSearchID
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isSuccessedUpdatedSearchID in
+                guard isSuccessedUpdatedSearchID else { return }
+                guard let appleToken = self?.signinViewModel.signupWithAppleInfo?.appleToken else { return }
+                self?.signinViewModel.signinWithApple(appleToken)
+                self?.navigationController?.popViewController(animated: true)
             })
             .disposed(by: disposeBag)
     }

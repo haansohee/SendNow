@@ -18,9 +18,17 @@ final class SigninViewModel {
     private let memberService = MemberService()
     private(set) var kakaoAccessToken: String?
     private(set) var kakaoMemberInformation: KakaoMemberDomain?
+    private(set) var appleMemberInformation: AppleMemberDomain?
+    private(set) var emailMemberInformation: EmailMemberDomain?
+    private(set) var signupWithAppleInfo: SigninWithAppleDomain?
     let isSuccessedSigninWithKakao = PublishSubject<Bool>()
     let isSuccessedSignupWithKakao = PublishSubject<Bool>()
+    let isSuccessedSignupWithApple = PublishSubject<Bool>()
+    let isSuccessedUpdatedSearchID = PublishSubject<Bool>()
     let isRegisteredKakaoMember = PublishSubject<Bool>()
+    let isExistedSearchID = PublishSubject<Bool>()
+    let isExistedEmail = PublishSubject<Bool>()
+    let isPasswordMatching = PublishSubject<Bool>()
     
     func signinWithKakao() {
         guard UserApi.isKakaoTalkLoginAvailable() else { return }
@@ -38,7 +46,8 @@ final class SigninViewModel {
             guard let kakaoToken = kakaoMemberInfo.kakaoToken,
                   let searchID = kakaoMemberInfo.searchID,
                   let email = kakaoMemberInfo.email,
-                  let nickname = kakaoMemberInfo.nickname else {
+                  let nickname = kakaoMemberInfo.nickname,
+                  let userID = kakaoMemberInfo.userID else {
                 self?.isRegisteredKakaoMember.onNext(true)
                 return
             }
@@ -48,10 +57,11 @@ final class SigninViewModel {
                   !nickname.isEmpty else {
                 self?.isRegisteredKakaoMember.onNext(true)
                 return }
-            UserDefaults.standard.set(kakaoToken, forKey: "kakaoToken")
-            UserDefaults.standard.set(searchID, forKey: "searchID")
-            UserDefaults.standard.set(email, forKey: "email")
-            UserDefaults.standard.set(nickname, forKey: "nickname")
+            UserDefaults.standard.set(userID, forKey: MemberInfoField.userID.rawValue)
+            UserDefaults.standard.set(kakaoToken, forKey: MemberInfoField.kakaoToken.rawValue)
+            UserDefaults.standard.set(searchID, forKey: MemberInfoField.searchID.rawValue)
+            UserDefaults.standard.set(email, forKey: MemberInfoField.email.rawValue)
+            UserDefaults.standard.set(nickname, forKey: MemberInfoField.nickname.rawValue)
             self?.isRegisteredKakaoMember.onNext(false)
         }
     }
@@ -68,5 +78,79 @@ final class SigninViewModel {
                 }
             })
             .disposed(by: disposeBag)
+    }
+    
+    func setSignupWithAppleInfo(_ signupWithAppleInfo: SigninWithAppleDomain) {
+        self.signupWithAppleInfo = signupWithAppleInfo
+    }
+    
+    func signinWithApple(_ appleToken: String) {
+        memberService.getAppleMemberInfo(with: appleToken) {[weak self] appleMemberInfo in
+            guard let searchID = appleMemberInfo.searchID else {
+                self?.isExistedSearchID.onNext(false)
+                return
+            }
+            self?.appleMemberInformation = appleMemberInfo
+            guard let appleToken = appleMemberInfo.appleToken,
+                  let email = appleMemberInfo.email,
+                  let nickname = appleMemberInfo.nickname,
+                  let userID = appleMemberInfo.userID,
+                  !(appleToken.isEmpty),
+                  !(email.isEmpty),
+                  !(nickname.isEmpty),
+                  !(searchID.isEmpty) else { return }
+            UserDefaults.standard.set(userID, forKey: MemberInfoField.userID.rawValue)
+            UserDefaults.standard.set(appleToken, forKey: MemberInfoField.appleToken.rawValue)
+            UserDefaults.standard.set(searchID, forKey: MemberInfoField.searchID.rawValue)
+            UserDefaults.standard.set(email, forKey: MemberInfoField.email.rawValue)
+            UserDefaults.standard.set(nickname, forKey: MemberInfoField.nickname.rawValue)
+            self?.isExistedSearchID.onNext(true)
+        }
+    }
+    
+    func signupWithApple(_ signinWithAppleInfo: SigninWithAppleDomain) {
+        setSignupWithAppleInfo(signinWithAppleInfo)
+        memberService.setAppleMemberInfo(with: signinWithAppleInfo) {[weak self] result in
+            self?.isSuccessedSignupWithApple.onNext(result)
+        }
+    }
+    
+    func updateSearchID(_ updateSearchIdInfo: UpdateSearchIdDomain) {
+        memberService.updateSearchID(with: updateSearchIdInfo) { [weak self] result in
+            self?.isSuccessedUpdatedSearchID.onNext(result)
+        }
+    }
+    
+    func signinWithEmail(_ email: String) {
+        memberService.getEmailMemberInfo(with: email) {[weak self] emailMemberInfo in
+            guard let email = emailMemberInfo.email,
+                  !(email.isEmpty) else {
+                self?.isExistedEmail.onNext(false)
+                return }
+            guard let _ = emailMemberInfo.userID,
+                  let searchID = emailMemberInfo.searchID,
+                  let nickname = emailMemberInfo.nickname,
+                  let password = emailMemberInfo.password,
+                  !(searchID.isEmpty),
+                  !(nickname.isEmpty),
+                  !(password.isEmpty) else { return }
+            self?.emailMemberInformation = emailMemberInfo
+            self?.isExistedEmail.onNext(true)
+        }
+    }
+    
+    func setUserDefaultsEmailMember() {
+        guard let emailMemberInformation = emailMemberInformation else { return }
+        UserDefaults.standard.set(emailMemberInformation.userID, forKey: MemberInfoField.userID.rawValue)
+        UserDefaults.standard.set(emailMemberInformation.password, forKey: MemberInfoField.password.rawValue)
+        UserDefaults.standard.set(emailMemberInformation.searchID, forKey: MemberInfoField.searchID.rawValue)
+        UserDefaults.standard.set(emailMemberInformation.email, forKey: MemberInfoField.email.rawValue)
+        UserDefaults.standard.set(emailMemberInformation.nickname, forKey: MemberInfoField.nickname.rawValue)
+    }
+    
+    func isPasswordMatching(_ inputPassword: String) {
+        guard let password = emailMemberInformation?.password,
+              !(password.isEmpty) else { return }
+        isPasswordMatching.onNext(password == inputPassword)
     }
 }
