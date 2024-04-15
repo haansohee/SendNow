@@ -81,7 +81,7 @@ final class SigninView: UIView {
         return label
     }()
     
-    private let signinWithAppleButton: AnimationButton = {
+    let signinWithAppleButton: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: "apple.logo"), for: .normal)
@@ -94,7 +94,7 @@ final class SigninView: UIView {
         return button
     }()
     
-    let signinWithKakao: AnimationButton = {
+    let signinWithKakaoButton: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "kakao_sigin_logo"), for: .normal)
@@ -123,7 +123,7 @@ extension SigninView {
             signinWithSNSLabel,
             signupWithEmail,
             signinWithAppleButton,
-            signinWithKakao
+            signinWithKakaoButton
         ].forEach { self.addSubview($0) }
     }
     
@@ -169,10 +169,10 @@ extension SigninView {
             signinWithAppleButton.trailingAnchor.constraint(equalTo: subTitleLabel.trailingAnchor),
             signinWithAppleButton.heightAnchor.constraint(equalTo: signinButton.heightAnchor),
             
-            signinWithKakao.topAnchor.constraint(equalTo: signinWithAppleButton.bottomAnchor, constant: 12.0),
-            signinWithKakao.leadingAnchor.constraint(equalTo: subTitleLabel.leadingAnchor),
-            signinWithKakao.trailingAnchor.constraint(equalTo: subTitleLabel.trailingAnchor),
-            signinWithKakao.heightAnchor.constraint(equalTo: signinButton.heightAnchor),
+            signinWithKakaoButton.topAnchor.constraint(equalTo: signinWithAppleButton.bottomAnchor, constant: 12.0),
+            signinWithKakaoButton.leadingAnchor.constraint(equalTo: subTitleLabel.leadingAnchor),
+            signinWithKakaoButton.trailingAnchor.constraint(equalTo: subTitleLabel.trailingAnchor),
+            signinWithKakaoButton.heightAnchor.constraint(equalTo: signinButton.heightAnchor),
         ])
     }
 }

@@ -38,7 +38,7 @@ final class NetworkSessionManager {
                    parameters: encodeValue,
                    encoder: JSONParameterEncoder.default,
                    headers: ["Content-Type": "application/json"]
-        ).validate(statusCode: 200..<500).responseDecodable(of: T.self) { response in
+        ).validate(statusCode: 200..<500).responseString { response in
             switch response.result {
             case .success:
                 completion(true)

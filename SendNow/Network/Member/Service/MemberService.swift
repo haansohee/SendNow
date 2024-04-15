@@ -20,7 +20,7 @@ final class MemberService {
     }
     
     func setAppleMemberInfo(with signinWithAppleDomain: SigninWithAppleDomain, completion: @escaping(Bool)->Void) {
-        let path = "/SendNow/setKakaoMemberInfo/"
+        let path = "/SendNow/setAppleMemberInfo/"
         let member = signinWithAppleDomain.toRequestDTO()
         networkSessionManager.urlPostMethod(path: path, encodeValue: member) { result in
             completion(result)
@@ -100,7 +100,6 @@ final class MemberService {
         networkSessionManager.urlGetMethod(path: path, requestDTO: EmailAuthCodeResponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
-                print("responstDTO: \(responseDTO)")
                 completion(responseDTO.toDomain())
                 
             case .failure(let error):

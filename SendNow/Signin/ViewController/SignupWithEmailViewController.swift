@@ -172,7 +172,6 @@ extension SignupWithEmailViewController {
                 self?.signupWithEmailViewModel.setIsCheckedDuplicatedID(isDuplicatedID)
                 guard isDuplicatedID else {
                     self?.signupWithEmailView.idLabel.text = "중복된 아이디예요."
-                    self?.signupWithEmailViewModel.setIsCheckedDuplicatedID(false)
                     return }
                 self?.signupWithEmailView.idLabel.text = "사용 가능한 아이디예요."
             })
@@ -198,8 +197,8 @@ extension SignupWithEmailViewController {
                 
                 guard let isCheckedAuthCode = self?.signupWithEmailViewModel.isCheckedAuthCode,
                       let isCheckedDuplicatedID = self?.signupWithEmailViewModel.isCheckedDuplicatedID,
-                      let isEnabledSignupButton = self?.signupWithEmailViewModel.isEnabledSignupButton else { return }
-                guard isCheckedAuthCode,
+                      let isEnabledSignupButton = self?.signupWithEmailViewModel.isEnabledSignupButton,
+                      isCheckedAuthCode,
                       isCheckedDuplicatedID,
                       isEnabledSignupButton else {
                     self?.blankAlert(title: "바로보내 회원가입", message: "이메일 인증 및 아이디 중복 검사, 정확한 비밀번호 작성 등 모두 진행해 주세요!")
@@ -218,9 +217,10 @@ extension SignupWithEmailViewController {
         signupWithEmailViewModel.isCompletedSignup
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: {[weak self] isCompletedSignup in
-                guard isCompletedSignup else { return }
-                self?.blankAlert(title: "회원가입 완료!", message: "로그인을 진행해 주세요!")
-                self?.navigationController?.popViewController(animated: true)
+                guard isCompletedSignup else {
+                    self?.signupSuccessAlert(title: "바로 보내", message: "서버가 불안정합니다. 잠시후에 시도해 주세요.")
+                    return }
+                self?.signupSuccessAlert(title: "회원가입 완료", message: "로그인을 진행해 주세요!")
             })
             .disposed(by: disposeBag)
     }
@@ -230,6 +230,15 @@ extension SignupWithEmailViewController {
         let doneAction = UIAlertAction(title: "확인", style: .cancel) { _ in }
         alertController.addAction(doneAction)
         self.present(alertController, animated: true)  
+    }
+    
+    private func signupSuccessAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let doneAction = UIAlertAction(title: "확인", style: .default) {[weak self] _ in
+            self?.navigationController?.popViewController(animated: true)
+        }
+        alertController.addAction(doneAction)
+        self.present(alertController, animated: true)
     }
 }
 

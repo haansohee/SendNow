@@ -35,7 +35,7 @@ final class SigninViewModel {
         UserApi.shared.rx.loginWithKakaoTalk()
             .subscribe(onNext: { [weak self] oauthToken in
                 guard let kakaoToken = oauthToken.idToken else { return }
-                UserDefaults.standard.set(kakaoToken, forKey: "kakaoToken")
+                UserDefaults.standard.set(kakaoToken, forKey: MemberInfoField.kakaoToken.rawValue)
                 self?.checkRegisteredKakaoMember(kakaoToken)
             })
             .disposed(by: disposeBag)
@@ -47,7 +47,8 @@ final class SigninViewModel {
                   let searchID = kakaoMemberInfo.searchID,
                   let email = kakaoMemberInfo.email,
                   let nickname = kakaoMemberInfo.nickname,
-                  let userID = kakaoMemberInfo.userID else {
+                  let userID = kakaoMemberInfo.userID,
+                  let kakaoID = kakaoMemberInfo.kakaoID else {
                 self?.isRegisteredKakaoMember.onNext(true)
                 return
             }
@@ -62,6 +63,7 @@ final class SigninViewModel {
             UserDefaults.standard.set(searchID, forKey: MemberInfoField.searchID.rawValue)
             UserDefaults.standard.set(email, forKey: MemberInfoField.email.rawValue)
             UserDefaults.standard.set(nickname, forKey: MemberInfoField.nickname.rawValue)
+            UserDefaults.standard.set(kakaoID, forKey: MemberInfoField.kakaoID.rawValue)
             self?.isRegisteredKakaoMember.onNext(false)
         }
     }
@@ -69,10 +71,11 @@ final class SigninViewModel {
     func signupWithKakao(id: String) {
         UserApi.shared.rx.me()
             .subscribe(onSuccess: { [weak self] user in
-                guard let accessToken = UserDefaults.standard.string(forKey: "kakaoToken"),
+                guard let accessToken = UserDefaults.standard.string(forKey: MemberInfoField.kakaoToken.rawValue),
                       let nickname = user.kakaoAccount?.profile?.nickname as? String,
+                      let kakaoID = user.id,
                       let email = user.kakaoAccount?.email as? String else { return }
-                let signinWithKakaoDomain = SigninWithKakaoDomain(searchID: id, nickname: nickname, email: email, kakaoToken: accessToken)
+                let signinWithKakaoDomain = SigninWithKakaoDomain(searchID: id, nickname: nickname, email: email, kakaoToken: accessToken, kakaoID: kakaoID)
                 self?.memberService.setKakaoMemberInfo(with: signinWithKakaoDomain) { result in
                     self?.isSuccessedSignupWithKakao.onNext(result)
                 }

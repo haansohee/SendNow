@@ -44,10 +44,6 @@ final class SignupWithEmailViewModel {
         }
     }
     
-    func compareAuthCode(code: String) {
-        
-    }
-    
     func signupWithEmail(_ signinWithEmailInfo: SigninWithEmailDomain) {
         memberService.setEmailMemberInfo(with: signinWithEmailInfo) {[weak self] result in
             self?.isCompletedSignup.onNext(result)

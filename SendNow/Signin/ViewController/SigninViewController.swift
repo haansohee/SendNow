@@ -45,19 +45,20 @@ extension SigninViewController {
         ])
     }
     
-    private func setASAuthorizationApple() {
-        let request = ASAuthorizationAppleIDProvider().createRequest()
-        request.requestedScopes = [.email, .fullName]
-        
-        let controller = ASAuthorizationController(authorizationRequests: [request])
-        controller.delegate = self
-        controller.presentationContextProvider = self
-        controller.performRequests()
-    }
+//    private func setASAuthorizationApple() {
+//        let request = ASAuthorizationAppleIDProvider().createRequest()
+//        request.requestedScopes = [.email, .fullName]
+//        
+//        let controller = ASAuthorizationController(authorizationRequests: [request])
+//        controller.delegate = self
+//        controller.presentationContextProvider = self
+//        controller.performRequests()
+//    }
     
     private func bindAll() {
         bindSignupWithEmailButton()
         bindSigninWithKakaoButton()
+        bindSigninWithAppleButton()
         bindSigninButton()
         bindRegistrationRequired()
         bindIsSuccessedSignupWithApple()
@@ -76,9 +77,23 @@ extension SigninViewController {
     }
     
     private func bindSigninWithKakaoButton() {
-        signinView.signinWithKakao.rx.tap
+        signinView.signinWithKakaoButton.rx.tap
             .subscribe(onNext: {[weak self] _ in
                 self?.signinViewModel.signinWithKakao()
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindSigninWithAppleButton() {
+        signinView.signinWithAppleButton.rx.tap
+            .subscribe(onNext: {[weak self] _ in
+                let request = ASAuthorizationAppleIDProvider().createRequest()
+                request.requestedScopes = [.email, .fullName]
+                
+                let controller = ASAuthorizationController(authorizationRequests: [request])
+                controller.delegate = self
+                controller.presentationContextProvider = self
+                controller.performRequests()
             })
             .disposed(by: disposeBag)
     }
@@ -171,7 +186,10 @@ extension SigninViewController: ASAuthorizationControllerDelegate {
                 switch credentialState {
                 case .authorized:
                     if let email = credential.email {
-                        let appleMemberInfo = SigninWithAppleDomain(searchID: "", nickname: "\(fullName)", email: email, appleToken: appleToken)
+                        guard let familyName = fullName.familyName,
+                              let givenName = fullName.givenName else { return }
+                        let nickname = "\(familyName)\(givenName)"
+                        let appleMemberInfo = SigninWithAppleDomain(searchID: "", nickname: nickname, email: email, appleToken: appleToken)
                         self?.signinViewModel.signupWithApple(appleMemberInfo)
                     } else {
                         self?.signinViewModel.signinWithApple(appleToken)

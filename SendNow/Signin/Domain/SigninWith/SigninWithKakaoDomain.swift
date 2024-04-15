@@ -12,10 +12,11 @@ struct SigninWithKakaoDomain {
     let nickname: String
     let email: String
     let kakaoToken: String
+    let kakaoID: Int64
 }
 
 extension SigninWithKakaoDomain {
     func toRequestDTO() -> SigninWithKakaoRequestDTO {
-        return .init(searchID: searchID, nickname: nickname, email: email, kakaoToken: kakaoToken)
+        return .init(searchID: searchID, nickname: nickname, email: email, kakaoToken: kakaoToken, kakaoID: kakaoID)
     }
 }

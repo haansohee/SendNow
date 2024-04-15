@@ -13,10 +13,11 @@ struct KakaoMemberReponseDTO: Codable {
     let nickname: String?
     let email: String?
     let kakaoToken: String?
+    let kakaoID: Int64?
 }
 
 extension KakaoMemberReponseDTO {
     func toDomain() -> KakaoMemberDomain {
-        return .init(userID: userID, searchID: searchID, nickname: nickname, email: email, kakaoToken: kakaoToken)
+        return .init(userID: userID, searchID: searchID, nickname: nickname, email: email, kakaoToken: kakaoToken, kakaoID: kakaoID)
     }
 }
