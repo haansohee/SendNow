@@ -10,26 +10,22 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-enum SigninType {
-    case kakao
-    case apple
-}
 
 final class SettingSearchIDViewController: UIViewController {
     private let settingSearchIDView = SettingSearchIDView()
     private let signupWithEmailViewModel = SignupWithEmailViewModel()
     private let signinViewModel = SigninViewModel()
     private let disposeBag = DisposeBag()
-    private var signinType: SigninType?
+
     
     init(appleMemberInfo: SigninWithAppleDomain? = nil) {
         super.init(nibName: nil, bundle: nil)
         guard let appleMemberInfo = appleMemberInfo else {
-            self.signinType = .kakao
+            signinViewModel.signinType = .kakao
             return
         }
         signinViewModel.setSignupWithAppleInfo(appleMemberInfo)
-        self.signinType = .apple
+        signinViewModel.signinType = .apple
     }
     
     required init?(coder: NSCoder) {
@@ -105,7 +101,7 @@ extension SettingSearchIDViewController {
             .subscribe(onNext: {[weak self] _ in
                 guard let id = self?.settingSearchIDView.idTextField.text,
                       !id.isEmpty else { return }
-                switch self?.signinType {
+                switch self?.signinViewModel.signinType {
                 case .kakao:
                     self?.signinViewModel.signupWithKakao(id: id)
                 case .apple:

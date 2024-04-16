@@ -12,6 +12,10 @@ import KakaoSDKUser
 import KakaoSDKAuth
 import RxKakaoSDKAuth
 
+enum SigninType {
+    case kakao
+    case apple
+}
 
 final class SigninViewModel {
     private let disposeBag = DisposeBag()
@@ -21,6 +25,7 @@ final class SigninViewModel {
     private(set) var appleMemberInformation: AppleMemberDomain?
     private(set) var emailMemberInformation: EmailMemberDomain?
     private(set) var signupWithAppleInfo: SigninWithAppleDomain?
+    var signinType: SigninType?
     let isSuccessedSigninWithKakao = PublishSubject<Bool>()
     let isSuccessedSignupWithKakao = PublishSubject<Bool>()
     let isSuccessedSignupWithApple = PublishSubject<Bool>()

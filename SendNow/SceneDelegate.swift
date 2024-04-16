@@ -18,11 +18,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         window?.backgroundColor = .systemBackground
         window?.makeKeyAndVisible()
-//        guard UserDefaults.standard.string(forKey: MemberInfoField.email.rawValue) != nil else {
-//            window?.rootViewController = UINavigationController(rootViewController: SigninViewController())
-//            return
-//        }
-//        window?.rootViewController = UINavigationController(rootViewController: MainTabBarController())
         window?.rootViewController = UINavigationController(rootViewController: SigninViewController())
     }
     
