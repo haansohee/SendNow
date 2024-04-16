@@ -197,9 +197,11 @@ extension SignupWithEmailViewController {
                 
                 guard let isCheckedAuthCode = self?.signupWithEmailViewModel.isCheckedAuthCode,
                       let isCheckedDuplicatedID = self?.signupWithEmailViewModel.isCheckedDuplicatedID,
+                      let isCheckedValidNickname = self?.signupWithEmailViewModel.isCheckedValidNickname,
                       let isEnabledSignupButton = self?.signupWithEmailViewModel.isEnabledSignupButton,
                       isCheckedAuthCode,
                       isCheckedDuplicatedID,
+                      isCheckedValidNickname,
                       isEnabledSignupButton else {
                     self?.blankAlert(title: "바로보내 회원가입", message: "이메일 인증 및 아이디 중복 검사, 정확한 비밀번호 작성 등 모두 진행해 주세요!")
                     return }
@@ -279,7 +281,7 @@ extension SignupWithEmailViewController: UITextFieldDelegate {
                   let newRange = Range(range, in: id) else { return true }
             let inputID = string.trimmingCharacters(in: .whitespacesAndNewlines)
             let newID = id.replacingCharacters(in: newRange, with: inputID).trimmingCharacters(in: .whitespacesAndNewlines)
-            
+            signupWithEmailViewModel.setIsEnabledSignupButton(newID.isValidID)
             if newID.isValidID {
                 signupWithEmailView.idLabel.text = "사용할 아이디를 입력해 주세요."
                 signupWithEmailView.idDuplicateButton.isEnabled = true
@@ -289,7 +291,19 @@ extension SignupWithEmailViewController: UITextFieldDelegate {
                 signupWithEmailView.idDuplicateButton.isEnabled = false
                 signupWithEmailView.idDuplicateButton.backgroundColor = .lightGray
             }
-            signupWithEmailViewModel.setIsEnabledSignupButton(newID.isValidID)
+            return true
+            
+        case signupWithEmailView.nicknameTextField:
+            guard let nickname = textField.text,
+                  let newRange = Range(range, in: nickname) else { return true }
+            let inputNickname = string.trimmingCharacters(in: .whitespacesAndNewlines)
+            let newNickname = nickname.replacingCharacters(in: newRange, with: inputNickname).trimmingCharacters(in: .whitespacesAndNewlines)
+            signupWithEmailViewModel.setIsCheckedValidNickname(newNickname.isValidID)
+            if newNickname.isValidNickname {
+                signupWithEmailView.nicknameLabel.text = "친구들에게 보여질 이름을 입력해 주세요."
+            } else {
+                signupWithEmailView.nicknameLabel.text = "한글, 영어, 숫자만 가능하며, 13자 이내로 입력해 주세요."
+            }
             return true
             
         default:

@@ -45,16 +45,6 @@ extension SigninViewController {
         ])
     }
     
-//    private func setASAuthorizationApple() {
-//        let request = ASAuthorizationAppleIDProvider().createRequest()
-//        request.requestedScopes = [.email, .fullName]
-//        
-//        let controller = ASAuthorizationController(authorizationRequests: [request])
-//        controller.delegate = self
-//        controller.presentationContextProvider = self
-//        controller.performRequests()
-//    }
-    
     private func bindAll() {
         bindSignupWithEmailButton()
         bindSigninWithKakaoButton()
