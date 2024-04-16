@@ -32,7 +32,7 @@ final class HomeView: UIView {
         return view
     }()
     
-    private let memberNicknameLabel: UILabel = {
+    let memberNicknameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 20.0, weight: .bold)
@@ -63,7 +63,7 @@ final class HomeView: UIView {
         return button
     }()
     
-    private let signoutButton: AnimationButton = {
+    let signoutButton: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("로그아웃 >", for: .normal)
@@ -144,7 +144,7 @@ extension HomeView {
             memberNicknameLabel.widthAnchor.constraint(equalToConstant: 160.0),
             
             welcomeLabel.centerYAnchor.constraint(equalTo: memberNicknameLabel.centerYAnchor),
-            welcomeLabel.leadingAnchor.constraint(equalTo: memberNicknameLabel.trailingAnchor),
+            welcomeLabel.leadingAnchor.constraint(equalTo: memberNicknameLabel.trailingAnchor, constant: 5.0),
             welcomeLabel.trailingAnchor.constraint(equalTo: memberContainerView.trailingAnchor, constant: -8.0),
             welcomeLabel.heightAnchor.constraint(equalToConstant: 30.0),
             

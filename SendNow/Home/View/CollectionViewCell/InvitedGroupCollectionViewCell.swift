@@ -14,7 +14,7 @@ final class InvitedGroupCollectionViewCell: UICollectionViewCell, ReuseIdentifie
     private let friendNicknameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "한담곰"
+        label.text = "한땡땡"
         label.textAlignment = .left
         label.textColor = .label
         label.font = .systemFont(ofSize: 14.0)

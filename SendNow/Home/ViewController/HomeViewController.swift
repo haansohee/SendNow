@@ -11,7 +11,17 @@ import RxSwift
 
 final class HomeViewController: UIViewController {
     private let homeView = HomeView()
+    private let homeViewModel = HomeViewModel()
     private let disposeBag = DisposeBag()
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        homeViewModel.loadMemberInformation()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +29,11 @@ final class HomeViewController: UIViewController {
         addSubviews()
         setLayoutConstraintsHomeView()
         bindAll()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setHomeViewNicknameLabel()
     }
 }
 
@@ -46,8 +61,14 @@ extension HomeViewController {
         ])
     }
     
+    private func setHomeViewNicknameLabel() {
+        guard let nickname = homeViewModel.loginMemberInformation?.nickname else { return }
+        homeView.memberNicknameLabel.text = nickname
+    }
+    
     private func bindAll() {
         bindInvitedGroupButton()
+        bindSignoutButton()
     }
     
     private func bindInvitedGroupButton() {
@@ -56,6 +77,18 @@ extension HomeViewController {
             .drive(onNext: {[weak self] _ in
                 let invitedGroupViewController = UINavigationController(rootViewController: InvitedGroupViewController())
                 self?.present(invitedGroupViewController, animated: true)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindSignoutButton() {
+        homeView.signoutButton.rx.tap
+            .asDriver()
+            .drive(onNext: {[weak self] _ in
+                self?.homeViewModel.signout()
+                let rootViewController = SigninViewController()
+                guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+                sceneDelegate.changeRootViewController(rootViewController, animated: true)
             })
             .disposed(by: disposeBag)
     }

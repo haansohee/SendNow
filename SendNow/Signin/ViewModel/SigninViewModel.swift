@@ -48,6 +48,7 @@ final class SigninViewModel {
     
     func checkRegisteredKakaoMember(_ kakaoToken: String) {
         memberService.getKakaoMemberInfo(with: kakaoToken) { [weak self] kakaoMemberInfo in
+            print("kakaoMemberInfo: \(kakaoMemberInfo)")
             guard let kakaoToken = kakaoMemberInfo.kakaoToken,
                   let searchID = kakaoMemberInfo.searchID,
                   let email = kakaoMemberInfo.email,
