@@ -126,7 +126,8 @@ final class SigninViewModel {
         }
     }
     
-    func updateSearchID(_ updateSearchIdInfo: UpdateSearchIdDomain) {
+    func updateSearchID(_ appleToken: String, _ id: String) {
+        let updateSearchIdInfo = UpdateSearchIdDomain(searchID: id, email: "", token: appleToken)
         memberService.updateSearchID(with: updateSearchIdInfo) { [weak self] result in
             self?.isSuccessedUpdatedSearchID.onNext(result)
         }

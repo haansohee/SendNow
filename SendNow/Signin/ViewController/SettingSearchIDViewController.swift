@@ -106,8 +106,7 @@ extension SettingSearchIDViewController {
                     self?.signinViewModel.signupWithKakao(id: id)
                 case .apple:
                     guard let appleToken = self?.signinViewModel.signupWithAppleInfo?.appleToken else { return }
-                    let updateSearchIdInfo = UpdateSearchIdDomain(searchID: id, email: "", token: appleToken)
-                    self?.signinViewModel.updateSearchID(updateSearchIdInfo)
+                    self?.signinViewModel.updateSearchID(appleToken, id)
                 default: return
                 }
             })
