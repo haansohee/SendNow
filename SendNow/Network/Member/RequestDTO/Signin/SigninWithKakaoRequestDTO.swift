@@ -12,4 +12,5 @@ struct SigninWithKakaoRequestDTO: Codable {
     let nickname: String
     let email: String
     let kakaoToken: String
+    let kakaoID: Int64
 }

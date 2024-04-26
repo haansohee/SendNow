@@ -102,14 +102,25 @@ final class SignupWithEmailView: UIScrollView {
         textField.backgroundColor = .systemGray6
         textField.placeholder = "메일로 전송된 인증번호를 입력하세요."
         textField.font = .systemFont(ofSize: 12.0, weight: .light)
-        textField.keyboardType = .asciiCapable
+        textField.keyboardType = .numberPad
         return textField
+    }()
+    
+    let sendAuthCodeButton: AnimationButton = {
+        let button = AnimationButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("인증번호 전송", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = UIColor(named: "TitleColor")
+        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
+        button.layer.cornerRadius = 3.0
+        return button
     }()
     
     let emailAuthButton: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("이메일 인증하기", for: .normal)
+        button.setTitle("인증번호 확인", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = UIColor(named: "TitleColor")
         button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
@@ -178,7 +189,7 @@ final class SignupWithEmailView: UIScrollView {
         return label
     }()
     
-    private let nicknameTextField: PaddingTextField = {
+    let nicknameTextField: PaddingTextField = {
         let textField = PaddingTextField()
         textField.backgroundColor = .systemGray6
         textField.placeholder = "NICKNAME"
@@ -225,6 +236,7 @@ extension SignupWithEmailView {
             gmailAddressButton,
             icloudAddressButton,
             directInputAddressButton,
+            sendAuthCodeButton,
             emailAuthSuccessLabel,
             emailAuthTextField,
             emailAuthButton,
@@ -289,7 +301,12 @@ extension SignupWithEmailView {
             directInputAddressButton.widthAnchor.constraint(equalTo: naverAddressButton.widthAnchor),
             directInputAddressButton.heightAnchor.constraint(equalTo: naverAddressButton.heightAnchor),
             
-            emailAuthSuccessLabel.topAnchor.constraint(equalTo: directInputAddressButton.bottomAnchor, constant: 48.0),
+            sendAuthCodeButton.topAnchor.constraint(equalTo: directInputAddressButton.bottomAnchor, constant: 24.0),
+            sendAuthCodeButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            sendAuthCodeButton.widthAnchor.constraint(equalToConstant: 85.0),
+            sendAuthCodeButton.heightAnchor.constraint(equalToConstant: 35.0),
+            
+            emailAuthSuccessLabel.topAnchor.constraint(equalTo: sendAuthCodeButton.bottomAnchor, constant: 24.0),
             emailAuthSuccessLabel.leadingAnchor.constraint(equalTo: emailLabel.leadingAnchor),
             emailAuthSuccessLabel.trailingAnchor.constraint(equalTo: emailLabel.trailingAnchor),
             emailAuthSuccessLabel.heightAnchor.constraint(equalTo: emailLabel.heightAnchor),
