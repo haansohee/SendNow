@@ -9,6 +9,6 @@ import Foundation
 
 struct UpdateSearchIdRequestDTO: Codable {
     let searchID: String
-    let email: String?
-    let token: String?
+    let email: String
+    let token: String
 }

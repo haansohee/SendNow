@@ -36,7 +36,7 @@ final class MemberService {
     }
     
     func updateSearchID(with updateSearchIdDomain: UpdateSearchIdDomain, completion: @escaping(Bool)->Void) {
-        let path = updateSearchIdDomain.email == nil ? "/SendNow/updateSNSUserSearchID/" : "/SendNow/updateSNSUserSearchID/"
+        let path = updateSearchIdDomain.email.isEmpty ? "/SendNow/updateSNSUserSearchID/" : "/SendNow/updateEmailUserSearchID/"
         let updateSearchID = updateSearchIdDomain.toRequestDTO()
         networkSessionManager.urlPostMethod(path: path, encodeValue: updateSearchID) { result in
             completion(result)

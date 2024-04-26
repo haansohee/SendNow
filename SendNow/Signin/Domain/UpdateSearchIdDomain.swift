@@ -9,8 +9,8 @@ import Foundation
 
 struct UpdateSearchIdDomain {
     let searchID: String
-    let email: String?
-    let token: String?
+    let email: String
+    let token: String
 }
 
 extension UpdateSearchIdDomain {

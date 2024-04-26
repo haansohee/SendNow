@@ -106,7 +106,7 @@ extension SettingSearchIDViewController {
                     self?.signinViewModel.signupWithKakao(id: id)
                 case .apple:
                     guard let appleToken = self?.signinViewModel.signupWithAppleInfo?.appleToken else { return }
-                    let updateSearchIdInfo = UpdateSearchIdDomain(searchID: id, email: nil, token: appleToken)
+                    let updateSearchIdInfo = UpdateSearchIdDomain(searchID: id, email: "", token: appleToken)
                     self?.signinViewModel.updateSearchID(updateSearchIdInfo)
                 default: return
                 }
@@ -131,9 +131,12 @@ extension SettingSearchIDViewController {
         signinViewModel.isSuccessedUpdatedSearchID
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: {[weak self] isSuccessedUpdatedSearchID in
-                guard isSuccessedUpdatedSearchID else { return }
-                guard let appleToken = self?.signinViewModel.signupWithAppleInfo?.appleToken else { return }
+                guard isSuccessedUpdatedSearchID,
+                      let appleToken = self?.signinViewModel.signupWithAppleInfo?.appleToken else { return }
                 self?.signinViewModel.signinWithApple(appleToken)
+                let rootViewController = MainTabBarController()
+                guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+                sceneDelegate.changeRootViewController(rootViewController, animated: true)
                 self?.navigationController?.popViewController(animated: true)
             })
             .disposed(by: disposeBag)

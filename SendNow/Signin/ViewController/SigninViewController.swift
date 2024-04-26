@@ -51,6 +51,7 @@ extension SigninViewController {
         bindSigninWithAppleButton()
         bindSigninButton()
         bindRegistrationRequired()
+        bindIsExistedSearchID()
         bindIsSuccessedSignupWithApple()
         bindIsExistedEmail()
         bindIsPasswordMatching()
@@ -111,6 +112,21 @@ extension SigninViewController {
                     sceneDelegate.changeRootViewController(rootViewController, animated: true)
                     return }
                 self?.navigationController?.pushViewController(SettingSearchIDViewController(), animated: true)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindIsExistedSearchID() {
+        signinViewModel.isExistedSearchID
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isExistedSearchID in
+                guard !isExistedSearchID else {
+                    let rootViewController = MainTabBarController()
+                    guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+                    sceneDelegate.changeRootViewController(rootViewController, animated: true)
+                    return }
+                guard let appleMemberInfo = self?.signinViewModel.signupWithAppleInfo else { return }
+                self?.navigationController?.pushViewController(SettingSearchIDViewController(appleMemberInfo: appleMemberInfo), animated: true)
             })
             .disposed(by: disposeBag)
     }

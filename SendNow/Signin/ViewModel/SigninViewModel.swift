@@ -94,10 +94,6 @@ final class SigninViewModel {
     
     func signinWithApple(_ appleToken: String) {
         memberService.getAppleMemberInfo(with: appleToken) {[weak self] appleMemberInfo in
-            guard let searchID = appleMemberInfo.searchID else {
-                self?.isExistedSearchID.onNext(false)
-                return
-            }
             self?.appleMemberInformation = appleMemberInfo
             guard let appleToken = appleMemberInfo.appleToken,
                   let email = appleMemberInfo.email,
@@ -105,8 +101,15 @@ final class SigninViewModel {
                   let userID = appleMemberInfo.userID,
                   !(appleToken.isEmpty),
                   !(email.isEmpty),
-                  !(nickname.isEmpty),
-                  !(searchID.isEmpty) else { return }
+                  !(nickname.isEmpty) else { return }
+            
+            guard let searchID = appleMemberInfo.searchID,
+                  !(searchID.isEmpty) else {
+                let signupWithAppleInfo = SigninWithAppleDomain(searchID: "", nickname: nickname, email: email, appleToken: appleToken)
+                self?.signupWithAppleInfo = signupWithAppleInfo
+                self?.isExistedSearchID.onNext(false)
+                return
+            }
             UserDefaults.standard.set(userID, forKey: MemberInfoField.userID.rawValue)
             UserDefaults.standard.set(appleToken, forKey: MemberInfoField.appleToken.rawValue)
             UserDefaults.standard.set(searchID, forKey: MemberInfoField.searchID.rawValue)
