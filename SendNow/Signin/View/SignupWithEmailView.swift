@@ -183,7 +183,7 @@ final class SignupWithEmailView: UIScrollView {
         return button
     }()
     
-    private let nicknameLabel: SignupDescriptionLabel = {
+    let nicknameLabel: SignupDescriptionLabel = {
         let label = SignupDescriptionLabel()
         label.text = "친구들에게 보여질 이름을 입력해 주세요."
         return label

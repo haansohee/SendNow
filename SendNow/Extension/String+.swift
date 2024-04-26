@@ -22,4 +22,8 @@ extension String {
     var isValidPassword: Bool {
         return self.matchRegularExpression("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=-]).{8,30}")
     }
+    
+    var isValidNickname: Bool {
+        return self.matchRegularExpression("^[가-힣a-zA-Z0-9_]{1,13}$")
+    }
 }

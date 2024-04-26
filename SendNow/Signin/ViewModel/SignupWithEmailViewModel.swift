@@ -14,6 +14,7 @@ final class SignupWithEmailViewModel {
     private(set) var isEnabledSignupButton: Bool = false
     private(set) var isCheckedDuplicatedID: Bool = false
     private(set) var isCheckedAuthCode: Bool = false
+    private(set) var isCheckedValidNickname: Bool = false
     private(set) var emailAuthCodeInfo: EmailAuthCodeDomain?
     let isDuplicatedID = PublishSubject<Bool>()
     let isDuplicatedEmail = PublishSubject<Bool>()
@@ -29,6 +30,10 @@ final class SignupWithEmailViewModel {
     
     func setIsCheckedAuthCode(_ isCheckedAuthCode: Bool) {
         self.isCheckedAuthCode = isCheckedAuthCode
+    }
+    
+    func setIsCheckedValidNickname(_ isCheckedValiedNickname: Bool) {
+        self.isCheckedValidNickname = isCheckedValiedNickname
     }
     
     func checkDuplicateID(nickname: String) {

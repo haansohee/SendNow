@@ -15,10 +15,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        window = UIWindow(windowScene: windowScene)
-        window?.backgroundColor = .systemBackground
-        window?.makeKeyAndVisible()
-        window?.rootViewController = UINavigationController(rootViewController: SigninViewController())
+        self.window = UIWindow(windowScene: windowScene)
+        self.window?.backgroundColor = .systemBackground
+        self.window?.makeKeyAndVisible()
+        guard UserDefaults.standard.string(forKey: MemberInfoField.email.rawValue) != nil else {
+            window?.rootViewController = UINavigationController(rootViewController: SigninViewController())
+            return
+        }
+        self.window?.rootViewController = MainTabBarController()
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {

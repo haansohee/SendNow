@@ -87,7 +87,6 @@ final class SigninView: UIView {
         button.setImage(UIImage(systemName: "apple.logo"), for: .normal)
         button.setTitle(" Apple로 계속하기", for: .normal)
         button.setTitleColor(.systemBackground, for: .normal)
-        button.tintColor = .systemBackground
         button.backgroundColor = .label
         button.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .medium)
         button.layer.cornerRadius = 5.0
