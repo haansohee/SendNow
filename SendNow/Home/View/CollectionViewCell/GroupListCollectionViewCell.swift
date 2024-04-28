@@ -31,7 +31,7 @@ final class GroupListCollectionViewCell: UICollectionViewCell, ReuseIdentifierPr
     private let invitedFriendsNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "한담곰, 쭌담곰, 아기감자, 아기고구마"
+        label.text = "김땡땡, 박땡땡, 이땡땡, 최땡땡"
         label.textAlignment = .left
         label.textColor = .secondaryLabel
         label.font = .systemFont(ofSize: 12.0, weight: .light)

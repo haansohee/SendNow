@@ -89,6 +89,7 @@ final class SigninView: UIView {
         button.setTitleColor(.systemBackground, for: .normal)
         button.tintColor = .systemBackground
         button.backgroundColor = .label
+        button.tintColor = .systemBackground
         button.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .medium)
         button.layer.cornerRadius = 5.0
         return button
