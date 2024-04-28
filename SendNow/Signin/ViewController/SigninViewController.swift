@@ -106,7 +106,6 @@ extension SigninViewController {
         signinViewModel.isRegisteredKakaoMember
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: {[weak self] isRegisteredKakaoMember in
-                print("isRegisteredKakaoMember: \(isRegisteredKakaoMember)")
                 guard isRegisteredKakaoMember else {
                     let rootViewController = MainTabBarController()
                     guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }

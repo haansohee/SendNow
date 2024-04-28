@@ -12,11 +12,6 @@ import KakaoSDKUser
 import KakaoSDKAuth
 import RxKakaoSDKAuth
 
-enum SigninType {
-    case kakao
-    case apple
-}
-
 final class SigninViewModel {
     private let disposeBag = DisposeBag()
     private let memberService = MemberService()
