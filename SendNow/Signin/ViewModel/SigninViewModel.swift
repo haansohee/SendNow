@@ -48,7 +48,6 @@ final class SigninViewModel {
     
     func checkRegisteredKakaoMember(_ kakaoToken: String) {
         memberService.getKakaoMemberInfo(with: kakaoToken) { [weak self] kakaoMemberInfo in
-            print("kakaoMemberInfo: \(kakaoMemberInfo)")
             guard let kakaoToken = kakaoMemberInfo.kakaoToken,
                   let searchID = kakaoMemberInfo.searchID,
                   let email = kakaoMemberInfo.email,
@@ -70,6 +69,7 @@ final class SigninViewModel {
             UserDefaults.standard.set(email, forKey: MemberInfoField.email.rawValue)
             UserDefaults.standard.set(nickname, forKey: MemberInfoField.nickname.rawValue)
             UserDefaults.standard.set(kakaoID, forKey: MemberInfoField.kakaoID.rawValue)
+            UserDefaults.standard.set(SigninType.kakao.rawValue, forKey: MemberInfoField.signinType.rawValue)
             self?.isRegisteredKakaoMember.onNext(false)
         }
     }
@@ -116,6 +116,7 @@ final class SigninViewModel {
             UserDefaults.standard.set(searchID, forKey: MemberInfoField.searchID.rawValue)
             UserDefaults.standard.set(email, forKey: MemberInfoField.email.rawValue)
             UserDefaults.standard.set(nickname, forKey: MemberInfoField.nickname.rawValue)
+            UserDefaults.standard.set(SigninType.apple.rawValue, forKey: MemberInfoField.signinType.rawValue)
             self?.isExistedSearchID.onNext(true)
         }
     }
@@ -159,6 +160,7 @@ final class SigninViewModel {
         UserDefaults.standard.set(emailMemberInformation.searchID, forKey: MemberInfoField.searchID.rawValue)
         UserDefaults.standard.set(emailMemberInformation.email, forKey: MemberInfoField.email.rawValue)
         UserDefaults.standard.set(emailMemberInformation.nickname, forKey: MemberInfoField.nickname.rawValue)
+        UserDefaults.standard.set(SigninType.email.rawValue, forKey: MemberInfoField.signinType.rawValue)
     }
     
     func isPasswordMatching(_ inputPassword: String) {

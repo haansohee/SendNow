@@ -10,7 +10,6 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-
 final class SettingSearchIDViewController: UIViewController {
     private let settingSearchIDView = SettingSearchIDView()
     private let signupWithEmailViewModel = SignupWithEmailViewModel()

@@ -2,7 +2,7 @@
 //  LoginMemberInformation.swift
 //  SendNow
 //
-//  Created by 한소희 on 4/16/24.
+//  Created by 한소희 on 4/26/24.
 //
 
 import Foundation
