@@ -94,7 +94,6 @@ extension MemberInfoUpdateViewController {
         bindIsUpdatedNickname()
         bindIsUpdatedAccountNumber()
         bindIsUpdatedKakaoPayUrl()
-//        bindIsLoadedMemberInformation()
     }
     
     private func bindNicknameUpdateButton() {
@@ -208,17 +207,6 @@ extension MemberInfoUpdateViewController {
             })
             .disposed(by: disposeBag)
     }
-    
-//    private func bindIsLoadedMemberInformation() {
-//        homeViewModel.isLoadedMemberInformation
-//            .asDriver(onErrorJustReturn: "noValue")
-//            .drive(onNext: {[weak self] isLoadedMemberInformation in
-//                print("isLoadedMemberInformation: \(isLoadedMemberInformation)")
-//                self?.configureMemberInfoUpdateViewAccountInfo()
-//                self?.memberInfoUpdateView.nicknameTextField.placeholder = self?.homeViewModel.loginMemberInformation?.nickname
-//            })
-//            .disposed(by: disposeBag)
-//    }
     
     //MARK: Alert
     private func confirmAlert(title: String, message: String) {

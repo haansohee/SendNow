@@ -101,7 +101,6 @@ extension HomeViewController {
         homeView.memberInfoEditButton.rx.tap
             .asDriver()
             .drive(onNext: {[weak self] _ in
-//                self?.present(MemberInfoUpdateViewController(), animated: true)
                 self?.navigationController?.pushViewController(MemberInfoUpdateViewController(), animated: true)
             })
             .disposed(by: disposeBag)
