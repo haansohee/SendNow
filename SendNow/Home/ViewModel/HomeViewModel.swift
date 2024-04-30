@@ -13,7 +13,6 @@ final class HomeViewModel {
     let isLoadedMemberInformation = BehaviorSubject(value: "noValue")
     
     func loadMemberInformation() {
-        print("🚨 loadMemberInformation")
         let userID = UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)
         guard let signinType = UserDefaults.standard.string(forKey: MemberInfoField.signinType.rawValue),
               let nickname = UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue),
