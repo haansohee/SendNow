@@ -38,7 +38,8 @@ final class SignupWithEmailViewModel {
     
     func checkDuplicateID(nickname: String) {
         memberService.getSearchID(with: nickname) {[weak self] result in
-            self?.isDuplicatedID.onNext(!result.isEmpty)
+            print("🚨 get Search ID RESULT : \(result)")
+            self?.isDuplicatedID.onNext(result.isEmpty)
         }
     }
     

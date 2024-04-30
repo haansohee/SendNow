@@ -19,7 +19,6 @@ final class SignupWithEmailViewController: UIViewController {
         configureSignupWithEmailView()
         addSubviews()
         setLayoutConstraintssignupWithEmailView()
-        setKeyboardNotification()
         bindAll()
     }
 }
@@ -30,35 +29,15 @@ extension SignupWithEmailViewController {
         [
             signupWithEmailView.passwordTextField,
             signupWithEmailView.rePasswordTextField,
-            signupWithEmailView.idTextField
+            signupWithEmailView.idTextField,
+            signupWithEmailView.nicknameTextField
         ].forEach { $0.delegate = self }
         navigationItem.title = "가입하기"
         view.backgroundColor = .systemBackground
-        self.hideKeyboardGesture()
     }
     
     private func addSubviews() {
         view.addSubview(signupWithEmailView)
-    }
-    
-    private func setKeyboardNotification() {
-        let keyboardWillShow = NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
-        let keyboardWillHide = NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
-        
-        keyboardWillShow
-            .asDriver(onErrorRecover: { _ in .never()})
-            .drive(onNext: {[weak self] notification in
-                guard let signupWithEmailView = self?.signupWithEmailView else { return }
-                self?.keyboardWillShow(notification, signupWithEmailView)
-            })
-            .disposed(by: disposeBag)
-        keyboardWillHide
-            .asDriver(onErrorRecover: { _ in .never()})
-            .drive(onNext: {[weak self] notification in
-                guard let signupWithEmailView = self?.signupWithEmailView else { return }
-                self?.keyboardWillHide(notification, signupWithEmailView)
-            })
-            .disposed(by: disposeBag)
     }
     
     private func setLayoutConstraintssignupWithEmailView() {
@@ -70,6 +49,7 @@ extension SignupWithEmailViewController {
         ])
     }
     
+    //MARK: Bind
     private func bindAll() {
         bindEmailAddressButton()
         bindSendAuthCodeAutton()
@@ -194,7 +174,6 @@ extension SignupWithEmailViewController {
                       !(password.isEmpty) else {
                     self?.blankAlert(title: "바로보내 회원가입", message: "이메일, 아이디, 비밀번호, 닉네임을 모두 입력해 주세요.")
                     return }
-                
                 guard let isCheckedAuthCode = self?.signupWithEmailViewModel.isCheckedAuthCode,
                       let isCheckedDuplicatedID = self?.signupWithEmailViewModel.isCheckedDuplicatedID,
                       let isCheckedValidNickname = self?.signupWithEmailViewModel.isCheckedValidNickname,
@@ -227,6 +206,7 @@ extension SignupWithEmailViewController {
             .disposed(by: disposeBag)
     }
     
+    //MARK: Alert
     private func blankAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let doneAction = UIAlertAction(title: "확인", style: .cancel) { _ in }
@@ -244,6 +224,7 @@ extension SignupWithEmailViewController {
     }
 }
 
+//MARK: UITextFieldDelegate
 extension SignupWithEmailViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         switch textField {
@@ -266,14 +247,15 @@ extension SignupWithEmailViewController: UITextFieldDelegate {
             let inputPassword = string.trimmingCharacters(in: .whitespacesAndNewlines)
                        let newPassword = rePassword.replacingCharacters(in: newRange, with: inputPassword)
                            .trimmingCharacters(in: .whitespacesAndNewlines)
-            if (newPassword == password) && newPassword.isValidPassword {
+            let isValid = newPassword.isValidPassword
+            if (newPassword == password) && isValid {
                 signupWithEmailViewModel.setIsEnabledSignupButton(true)
                 signupWithEmailView.passwordLabel.text = "사용할 비밀번호를 입력해 주세요."
             } else if newPassword != password {
                 signupWithEmailView.passwordLabel.text = "비밀번호가 일치하지 않아요."
                 signupWithEmailViewModel.setIsEnabledSignupButton(false)
             }
-            signupWithEmailViewModel.setIsEnabledSignupButton(newPassword.isValidPassword)
+            signupWithEmailViewModel.setIsEnabledSignupButton(isValid)
             return true
             
         case signupWithEmailView.idTextField:
@@ -281,8 +263,9 @@ extension SignupWithEmailViewController: UITextFieldDelegate {
                   let newRange = Range(range, in: id) else { return true }
             let inputID = string.trimmingCharacters(in: .whitespacesAndNewlines)
             let newID = id.replacingCharacters(in: newRange, with: inputID).trimmingCharacters(in: .whitespacesAndNewlines)
-            signupWithEmailViewModel.setIsEnabledSignupButton(newID.isValidID)
-            if newID.isValidID {
+            let isValid = newID.isValidID
+            signupWithEmailViewModel.setIsEnabledSignupButton(isValid)
+            if isValid {
                 signupWithEmailView.idLabel.text = "사용할 아이디를 입력해 주세요."
                 signupWithEmailView.idDuplicateButton.isEnabled = true
                 signupWithEmailView.idDuplicateButton.backgroundColor = UIColor(named: "TitleColor")
@@ -298,11 +281,12 @@ extension SignupWithEmailViewController: UITextFieldDelegate {
                   let newRange = Range(range, in: nickname) else { return true }
             let inputNickname = string.trimmingCharacters(in: .whitespacesAndNewlines)
             let newNickname = nickname.replacingCharacters(in: newRange, with: inputNickname).trimmingCharacters(in: .whitespacesAndNewlines)
-            signupWithEmailViewModel.setIsCheckedValidNickname(newNickname.isValidID)
-            if newNickname.isValidNickname {
+            let isValid = newNickname.isValidNickname
+            signupWithEmailViewModel.setIsCheckedValidNickname(isValid)
+            if isValid {
                 signupWithEmailView.nicknameLabel.text = "친구들에게 보여질 이름을 입력해 주세요."
             } else {
-                signupWithEmailView.nicknameLabel.text = "한글, 영어, 숫자만 가능하며, 13자 이내로 입력해 주세요."
+                signupWithEmailView.nicknameLabel.text = "한글만 가능하며, 13자 이내로 입력해 주세요."
             }
             return true
             

@@ -45,7 +45,6 @@ extension SettingSearchIDViewController {
         settingSearchIDView.translatesAutoresizingMaskIntoConstraints = false
         settingSearchIDView.idTextField.delegate = self
         view.backgroundColor = .systemBackground
-        self.hideKeyboardGesture()
     }
     
     private func addSubviews() {
@@ -61,6 +60,7 @@ extension SettingSearchIDViewController {
         ])
     }
     
+    //MARK: Bind
     private func bindAll() {
         bindIdDuplicateButton()
         bindIsDuplicatedID()
@@ -141,6 +141,7 @@ extension SettingSearchIDViewController {
     }
 }
 
+//MARK: UITextFieldDelegate
 extension SettingSearchIDViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let id = textField.text,

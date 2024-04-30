@@ -26,6 +26,7 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureHomeView()
+        configureHomeViewNicknameLabel()
         addSubviews()
         setLayoutConstraintsHomeView()
         bindAll()
@@ -33,7 +34,7 @@ final class HomeViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setHomeViewNicknameLabel()
+        homeViewModel.loadMemberInformation()
     }
 }
 
@@ -61,14 +62,17 @@ extension HomeViewController {
         ])
     }
     
-    private func setHomeViewNicknameLabel() {
+    private func configureHomeViewNicknameLabel() {
         guard let nickname = homeViewModel.loginMemberInformation?.nickname else { return }
         homeView.memberNicknameLabel.text = nickname
     }
     
+    //MARK: Bind
     private func bindAll() {
         bindInvitedGroupButton()
         bindSignoutButton()
+        bindMemberInfoEditButton()
+        bindIsLoadedMemberInformation()
     }
     
     private func bindInvitedGroupButton() {
@@ -86,14 +90,34 @@ extension HomeViewController {
             .asDriver()
             .drive(onNext: {[weak self] _ in
                 self?.homeViewModel.signout()
-                let rootViewController = SigninViewController()
+                let rootViewController = UINavigationController(rootViewController: SigninViewController())
                 guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
                 sceneDelegate.changeRootViewController(rootViewController, animated: true)
             })
             .disposed(by: disposeBag)
     }
+    
+    private func bindMemberInfoEditButton() {
+        homeView.memberInfoEditButton.rx.tap
+            .asDriver()
+            .drive(onNext: {[weak self] _ in
+//                self?.present(MemberInfoUpdateViewController(), animated: true)
+                self?.navigationController?.pushViewController(MemberInfoUpdateViewController(), animated: true)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindIsLoadedMemberInformation() {
+        homeViewModel.isLoadedMemberInformation
+            .asDriver(onErrorJustReturn: "noValue")
+            .drive(onNext: {[weak self] isLoadedMemberInformation in
+                self?.configureHomeViewNicknameLabel()
+            })
+            .disposed(by: disposeBag)
+    }
 }
 
+//MARK: UICollectionViewDataSource
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 6
@@ -105,6 +129,7 @@ extension HomeViewController: UICollectionViewDataSource {
     }
 }
 
+//MARK: UICollectionViewDelegateFlowLayout
 extension HomeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (UIScreen.main.bounds.width) - 36.0

@@ -13,10 +13,13 @@ struct AppleMemberResponseDTO: Codable {
     let nickname: String?
     let email: String?
     let appleToken: String?
+    let bankName: String?
+    let accountNumber: String?
+    let kakaoPayUrl: String?
 }
 
 extension AppleMemberResponseDTO {
     func toDomain() -> AppleMemberDomain {
-        return .init(userID: userID, searchID: searchID, nickname: nickname, email: email, appleToken: appleToken)
+        return .init(userID: userID, searchID: searchID, nickname: nickname, email: email, appleToken: appleToken, bankName: bankName, accountNumber: accountNumber, kakaoPayUrl: kakaoPayUrl)
     }
 }

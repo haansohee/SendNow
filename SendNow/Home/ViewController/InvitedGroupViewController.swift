@@ -19,6 +19,11 @@ final class InvitedGroupViewController: UIViewController {
         addSubviews()
         setLayoutConstraintsInvitedGroupView()
     }
+    
+    override var childForStatusBarStyle: UIViewController? {
+        let viewController = HomeViewController()
+        return viewController
+    }
 }
 
 extension InvitedGroupViewController {
@@ -46,6 +51,7 @@ extension InvitedGroupViewController {
 
 }
 
+//MARK: UICollectionViewDataSource
 extension InvitedGroupViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 4
@@ -71,6 +77,7 @@ extension InvitedGroupViewController: UICollectionViewDataSource {
     }
 }
 
+//MARK: UICollectionViewDelegateFlowLayout
 extension InvitedGroupViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (UIScreen.main.bounds.width) - 36.0

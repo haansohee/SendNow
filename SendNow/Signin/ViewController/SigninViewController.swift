@@ -29,7 +29,6 @@ extension SigninViewController {
     private func configureSigninView() {
         signinView.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .systemBackground
-        self.hideKeyboardGesture()
     }
     
     private func addSubviews() {
@@ -45,6 +44,7 @@ extension SigninViewController {
         ])
     }
     
+    //MARK: Bind
     private func bindAll() {
         bindSignupWithEmailButton()
         bindSigninWithKakaoButton()
@@ -180,6 +180,7 @@ extension SigninViewController {
     }
 }
 
+//MARK: ASAuthorizationControllerDelegate
 extension SigninViewController: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         if let credential = authorization.credential as? ASAuthorizationAppleIDCredential {
@@ -208,6 +209,7 @@ extension SigninViewController: ASAuthorizationControllerDelegate {
     }
 }
 
+//MARK: ASAuthorizationControllerPresentationContextProviding
 extension SigninViewController: ASAuthorizationControllerPresentationContextProviding {
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return self.view.window!

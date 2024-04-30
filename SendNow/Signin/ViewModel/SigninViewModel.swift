@@ -65,6 +65,9 @@ final class SigninViewModel {
             UserDefaults.standard.set(nickname, forKey: MemberInfoField.nickname.rawValue)
             UserDefaults.standard.set(kakaoID, forKey: MemberInfoField.kakaoID.rawValue)
             UserDefaults.standard.set(SigninType.kakao.rawValue, forKey: MemberInfoField.signinType.rawValue)
+            UserDefaults.standard.set(kakaoMemberInfo.bankName ?? nil, forKey: MemberInfoField.bankName.rawValue)
+            UserDefaults.standard.set(kakaoMemberInfo.accountNumber ?? nil, forKey: MemberInfoField.accountNumber.rawValue)
+            UserDefaults.standard.set(kakaoMemberInfo.kakaoPayUrl ?? nil, forKey: MemberInfoField.kakaoPayUrl.rawValue)
             self?.isRegisteredKakaoMember.onNext(false)
         }
     }
@@ -112,6 +115,9 @@ final class SigninViewModel {
             UserDefaults.standard.set(email, forKey: MemberInfoField.email.rawValue)
             UserDefaults.standard.set(nickname, forKey: MemberInfoField.nickname.rawValue)
             UserDefaults.standard.set(SigninType.apple.rawValue, forKey: MemberInfoField.signinType.rawValue)
+            UserDefaults.standard.set(appleMemberInfo.bankName ?? nil, forKey: MemberInfoField.bankName.rawValue)
+            UserDefaults.standard.set(appleMemberInfo.accountNumber ?? nil, forKey: MemberInfoField.accountNumber.rawValue)
+            UserDefaults.standard.set(appleMemberInfo.kakaoPayUrl ?? nil, forKey: MemberInfoField.kakaoPayUrl.rawValue)
             self?.isExistedSearchID.onNext(true)
         }
     }
@@ -156,6 +162,9 @@ final class SigninViewModel {
         UserDefaults.standard.set(emailMemberInformation.email, forKey: MemberInfoField.email.rawValue)
         UserDefaults.standard.set(emailMemberInformation.nickname, forKey: MemberInfoField.nickname.rawValue)
         UserDefaults.standard.set(SigninType.email.rawValue, forKey: MemberInfoField.signinType.rawValue)
+        UserDefaults.standard.set(emailMemberInformation.bankName ?? nil, forKey: MemberInfoField.bankName.rawValue)
+        UserDefaults.standard.set(emailMemberInformation.accountNumber ?? nil, forKey: MemberInfoField.accountNumber.rawValue)
+        UserDefaults.standard.set(emailMemberInformation.kakaoPayUrl ?? nil, forKey: MemberInfoField.kakaoPayUrl.rawValue)
     }
     
     func isPasswordMatching(_ inputPassword: String) {
