@@ -9,9 +9,6 @@ import Foundation
 import Alamofire
 
 final class NetworkSessionManager {
-    private let postMethod: HTTPMethod = .POST
-    private let getMethod: HTTPMethod = .GET
-    private let deleteMethod: HTTPMethod = .DELETE
     private let BaseURL = Bundle.main.infoDictionary?["Server_URL"] as? String
     
     func urlGetMethod<T: Codable>(path: String, requestDTO: T.Type, completion: @escaping(Result<T, Error>)->Void) {

@@ -112,13 +112,13 @@ extension MemberInfoUpdateViewController {
             .drive(onNext: {[weak self] _ in
                 let bankNameMenuItems: [UIAction] = {
                     return [
-                        UIAction(title: "국민은행", handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: "국민은행", isEnabled: false)}),
-                        UIAction(title: "농협은행", handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: "농협은행", isEnabled: false)}),
-                        UIAction(title: "신한은행", handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: "신한은행", isEnabled: false)}),
-                        UIAction(title: "하나은행", handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: "하나은행", isEnabled: false)}),
-                        UIAction(title: "우리은행", handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: "우리은행", isEnabled: false)}),
-                        UIAction(title: "카카오뱅크", handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: "카카오뱅크", isEnabled: false)}),
-                        UIAction(title: "직접입력", handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: "", isEnabled: true)})
+                        UIAction(title: BankName.kbstar.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.kbstar.rawValue, isEnabled: false)}),
+                        UIAction(title: BankName.nhbank.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.nhbank.rawValue, isEnabled: false)}),
+                        UIAction(title: BankName.shinhan.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.shinhan.rawValue, isEnabled: false)}),
+                        UIAction(title: BankName.kebhana.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.kebhana.rawValue, isEnabled: false)}),
+                        UIAction(title: BankName.wooribank.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.wooribank.rawValue, isEnabled: false)}),
+                        UIAction(title: BankName.kakaobank.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.kakaobank.rawValue, isEnabled: false)}),
+                        UIAction(title: BankName.directInput.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: "", isEnabled: true)})
                     ]
                 }()
                 self?.memberInfoUpdateView.bankNameUploadButton.menu = UIMenu(title: "은행기관 선택", options: .displayInline, children: bankNameMenuItems)

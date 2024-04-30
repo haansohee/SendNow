@@ -202,6 +202,12 @@ extension MemberInfoUpdateView {
         ].forEach { imageStackView.addSubview($0) }
     }
     
+    func configureMemberAccountInfo(bankName: String, accountNumber: String, kakaoPayUrl: String) {
+        bankNameUploadTextField.placeholder = bankName
+        accountNumberUploadTextField.placeholder = accountNumber
+        kakaoPayUrlUploadTextField.placeholder = kakaoPayUrl
+    }
+    
     private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             nicknameLabel.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 24.0),
@@ -290,11 +296,5 @@ extension MemberInfoUpdateView {
             withoutButton.trailingAnchor.constraint(equalTo: nicknameLabel.trailingAnchor),
             withoutButton.heightAnchor.constraint(equalToConstant: 40.0)
         ])
-    }
-    
-    func configureMemberAccountInfo(bankName: String, accountNumber: String, kakaoPayUrl: String) {
-        bankNameUploadTextField.placeholder = bankName
-        accountNumberUploadTextField.placeholder = accountNumber
-        kakaoPayUrlUploadTextField.placeholder = kakaoPayUrl
     }
 }
