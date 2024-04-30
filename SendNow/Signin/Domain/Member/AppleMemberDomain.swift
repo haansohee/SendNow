@@ -13,4 +13,7 @@ struct AppleMemberDomain {
     let nickname: String?
     let email: String?
     let appleToken: String?
+    let bankName: String?
+    let accountNumber: String?
+    let kakaoPayUrl: String?
 }

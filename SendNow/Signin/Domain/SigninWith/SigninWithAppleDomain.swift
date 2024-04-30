@@ -19,3 +19,4 @@ extension SigninWithAppleDomain {
         return .init(searchID: searchID, nickname: nickname, email: email, appleToken: appleToken)
     }
 }
+

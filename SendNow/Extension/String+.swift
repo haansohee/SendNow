@@ -24,6 +24,6 @@ extension String {
     }
     
     var isValidNickname: Bool {
-        return self.matchRegularExpression("^[가-힣a-zA-Z0-9_]{1,13}$")
+        return self.matchRegularExpression("^[ㄱ-ㅎㅏ-ㅣ가-힣]{1,13}$")
     }
 }

@@ -16,4 +16,7 @@ struct LoginMemberInformation {
     let appleToken: String?
     let kakaoID: String?
     let searchID: String
+    let bankName: String?
+    let accountNumber: String?
+    let kakaoPayUrl: String?
 }

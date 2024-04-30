@@ -54,7 +54,7 @@ final class HomeView: UIView {
         return label
     }()
     
-    private let memberInfoEditButton: AnimationButton = {
+    let memberInfoEditButton: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("회원정보 수정 >", for: .normal)

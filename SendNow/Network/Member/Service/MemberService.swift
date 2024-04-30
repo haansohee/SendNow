@@ -43,6 +43,30 @@ final class MemberService {
         }
     }
     
+    func updateNickname(with updateNicknameDomain: UpdateNicknameDomain, completion: @escaping(Bool)->Void) {
+        let path = "/SendNow/UpdateMemberNickname/"
+        let updateNickname = updateNicknameDomain.toRequestDTO()
+        networkSessionManager.urlPostMethod(path: path, encodeValue: updateNickname) { result in
+            completion(result)
+        }
+    }
+    
+    func updateKakaoPayUrl(with updateKakaoPayUrlDomain: UpdateKakaoPayUrlDomain, completion: @escaping(Bool)->Void) {
+        let path = "/SendNow/UpdateMemberKakaoPayUrl/"
+        let updateKakaoPayUrl = updateKakaoPayUrlDomain.toRequestDTO()
+        networkSessionManager.urlPostMethod(path: path, encodeValue: updateKakaoPayUrl) { result in
+            completion(result)
+        }
+    }
+    
+    func updateAccountNumber(with updateAccountNumberDomain: UpdateAccountNumberDomain, completion: @escaping(Bool)->Void) {
+        let path = "/SendNow/UpdateMemberAccountNumber/"
+        let updateAccountNumber = updateAccountNumberDomain.toRequestDTO()
+        networkSessionManager.urlPostMethod(path: path, encodeValue: updateAccountNumber) { result in
+            completion(result)
+        }
+    }
+    
     func getKakaoMemberInfo(with kakaoToken: String, completion: @escaping(KakaoMemberDomain)->Void) {
         let path = "/SendNow/getKakaoMemberInfo?kakaoToken=\(kakaoToken)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: KakaoMemberReponseDTO.self) { result in
