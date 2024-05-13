@@ -94,14 +94,13 @@ extension FriendRequestViewController {
         friendRequestViewModel.isEmptySearchFriend
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: {[weak self] isEmptySearchFriend in
+                self?.friendRequestView.searchResultLabel.text = "검색 결과 🔍"
                 guard isEmptySearchFriend else {
-                    self?.friendRequestView.searchResultLabel.text = "검색 결과 🔍"
                     self?.friendRequestView.searchResultFriendLabel.text = "해당 아이디의 회원이 존재하지 않아요. 🥲"
                     self?.friendRequestView.friendRequestButton.isHidden = true
                     return
                 }
                 guard let searchFriendInfo = self?.friendRequestViewModel.searchFriendInformation else { return }
-                self?.friendRequestView.searchResultLabel.text = "검색 결과 🔍"
                 self?.friendRequestView.searchResultFriendLabel.text = searchFriendInfo.nickname
                 self?.friendRequestView.friendRequestButton.isHidden = false
             })

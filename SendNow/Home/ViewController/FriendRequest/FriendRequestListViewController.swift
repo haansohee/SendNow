@@ -45,7 +45,6 @@ extension FriendRequestListViewController {
         view.backgroundColor = .systemBackground
         self.modalPresentationCapturesStatusBarAppearance = true
         self.sheetPresentationController?.prefersGrabberVisible = true
-        view.backgroundColor = .systemBackground
     }
     
     private func addSubivews() {
