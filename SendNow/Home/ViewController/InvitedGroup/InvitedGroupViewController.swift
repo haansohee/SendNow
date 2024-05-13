@@ -11,13 +11,24 @@ import RxSwift
 
 final class InvitedGroupViewController: UIViewController {
     private let invitedGroupView = InvitedGroupView()
+    private let homeViewModel = HomeViewModel()
     private let disposeBag = DisposeBag()
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        homeViewModel.loadMyFriend()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureInvitedGroupView()
         addSubviews()
         setLayoutConstraintsInvitedGroupView()
+        bindAll()
     }
     
     override var childForStatusBarStyle: UIViewController? {
@@ -48,18 +59,38 @@ extension InvitedGroupViewController {
             invitedGroupView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
+    
+    //MARK: Bind
+    private func bindAll() {
+        bindIsLoadedMyFriendList()
+    }
+    
+    private func bindIsLoadedMyFriendList() {
+        homeViewModel.isLoadedMyFriendList
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isLoadedMyFriendList in
+                guard isLoadedMyFriendList else { return }
+                self?.invitedGroupView.invitedGroupCollectionView.reloadData()
+            })
+            .disposed(by: disposeBag)
+    }
 
 }
 
 //MARK: UICollectionViewDataSource
 extension InvitedGroupViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 4
+        return homeViewModel.myFriendList?.count ?? 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: InvitedGroupCollectionViewCell.reuseIdentifier, for: indexPath) as? InvitedGroupCollectionViewCell else { return UICollectionViewCell() }
-        
+        guard let myFriendList = homeViewModel.myFriendList else {
+            cell.selectedButton.isHidden = true
+            cell.friendNicknameLabel.text = "초대할 수 있는 친구가 없어요. 🥲"
+            return cell }
+        cell.friendNicknameLabel.text = myFriendList[indexPath.row].nickname
+        cell.selectedButton.isHidden = false
         cell.rx.didTapSelectedButton
             .asDriver()
             .drive(onNext: { _ in

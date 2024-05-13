@@ -27,6 +27,7 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         configureHomeView()
         configureHomeViewNicknameLabel()
+        configureHomeViewMySearchIdLabel()
         addSubviews()
         setLayoutConstraintsHomeView()
         bindAll()
@@ -46,7 +47,7 @@ extension HomeViewController {
         view.backgroundColor = .systemBackground
         navigationItem.title = "홈"
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: homeView.notificationButton)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: homeView.friendAddButton)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: homeView.friendRequestButton)
     }
     
     private func addSubviews() {
@@ -67,11 +68,17 @@ extension HomeViewController {
         homeView.memberNicknameLabel.text = nickname
     }
     
+    private func configureHomeViewMySearchIdLabel() {
+        guard let searchID = homeViewModel.loginMemberInformation?.searchID else { return }
+        homeView.mySearchIdLabel.text = "나의 검색 ID : \(searchID)"
+    }
+    
     //MARK: Bind
     private func bindAll() {
         bindInvitedGroupButton()
         bindSignoutButton()
         bindMemberInfoEditButton()
+        bindFriendRequestButton()
         bindIsLoadedMemberInformation()
     }
     
@@ -102,6 +109,15 @@ extension HomeViewController {
             .asDriver()
             .drive(onNext: {[weak self] _ in
                 self?.navigationController?.pushViewController(MemberInfoUpdateViewController(), animated: true)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindFriendRequestButton() {
+        homeView.friendRequestButton.rx.tap
+            .asDriver()
+            .drive(onNext: {[weak self] _ in
+                self?.navigationController?.pushViewController(FriendRequestViewController(), animated: true)
             })
             .disposed(by: disposeBag)
     }
