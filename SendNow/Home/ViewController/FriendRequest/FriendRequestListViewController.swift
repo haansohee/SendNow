@@ -10,7 +10,21 @@ import UIKit
 import RxSwift
 
 final class FriendRequestListViewController: UIViewController {
-    private let friendReuqestListCollectionView = FriendReuqestListView()
+    private let friendReuqestListCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 10.0
+        layout.scrollDirection = .vertical
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.contentInset = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
+        collectionView.backgroundColor = .systemBackground
+        collectionView.isPagingEnabled = false
+        collectionView.register(FriendRequestListCollectionViewCell.self, forCellWithReuseIdentifier: FriendRequestListCollectionViewCell.reuseIdentifier)
+        collectionView.register(FriendReuqestListHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: FriendReuqestListHeaderView.reuseIdentifier)
+        return collectionView
+    }()
+    
     private let friendRequestViewModel = FriendRequestViewModel()
     private let disposeBag = DisposeBag()
     
