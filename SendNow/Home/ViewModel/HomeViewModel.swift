@@ -10,7 +10,10 @@ import RxSwift
 
 final class HomeViewModel {
     private(set) var loginMemberInformation: LoginMemberInformation?
+    private(set) var myFriendList: [MyFriendListDomain]?
     let isLoadedMemberInformation = BehaviorSubject(value: "noValue")
+    private let friendService = FriendService()
+    let isLoadedMyFriendList = PublishSubject<Bool>()
     
     func loadMemberInformation() {
         let userID = UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)
@@ -88,5 +91,17 @@ final class HomeViewModel {
         UserDefaults.standard.removeObject(forKey: MemberInfoField.bankName.rawValue)
         UserDefaults.standard.removeObject(forKey: MemberInfoField.accountNumber.rawValue)
         UserDefaults.standard.removeObject(forKey: MemberInfoField.kakaoPayUrl.rawValue)
+    }
+    
+    
+    func loadMyFriend() {
+        let userID = UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)
+        friendService.getMyFriendList(with: userID) {[weak self] result in
+            guard !result.isEmpty else {
+                self?.isLoadedMyFriendList.onNext(false)
+                return }
+            self?.myFriendList = result
+            self?.isLoadedMyFriendList.onNext(true)
+        }
     }
 }

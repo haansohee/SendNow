@@ -261,7 +261,6 @@ extension SignupWithEmailView {
             containerView.widthAnchor.constraint(equalTo: self.widthAnchor),
             containerView.heightAnchor.constraint(equalTo: self.heightAnchor),
             
-            
             emailLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 36.0),
             emailLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 24.0),
             emailLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -24.0),

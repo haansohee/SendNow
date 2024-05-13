@@ -11,12 +11,12 @@ import RxSwift
 final class InvitedGroupCollectionViewCell: UICollectionViewCell, ReuseIdentifierProtocol {
     private(set) var disposeBag = DisposeBag()
     
-    private let friendNicknameLabel: UILabel = {
+    let friendNicknameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "한땡땡"
         label.textAlignment = .left
         label.textColor = .label
+        label.text = "초대할 수 있는 친구가 없어요. 🥲"
         label.font = .systemFont(ofSize: 14.0)
         return label
     }()
@@ -26,6 +26,7 @@ final class InvitedGroupCollectionViewCell: UICollectionViewCell, ReuseIdentifie
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: "circle"), for: .normal)
         button.tintColor = UIColor(named: "TitleColor")
+        button.isHidden = true
         return button
     }()
     

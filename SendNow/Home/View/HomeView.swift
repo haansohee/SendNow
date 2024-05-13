@@ -15,7 +15,7 @@ final class HomeView: UIView {
         return button
     }()
     
-    let friendAddButton: AnimationButton = {
+    let friendRequestButton: AnimationButton = {
         let button = AnimationButton(frame: CGRect(x: 0, y: 0, width: 34, height: 34))
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: "person.badge.plus"), for: .normal)
@@ -38,8 +38,9 @@ final class HomeView: UIView {
         label.font = .systemFont(ofSize: 20.0, weight: .bold)
         label.text = "테스트 닉네임"
         label.textColor = .black
-        label.textAlignment = .right
+        label.textAlignment = .left
         label.numberOfLines = 0
+        label.sizeToFit()
         return label
     }()
     
@@ -51,6 +52,15 @@ final class HomeView: UIView {
         label.textColor = .black
         label.textAlignment = .left
         label.numberOfLines = 0
+        return label
+    }()
+    
+    let mySearchIdLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 13.0, weight: .light)
+        label.textColor = .black
+        label.textAlignment = .left
         return label
     }()
     
@@ -127,6 +137,7 @@ extension HomeView {
         [
             memberNicknameLabel,
             welcomeLabel,
+            mySearchIdLabel,
             memberInfoEditButton,
             signoutButton
         ].forEach { memberContainerView.addSubview($0) }
@@ -139,17 +150,22 @@ extension HomeView {
             memberContainerView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -18.0),
             memberContainerView.heightAnchor.constraint(equalToConstant: 140.0),
             
-            memberNicknameLabel.centerYAnchor.constraint(equalTo: memberContainerView.centerYAnchor),
-            memberNicknameLabel.leadingAnchor.constraint(equalTo: memberContainerView.leadingAnchor, constant: 8.0),
-            memberNicknameLabel.widthAnchor.constraint(equalToConstant: 160.0),
+            memberNicknameLabel.topAnchor.constraint(equalTo: memberContainerView.topAnchor, constant: 36.0),
+            memberNicknameLabel.leadingAnchor.constraint(equalTo: memberContainerView.leadingAnchor, constant: 12.0),
+            memberNicknameLabel.heightAnchor.constraint(equalToConstant: 30.0),
             
             welcomeLabel.centerYAnchor.constraint(equalTo: memberNicknameLabel.centerYAnchor),
-            welcomeLabel.leadingAnchor.constraint(equalTo: memberNicknameLabel.trailingAnchor, constant: 5.0),
-            welcomeLabel.trailingAnchor.constraint(equalTo: memberContainerView.trailingAnchor, constant: -8.0),
+            welcomeLabel.leadingAnchor.constraint(equalTo: memberNicknameLabel.trailingAnchor, constant: 8.0),
+            welcomeLabel.widthAnchor.constraint(equalToConstant: 140.0),
             welcomeLabel.heightAnchor.constraint(equalToConstant: 30.0),
             
-            signoutButton.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor),
-            signoutButton.trailingAnchor.constraint(equalTo: welcomeLabel.trailingAnchor),
+            mySearchIdLabel.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor),
+            mySearchIdLabel.leadingAnchor.constraint(equalTo: memberContainerView.leadingAnchor, constant: 12.0),
+            mySearchIdLabel.trailingAnchor.constraint(equalTo: memberContainerView.trailingAnchor, constant: -12.0),
+            mySearchIdLabel.heightAnchor.constraint(equalToConstant: 30.0),
+            
+            signoutButton.topAnchor.constraint(equalTo: mySearchIdLabel.bottomAnchor),
+            signoutButton.trailingAnchor.constraint(equalTo: memberContainerView.trailingAnchor, constant: -12.0),
             signoutButton.widthAnchor.constraint(equalToConstant: 80),
             signoutButton.heightAnchor.constraint(equalToConstant: 30.0),
             
@@ -157,7 +173,6 @@ extension HomeView {
             memberInfoEditButton.trailingAnchor.constraint(equalTo: signoutButton.leadingAnchor),
             memberInfoEditButton.widthAnchor.constraint(equalToConstant: 100),
             memberInfoEditButton.heightAnchor.constraint(equalTo:signoutButton.heightAnchor),
-            
             
             
             groupListLabel.topAnchor.constraint(equalTo: memberContainerView.bottomAnchor, constant: 12.0),
