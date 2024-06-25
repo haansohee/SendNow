@@ -174,7 +174,7 @@ extension SigninViewController {
     
     private func blankAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let doneAction = UIAlertAction(title: "확인", style: .cancel) { _ in }
+        let doneAction = UIAlertAction(title: "확인", style: .cancel)
         alertController.addAction(doneAction)
         self.present(alertController, animated: true)
     }
