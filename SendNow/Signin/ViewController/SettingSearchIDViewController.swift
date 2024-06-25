@@ -84,13 +84,13 @@ extension SettingSearchIDViewController {
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: {[weak self] isDuplicatedID in
                 guard isDuplicatedID else {
-                    self?.settingSearchIDView.idLabel.text = "사용 가능한 아이디예요."
-                    self?.settingSearchIDView.signupButton.backgroundColor = UIColor(named: "TitleColor")
-                    self?.settingSearchIDView.signupButton.isEnabled = true
+                    self?.settingSearchIDView.idLabel.text = "중복된 아이디입니다. 다른 아이디를 입력해 주세요."
+                    self?.settingSearchIDView.signupButton.backgroundColor = .lightGray
+                    self?.settingSearchIDView.signupButton.isEnabled = false
                     return }
-                self?.settingSearchIDView.idLabel.text = "중복된 아이디입니다. 다른 아이디를 입력해 주세요."
-                self?.settingSearchIDView.signupButton.backgroundColor = .lightGray
-                self?.settingSearchIDView.signupButton.isEnabled = false
+                self?.settingSearchIDView.idLabel.text = "사용 가능한 아이디예요."
+                self?.settingSearchIDView.signupButton.backgroundColor = UIColor(named: "TitleColor")
+                self?.settingSearchIDView.signupButton.isEnabled = true
             })
             .disposed(by: disposeBag)
     }

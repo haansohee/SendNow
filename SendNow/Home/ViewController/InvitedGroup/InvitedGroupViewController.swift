@@ -31,6 +31,11 @@ final class InvitedGroupViewController: UIViewController {
         bindAll()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        homeViewModel.removeSelectedFriend()
+    }
+    
     override var childForStatusBarStyle: UIViewController? {
         let viewController = HomeViewController()
         return viewController
@@ -42,9 +47,11 @@ extension InvitedGroupViewController {
         invitedGroupView.translatesAutoresizingMaskIntoConstraints = false
         invitedGroupView.invitedGroupCollectionView.delegate = self
         invitedGroupView.invitedGroupCollectionView.dataSource = self
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(named: "BackColor")
         navigationItem.title = "친구 초대하기"
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: invitedGroupView.invitedButton)
+        self.modalPresentationCapturesStatusBarAppearance = true
+        self.sheetPresentationController?.prefersGrabberVisible = true
     }
     
     private func addSubviews() {
@@ -60,9 +67,42 @@ extension InvitedGroupViewController {
         ])
     }
     
+    private func invitedAlert(message: String? = nil) {
+        guard let alertMessage = message else {
+            let alertController = UIAlertController(title: "바로보내", message: "모임 이름을 입력해 주세요.", preferredStyle: .alert)
+            alertController.addTextField()
+            let doneAction = UIAlertAction(title: "확인", style: .default) {[weak self] _ in
+                guard let groupNameText = alertController.textFields?[0].text,
+                      !groupNameText.isEmpty else { return }
+                self?.homeViewModel.invitedFriendToGroup(groupName: groupNameText)
+            }
+            let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in }
+            alertController.addAction(doneAction)
+            alertController.addAction(cancelAction)
+            self.present(alertController, animated: true)
+            return
+        }
+        let alertController = UIAlertController(title: "바로보내", message: alertMessage, preferredStyle: .alert)
+        let doneAction = UIAlertAction(title: "확인", style: .default) { _ in }
+        alertController.addAction(doneAction)
+        self.present(alertController, animated: true)
+    }
+    
+    
     //MARK: Bind
     private func bindAll() {
+        bindInvitedButton()
         bindIsLoadedMyFriendList()
+        bindIsExistedInvitedFriend()
+        bindIsInvitedFriendToGroup()
+    }
+    
+    private func bindInvitedButton() {
+        invitedGroupView.invitedButton.rx.tap
+            .subscribe(onNext: {[weak self] _ in
+                self?.homeViewModel.checkSelectedFriend()
+            })
+            .disposed(by: disposeBag)
     }
     
     private func bindIsLoadedMyFriendList() {
@@ -71,6 +111,31 @@ extension InvitedGroupViewController {
             .drive(onNext: {[weak self] isLoadedMyFriendList in
                 guard isLoadedMyFriendList else { return }
                 self?.invitedGroupView.invitedGroupCollectionView.reloadData()
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindIsExistedInvitedFriend() {
+        homeViewModel.isExistedInvitedFriend
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isExistedInvitedFriend in
+                guard isExistedInvitedFriend else {
+                    self?.invitedAlert(message: "초대할 친구를 선택해 주세요.")
+                    return
+                }
+                self?.invitedAlert()
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindIsInvitedFriendToGroup() {
+        homeViewModel.isInvitedFriendToGroup
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isInvitedFriendToGroup in
+                self?.homeViewModel.removeSelectedFriend()
+                guard isInvitedFriendToGroup else { return }
+                NotificationCenter.default.post(name: NSNotification.Name("invitedFriend"), object: isInvitedFriendToGroup)
+                self?.dismiss(animated: true)
             })
             .disposed(by: disposeBag)
     }
@@ -93,14 +158,16 @@ extension InvitedGroupViewController: UICollectionViewDataSource {
         cell.selectedButton.isHidden = false
         cell.rx.didTapSelectedButton
             .asDriver()
-            .drive(onNext: { _ in
+            .drive(onNext: {[weak self] _ in
                 guard cell.selectedButton.isSelected else {
                     cell.selectedButton.isSelected = true
                     cell.selectedButton.setImage(UIImage(systemName: "circle.fill"), for: .selected)
+                    self?.homeViewModel.selectInvitedFriend(friendUserID: myFriendList[indexPath.row].userID)
                     return
                 }
                 cell.selectedButton.isSelected = false
                 cell.selectedButton.setImage(UIImage(systemName: "circle"), for: .normal)
+                self?.homeViewModel.deselectInvitedFriend(friendUserID: myFriendList[indexPath.row].userID)
             })
             .disposed(by: cell.disposeBag)
         

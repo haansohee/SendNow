@@ -43,6 +43,12 @@ final class FriendRequestListViewController: UIViewController {
         addSubivews()
         setLayoutConstraintsFriendRequestListView()
         bindAll()
+        notificationInvitedFriendObsever()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        friendRequestViewModel.getFriendRequestList()
     }
     
     override var childForStatusBarStyle: UIViewController? {
@@ -67,7 +73,7 @@ extension FriendRequestListViewController {
     
     private func setLayoutConstraintsFriendRequestListView() {
         NSLayoutConstraint.activate([
-            friendReuqestListCollectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 44.0),
+            friendReuqestListCollectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 66.0),
             friendReuqestListCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             friendReuqestListCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             friendReuqestListCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -79,6 +85,14 @@ extension FriendRequestListViewController {
         let doneAction = UIAlertAction(title: "확인", style: .cancel) { _ in }
         alertController.addAction(doneAction)
         self.present(alertController, animated: true)
+    }
+    
+    private func notificationInvitedFriendObsever() {
+        NotificationCenter.default.addObserver(self, selector: #selector(dataReceived), name: NSNotification.Name("sendFriendRequest"), object: nil)
+    }
+    
+    @objc private func dataReceived() {
+        friendRequestViewModel.getFriendRequestList()
     }
     
     //MARK: Bind
@@ -116,10 +130,10 @@ extension FriendRequestListViewController {
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: {[weak self] isUpdatedFriendRequestState in
                 guard isUpdatedFriendRequestState else {
-                    self?.confirmAlert(title: "바로보낸", message: "잠시후 다시 시도해 주세요.")
+                    self?.confirmAlert(title: "바로보내", message: "잠시후 다시 시도해 주세요.")
                     return }
+                NotificationCenter.default.post(name: NSNotification.Name("sendFriendRequest"), object: isUpdatedFriendRequestState)
                 self?.confirmAlert(title: "바로보내", message: "요청을 수락하였어요.")
-                self?.friendReuqestListCollectionView.reloadData()
             })
             .disposed(by: disposeBag)
     }
@@ -223,5 +237,9 @@ extension FriendRequestListViewController: UICollectionViewDelegateFlowLayout {
         let width = (UIScreen.main.bounds.width) - 36.0
         let height = 20.0
         return CGSize(width: width, height: height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0.0, left: 0.0, bottom: 24.0, right: 0.0)
     }
 }

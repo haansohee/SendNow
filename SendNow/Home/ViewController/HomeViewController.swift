@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import RxSwift
+import RxGesture
 
 final class HomeViewController: UIViewController {
     private let homeView = HomeView()
@@ -17,6 +18,7 @@ final class HomeViewController: UIViewController {
     init() {
         super.init(nibName: nil, bundle: nil)
         homeViewModel.loadMemberInformation()
+        homeViewModel.loadMyGroup()
     }
     
     required init?(coder: NSCoder) {
@@ -30,12 +32,14 @@ final class HomeViewController: UIViewController {
         configureHomeViewMySearchIdLabel()
         addSubviews()
         setLayoutConstraintsHomeView()
+        notificationInvitedFriendObsever()
         bindAll()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         homeViewModel.loadMemberInformation()
+        homeViewModel.loadMyGroup()
     }
 }
 
@@ -44,7 +48,7 @@ extension HomeViewController {
         homeView.translatesAutoresizingMaskIntoConstraints = false
         homeView.groupListCollectionView.delegate = self
         homeView.groupListCollectionView.dataSource = self
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(named: "BackColor")
         navigationItem.title = "홈"
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: homeView.notificationButton)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: homeView.friendRequestButton)
@@ -73,6 +77,14 @@ extension HomeViewController {
         homeView.mySearchIdLabel.text = "나의 검색 ID : \(searchID)"
     }
     
+    private func notificationInvitedFriendObsever() {
+        NotificationCenter.default.addObserver(self, selector: #selector(dataReceived), name: NSNotification.Name("invitedFriend"), object: nil)
+    }
+    
+    @objc private func dataReceived() {
+        homeViewModel.loadMyGroup()
+    }
+    
     //MARK: Bind
     private func bindAll() {
         bindInvitedGroupButton()
@@ -80,6 +92,7 @@ extension HomeViewController {
         bindMemberInfoEditButton()
         bindFriendRequestButton()
         bindIsLoadedMemberInformation()
+        bindIsLoadedMyGroupList()
     }
     
     private func bindInvitedGroupButton() {
@@ -130,16 +143,36 @@ extension HomeViewController {
             })
             .disposed(by: disposeBag)
     }
+    
+    private func bindIsLoadedMyGroupList() {
+        homeViewModel.isLoadedMyGroupList
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isLoadedMyGroupList in
+                guard isLoadedMyGroupList else { return }
+                self?.homeView.groupListCollectionView.reloadData()
+            })
+            .disposed(by: disposeBag)
+    }
 }
 
 //MARK: UICollectionViewDataSource
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 6
+        return homeViewModel.myGroupList?.count ?? 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GroupListCollectionViewCell.reuseIdentifier, for: indexPath) as? GroupListCollectionViewCell else { return UICollectionViewCell() }
+        guard let myGroupList = homeViewModel.myGroupList else { return cell }
+        cell.setGroupListCollectionViewCellLabel(myGroupList[indexPath.row])
+        cell.rx.tapGesture()
+            .when(.recognized)
+            .asDriver{ _ in .never() }
+            .drive(onNext: {[weak self] _ in
+                self?.navigationController?.pushViewController(SettleTabViewController(groupID: myGroupList[indexPath.row].groupID, groupName: myGroupList[indexPath.row].groupName), animated: true)
+            })
+            .disposed(by: cell.disposeBag)
+        
         return cell
     }
 }

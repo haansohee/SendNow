@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct MyFriendListDomain {
+struct MyFriendListDomain: Equatable {
     let userID: Int
     let searchID: String
     let nickname: String
-    let bankName: String
-    let accountNumber: String
-    let kakaoPayUrl: String
+    let bankName: String?
+    let accountNumber: String?
+    let kakaoPayUrl: String?
 }

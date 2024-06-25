@@ -9,14 +9,21 @@ import Foundation
 import RxSwift
 
 final class HomeViewModel {
+    private let friendService = FriendService()
+    private let groupService = GroupService()
+    private let InvitedFriendList = "InvitedFriendList"
+    private let userID = UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)
     private(set) var loginMemberInformation: LoginMemberInformation?
     private(set) var myFriendList: [MyFriendListDomain]?
+    private(set) var myGroupList: [GroupListDomain]?
+    private var invitedFriends: [Int]?
     let isLoadedMemberInformation = BehaviorSubject(value: "noValue")
-    private let friendService = FriendService()
     let isLoadedMyFriendList = PublishSubject<Bool>()
+    let isLoadedMyGroupList = PublishSubject<Bool>()
+    let isExistedInvitedFriend = PublishSubject<Bool>()
+    let isInvitedFriendToGroup = PublishSubject<Bool>()
     
     func loadMemberInformation() {
-        let userID = UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)
         guard let signinType = UserDefaults.standard.string(forKey: MemberInfoField.signinType.rawValue),
               let nickname = UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue),
               let email = UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue),
@@ -95,7 +102,6 @@ final class HomeViewModel {
     
     
     func loadMyFriend() {
-        let userID = UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)
         friendService.getMyFriendList(with: userID) {[weak self] result in
             guard !result.isEmpty else {
                 self?.isLoadedMyFriendList.onNext(false)
@@ -103,5 +109,49 @@ final class HomeViewModel {
             self?.myFriendList = result
             self?.isLoadedMyFriendList.onNext(true)
         }
+    }
+    
+    func loadMyGroup() {
+        groupService.getGroupList(with: userID) {[weak self] result in
+            self?.myGroupList = result
+            self?.isLoadedMyGroupList.onNext(!result.isEmpty)
+        }
+    }
+    
+    func selectInvitedFriend(friendUserID: Int) {
+        guard let invitedFriendList = UserDefaults.standard.array(forKey: InvitedFriendList) as? [Int] else {
+            UserDefaults.standard.set([friendUserID], forKey: InvitedFriendList)
+            return
+        }
+        invitedFriends = invitedFriendList
+        invitedFriends?.append(friendUserID)
+        UserDefaults.standard.set(invitedFriends, forKey: InvitedFriendList)
+    }
+    
+    func deselectInvitedFriend(friendUserID: Int) {
+        guard let invitedFriendList = UserDefaults.standard.array(forKey: InvitedFriendList) as? [Int] else { return }
+        invitedFriends = invitedFriendList
+        guard let removeInedex = invitedFriends?.firstIndex(of: friendUserID) else { return }
+        invitedFriends?.remove(at: removeInedex)
+        UserDefaults.standard.set(invitedFriends, forKey: InvitedFriendList)
+    }
+    
+    func checkSelectedFriend() {
+        guard let invitedFriendList = UserDefaults.standard.array(forKey: InvitedFriendList) as? [Int] else {
+            isExistedInvitedFriend.onNext(false)
+            return }
+        isExistedInvitedFriend.onNext(true)
+    }
+    
+    func invitedFriendToGroup(groupName: String) {
+        guard let invitedFriendList = UserDefaults.standard.array(forKey: InvitedFriendList) as? [Int] else { return }
+        let groupCreationDomain = GroupCreationDomain(groupName: groupName, userIDList: invitedFriendList, creatorID: userID)
+        groupService.setGroupList(with: groupCreationDomain) {[weak self] result in
+            self?.isInvitedFriendToGroup.onNext(result)
+        }
+    }
+    
+    func removeSelectedFriend() {
+        UserDefaults.standard.removeObject(forKey: InvitedFriendList)
     }
 }
