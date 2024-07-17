@@ -11,8 +11,17 @@ import RxSwift
 
 final class SignupWithEmailViewController: UIViewController {
     private let signupWithEmailView = SignupWithEmailView()
-    private let signupWithEmailViewModel = SignupWithEmailViewModel()
+    private let signupWithEmailViewModel: SignupWithEmailViewModel
     private let disposeBag = DisposeBag()
+    
+    init(viewModel: SignupWithEmailViewModel = SignupWithEmailViewModel()) {
+        self.signupWithEmailViewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

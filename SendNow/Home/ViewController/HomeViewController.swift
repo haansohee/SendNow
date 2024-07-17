@@ -12,10 +12,11 @@ import RxGesture
 
 final class HomeViewController: UIViewController {
     private let homeView = HomeView()
-    private let homeViewModel = HomeViewModel()
+    private let homeViewModel: HomeViewModel
     private let disposeBag = DisposeBag()
     
-    init() {
+    init(viewModel: HomeViewModel = HomeViewModel()) {
+        self.homeViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         homeViewModel.loadMemberInformation()
         homeViewModel.loadMyGroup()
@@ -32,7 +33,7 @@ final class HomeViewController: UIViewController {
         configureHomeViewMySearchIdLabel()
         addSubviews()
         setLayoutConstraintsHomeView()
-        notificationInvitedFriendObsever()
+        addInvitedFriendNotification()
         bindAll()
     }
     
@@ -77,7 +78,7 @@ extension HomeViewController {
         homeView.mySearchIdLabel.text = "나의 검색 ID : \(searchID)"
     }
     
-    private func notificationInvitedFriendObsever() {
+    private func addInvitedFriendNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(dataReceived), name: NSNotification.Name("invitedFriend"), object: nil)
     }
     
@@ -146,10 +147,10 @@ extension HomeViewController {
     
     private func bindIsLoadedMyGroupList() {
         homeViewModel.isLoadedMyGroupList
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isLoadedMyGroupList in
-                guard isLoadedMyGroupList else { return }
+            .asDriver(onErrorJustReturn: Void())
+            .drive(onNext: {[weak self] _ in
                 self?.homeView.groupListCollectionView.reloadData()
+                
             })
             .disposed(by: disposeBag)
     }

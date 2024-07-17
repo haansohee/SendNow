@@ -18,8 +18,8 @@ final class HomeViewModel {
     private(set) var myGroupList: [GroupListDomain]?
     private var invitedFriends: [Int]?
     let isLoadedMemberInformation = BehaviorSubject(value: "noValue")
-    let isLoadedMyFriendList = PublishSubject<Bool>()
-    let isLoadedMyGroupList = PublishSubject<Bool>()
+    let isLoadedMyFriendList = PublishSubject<Void>()
+    let isLoadedMyGroupList = PublishSubject<Void>()
     let isExistedInvitedFriend = PublishSubject<Bool>()
     let isInvitedFriendToGroup = PublishSubject<Bool>()
     
@@ -103,18 +103,17 @@ final class HomeViewModel {
     
     func loadMyFriend() {
         friendService.getMyFriendList(with: userID) {[weak self] result in
-            guard !result.isEmpty else {
-                self?.isLoadedMyFriendList.onNext(false)
-                return }
+            guard !result.isEmpty else { return }
             self?.myFriendList = result
-            self?.isLoadedMyFriendList.onNext(true)
+            self?.isLoadedMyFriendList.onNext(Void())
         }
     }
     
     func loadMyGroup() {
         groupService.getGroupList(with: userID) {[weak self] result in
+            guard !result.isEmpty else { return }
             self?.myGroupList = result
-            self?.isLoadedMyGroupList.onNext(!result.isEmpty)
+            self?.isLoadedMyGroupList.onNext(Void())
         }
     }
     

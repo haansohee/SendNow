@@ -286,6 +286,8 @@ extension SpendingDetailsAddView {
             contentStackView.trailingAnchor.constraint(equalTo: dateStackView.trailingAnchor),
             contentStackView.heightAnchor.constraint(equalTo: dateStackView.heightAnchor),
             
+            contentLabel.heightAnchor.constraint(equalToConstant: 30.0),
+            contentLabel.widthAnchor.constraint(equalToConstant: 60.0),
             contentTextField.heightAnchor.constraint(equalToConstant: 30.0),
             
             paymentStackView.topAnchor.constraint(equalTo: contentStackView.bottomAnchor, constant: 24.0),
@@ -293,6 +295,8 @@ extension SpendingDetailsAddView {
             paymentStackView.trailingAnchor.constraint(equalTo: dateStackView.trailingAnchor),
             paymentStackView.heightAnchor.constraint(equalTo: dateStackView.heightAnchor),
             
+            paymentLabel.heightAnchor.constraint(equalToConstant: 30.0),
+            paymentLabel.widthAnchor.constraint(equalToConstant: 60.0),
             paymentTextField.heightAnchor.constraint(equalToConstant: 30.0),
             
             remainderAmountStackView.topAnchor.constraint(equalTo: paymentStackView.bottomAnchor, constant: 24.0),

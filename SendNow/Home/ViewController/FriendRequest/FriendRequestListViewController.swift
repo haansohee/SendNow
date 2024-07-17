@@ -43,7 +43,7 @@ final class FriendRequestListViewController: UIViewController {
         addSubivews()
         setLayoutConstraintsFriendRequestListView()
         bindAll()
-        notificationInvitedFriendObsever()
+        addInvitedFriendNotification()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -87,7 +87,7 @@ extension FriendRequestListViewController {
         self.present(alertController, animated: true)
     }
     
-    private func notificationInvitedFriendObsever() {
+    private func addInvitedFriendNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(dataReceived), name: NSNotification.Name("sendFriendRequest"), object: nil)
     }
     

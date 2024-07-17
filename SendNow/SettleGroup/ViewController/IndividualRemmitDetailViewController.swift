@@ -11,10 +11,11 @@ import RxSwift
 
 final class IndividualRemmitDetailViewController: UIViewController {
     private let individualRemmitDetailView = IndividualRemmitDetailView()
-    private let settleGroupViewModel = SettleGroupViewModel()
+    private let settleGroupViewModel: SettleGroupViewModel
     private let disposeBag = DisposeBag()
     
-    init(groupID: Int) {
+    init(viewModel: SettleGroupViewModel = SettleGroupViewModel(), groupID: Int) {
+        self.settleGroupViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         settleGroupViewModel.setGroupID(groupID)
         settleGroupViewModel.loadGroupSettlementInforamtion()

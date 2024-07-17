@@ -12,12 +12,12 @@ import RxCocoa
 
 final class SettingSearchIDViewController: UIViewController {
     private let settingSearchIDView = SettingSearchIDView()
-    private let signupWithEmailViewModel = SignupWithEmailViewModel()
+    private let signupWithEmailViewModel: SignupWithEmailViewModel
     private let signinViewModel = SigninViewModel()
     private let disposeBag = DisposeBag()
 
-    
-    init(appleMemberInfo: SigninWithAppleDomain? = nil) {
+    init(viewModel: SignupWithEmailViewModel = SignupWithEmailViewModel(), appleMemberInfo: SigninWithAppleDomain? = nil) {
+        self.signupWithEmailViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         guard let appleMemberInfo = appleMemberInfo else {
             signinViewModel.signinType = .kakao

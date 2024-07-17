@@ -12,10 +12,11 @@ import RxGesture
 
 final class SpendingDetailsAddViewController: UIViewController {
     private let spendingDetailAddView = SpendingDetailsAddView()
-    private let settleGroupViewModel = SettleGroupViewModel()
+    private let settleGroupViewModel: SettleGroupViewModel
     private let disposeBag = DisposeBag()
     
-    init(groupID: Int) {
+    init(viewModel: SettleGroupViewModel = SettleGroupViewModel(), groupID: Int) {
+        self.settleGroupViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         settleGroupViewModel.setGroupID(groupID)
         settleGroupViewModel.loadGroupMemberInformation()

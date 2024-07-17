@@ -8,11 +8,27 @@
 import Foundation
 import KakaoSDKAuth
 
+enum MemberAPIPath: String {
+    case setKakaoMemberInfo = "/SendNow/setKakaoMemberInfo/"
+    case setAppleMemberInfo = "/SendNow/setAppleMemberInfo/"
+    case setEmailMemberInfo = "/SendNow/setEmailMemberInfo/"
+    case updateSNSUserSearchID = "/SendNow/updateSNSUserSearchID/"
+    case updateEmailUserSearchID = "/SendNow/updateEmailUserSearchID/"
+    case updateMemberNickname = "/SendNow/UpdateMemberNickname/"
+    case updateKakaoPayUrl = "/SendNow/UpdateMemberKakaoPayUrl/"
+    case updateMemberAccountNumber = "/SendNow/UpdateMemberAccountNumber/"
+    case getKakaoMemberInfo = "/SendNow/getKakaoMemberInfo?kakaoToken="
+    case getAppleMemberInfo = "/SendNow/getAppleMemberInfo?appleToken="
+    case getEmailMemberInfo = "/SendNow/getEmailMemberInfo?email="
+    case getSearchID = "/SendNow/getSearchID?searchID="
+    case getEmailAuthCode = "/SendNow/checkEmailDuplicate?email="
+}
+
 final class MemberService {
     private let networkSessionManager = NetworkSessionManager()
     
     func setKakaoMemberInfo(with signinWithKakaoDomain: SigninWithKakaoDomain, completion: @escaping((Bool)) -> Void) {
-        let path = "/SendNow/setKakaoMemberInfo/"
+        let path = MemberAPIPath.setKakaoMemberInfo.rawValue
         let member = signinWithKakaoDomain.toRequestDTO()
         networkSessionManager.urlPostMethod(path: path, encodeValue: member) { result in
             completion(result)
@@ -20,7 +36,7 @@ final class MemberService {
     }
     
     func setAppleMemberInfo(with signinWithAppleDomain: SigninWithAppleDomain, completion: @escaping(Bool)->Void) {
-        let path = "/SendNow/setAppleMemberInfo/"
+        let path = MemberAPIPath.setAppleMemberInfo.rawValue
         let member = signinWithAppleDomain.toRequestDTO()
         networkSessionManager.urlPostMethod(path: path, encodeValue: member) { result in
             completion(result)
@@ -28,7 +44,7 @@ final class MemberService {
     }
     
     func setEmailMemberInfo(with signinWithEmailDomain: SigninWithEmailDomain, completion: @escaping(Bool)->Void) {
-        let path = "/SendNow/setEmailMemberInfo/"
+        let path = MemberAPIPath.setEmailMemberInfo.rawValue
         let member = signinWithEmailDomain.toRequestDTO()
         networkSessionManager.urlPostMethod(path: path, encodeValue: member) { result in
             completion(result)
@@ -36,7 +52,7 @@ final class MemberService {
     }
     
     func updateSearchID(with updateSearchIdDomain: UpdateSearchIdDomain, completion: @escaping(Bool)->Void) {
-        let path = updateSearchIdDomain.email.isEmpty ? "/SendNow/updateSNSUserSearchID/" : "/SendNow/updateEmailUserSearchID/"
+        let path = updateSearchIdDomain.email.isEmpty ? MemberAPIPath.updateSNSUserSearchID.rawValue : MemberAPIPath.updateEmailUserSearchID.rawValue
         let updateSearchID = updateSearchIdDomain.toRequestDTO()
         networkSessionManager.urlPostMethod(path: path, encodeValue: updateSearchID) { result in
             completion(result)
@@ -44,7 +60,7 @@ final class MemberService {
     }
     
     func updateNickname(with updateNicknameDomain: UpdateNicknameDomain, completion: @escaping(Bool)->Void) {
-        let path = "/SendNow/UpdateMemberNickname/"
+        let path = MemberAPIPath.updateMemberNickname.rawValue
         let updateNickname = updateNicknameDomain.toRequestDTO()
         networkSessionManager.urlPostMethod(path: path, encodeValue: updateNickname) { result in
             completion(result)
@@ -52,7 +68,7 @@ final class MemberService {
     }
     
     func updateKakaoPayUrl(with updateKakaoPayUrlDomain: UpdateKakaoPayUrlDomain, completion: @escaping(Bool)->Void) {
-        let path = "/SendNow/UpdateMemberKakaoPayUrl/"
+        let path = MemberAPIPath.updateKakaoPayUrl.rawValue
         let updateKakaoPayUrl = updateKakaoPayUrlDomain.toRequestDTO()
         networkSessionManager.urlPostMethod(path: path, encodeValue: updateKakaoPayUrl) { result in
             completion(result)
@@ -60,7 +76,7 @@ final class MemberService {
     }
     
     func updateAccountNumber(with updateAccountNumberDomain: UpdateAccountNumberDomain, completion: @escaping(Bool)->Void) {
-        let path = "/SendNow/UpdateMemberAccountNumber/"
+        let path = MemberAPIPath.updateMemberAccountNumber.rawValue
         let updateAccountNumber = updateAccountNumberDomain.toRequestDTO()
         networkSessionManager.urlPostMethod(path: path, encodeValue: updateAccountNumber) { result in
             completion(result)
@@ -68,7 +84,7 @@ final class MemberService {
     }
     
     func getKakaoMemberInfo(with kakaoToken: String, completion: @escaping(KakaoMemberDomain)->Void) {
-        let path = "/SendNow/getKakaoMemberInfo?kakaoToken=\(kakaoToken)"
+        let path = "\(MemberAPIPath.getKakaoMemberInfo.rawValue)\(kakaoToken)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: KakaoMemberReponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
@@ -81,7 +97,7 @@ final class MemberService {
     }
     
     func getAppleMemberInfo(with appleToken: String, completion: @escaping(AppleMemberDomain)->Void) {
-        let path = "/SendNow/getAppleMemberInfo?appleToken=\(appleToken)"
+        let path = "\(MemberAPIPath.getAppleMemberInfo.rawValue)\(appleToken)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: AppleMemberResponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
@@ -94,7 +110,7 @@ final class MemberService {
     }
     
     func getEmailMemberInfo(with email: String, completion: @escaping(EmailMemberDomain)->Void) {
-        let path = "/SendNow/getEmailMemberInfo?email=\(email)"
+        let path = "\(MemberAPIPath.getEmailMemberInfo.rawValue)\(email)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: EmailMemberResponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
@@ -107,7 +123,7 @@ final class MemberService {
     }
     
     func getSearchID(with searchID: String, completion: @escaping(String)->Void) {
-        let path = "/SendNow/getSearchID?searchID=\(searchID)"
+        let path = "\(MemberAPIPath.getSearchID.rawValue)\(searchID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: KakaoMemberReponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
@@ -120,7 +136,7 @@ final class MemberService {
     }
     
     func getEmailAuthCode(with email: String, completion: @escaping(EmailAuthCodeDomain)->Void) {
-        let path = "/SendNow/checkEmailDuplicate?email=\(email)"
+        let path = "\(MemberAPIPath.getEmailAuthCode.rawValue)\(email)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: EmailAuthCodeResponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
