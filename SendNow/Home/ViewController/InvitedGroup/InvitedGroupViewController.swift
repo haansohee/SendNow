@@ -67,26 +67,7 @@ extension InvitedGroupViewController {
         ])
     }
     
-    private func invitedAlert(message: String? = nil) {
-//        guard let alertMessage = message else {
-//            let alertController = UIAlertController(title: "바로보내", message: "모임 이름을 입력해 주세요.", preferredStyle: .alert)
-//            alertController.addTextField()
-//            let doneAction = UIAlertAction(title: "확인", style: .default) {[weak self] _ in
-//                guard let groupNameText = alertController.textFields?[0].text,
-//                      !groupNameText.isEmpty else { return }
-//                self?.homeViewModel.invitedFriendToGroup(groupName: groupNameText)
-//            }
-//            let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in }
-//            alertController.addAction(doneAction)
-//            alertController.addAction(cancelAction)
-//            self.present(alertController, animated: true)
-//            return
-//        }
-//        let alertController = UIAlertController(title: "바로보내", message: alertMessage, preferredStyle: .alert)
-//        let doneAction = UIAlertAction(title: "확인", style: .default) { _ in }
-//        alertController.addAction(doneAction)
-//        self.present(alertController, animated: true)
-        
+    private func invitedAlert(message: String? = nil) {        
         if let alertMessage = message {
             let alertController = UIAlertController(title: "바로보내", message: alertMessage, preferredStyle: .alert)
             let doneAction = UIAlertAction(title: "확인", style: .default) { _ in }
