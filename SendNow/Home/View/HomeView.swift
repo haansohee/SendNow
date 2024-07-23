@@ -10,15 +10,17 @@ import UIKit
 final class HomeView: UIView {
     let notificationButton: AnimationButton = {
         let button = AnimationButton(frame: CGRect(x: 0, y: 0, width: 34, height: 34))
-        button.setImage(UIImage(systemName: "bell"), for: .normal)
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 20.0, weight: .light)
+        button.setImage(UIImage(systemName: "bell", withConfiguration: imageConfig), for: .normal)
         button.tintColor = UIColor(named: "TitleColor")
         return button
     }()
     
     let friendRequestButton: AnimationButton = {
         let button = AnimationButton(frame: CGRect(x: 0, y: 0, width: 34, height: 34))
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 20.0, weight: .light)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "person.badge.plus"), for: .normal)
+        button.setImage(UIImage(systemName: "person.badge.plus", withConfiguration: imageConfig), for: .normal)
         button.tintColor = UIColor(named: "TitleColor")
         return button
     }()
@@ -47,8 +49,8 @@ final class HomeView: UIView {
     private let welcomeLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 15.0, weight: .light)
-        label.text = "님 안녕하세요! 😀"
+        label.font = .systemFont(ofSize: 15.0)
+        label.text = "님 안녕하세요! 👋🏼"
         label.textColor = .black
         label.textAlignment = .left
         label.numberOfLines = 0
@@ -110,7 +112,7 @@ final class HomeView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(GroupListCollectionViewCell.self, forCellWithReuseIdentifier: GroupListCollectionViewCell.reuseIdentifier)
-        collectionView.backgroundColor = .systemBackground
+        collectionView.backgroundColor = UIColor(named: "BackColor")
         collectionView.isPagingEnabled = false
         return collectionView
     }()

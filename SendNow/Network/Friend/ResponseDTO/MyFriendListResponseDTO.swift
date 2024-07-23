@@ -11,9 +11,9 @@ struct MyFriendListResponseDTO: Codable {
     let userID: Int
     let searchID: String
     let nickname: String
-    let bankName: String
-    let accountNumber: String
-    let kakaoPayUrl: String
+    let bankName: String?
+    let accountNumber: String?
+    let kakaoPayUrl: String?
 }
 
 extension MyFriendListResponseDTO {

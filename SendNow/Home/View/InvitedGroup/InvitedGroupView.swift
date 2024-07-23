@@ -28,12 +28,11 @@ final class InvitedGroupView: UIView {
     let invitedGroupCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 8.0
-        
+        layout.minimumLineSpacing = 10.0
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(InvitedGroupCollectionViewCell.self, forCellWithReuseIdentifier: InvitedGroupCollectionViewCell.reuseIdentifier)
-        collectionView.backgroundColor = .systemBackground
+        collectionView.backgroundColor = UIColor(named: "BackColor")
         collectionView.isPagingEnabled = false
         return collectionView
     }()

@@ -45,6 +45,14 @@ final class InvitedGroupCollectionViewCell: UICollectionViewCell, ReuseIdentifie
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override var isSelected: Bool {
+        didSet {
+            let emptyImage = UIImage(systemName: "circle")
+            let image = UIImage(systemName: "circle.fill")
+            selectedButton.setImage(self.isSelected ? image : emptyImage, for: .normal)
+        }
+    }
 }
 
 extension InvitedGroupCollectionViewCell {
@@ -71,8 +79,7 @@ extension InvitedGroupCollectionViewCell {
     
     private func configureInvitedGroupCollectionViewCell( ) {
         contentView.layer.masksToBounds = false
-        contentView.layer.cornerRadius = 5.0
-        contentView.layer.borderColor = UIColor.systemGray5.cgColor
-        contentView.layer.borderWidth = 0.3
+        contentView.layer.cornerRadius = 24.0
+        contentView.backgroundColor = .systemBackground
     }
 }

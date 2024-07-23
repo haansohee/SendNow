@@ -81,7 +81,10 @@ final class SigninViewModel {
                       let email = user.kakaoAccount?.email as? String else { return }
                 let signinWithKakaoDomain = SigninWithKakaoDomain(searchID: id, nickname: nickname, email: email, kakaoToken: accessToken, kakaoID: kakaoID)
                 self?.memberService.setKakaoMemberInfo(with: signinWithKakaoDomain) { result in
+                    guard result else { return }
                     self?.isSuccessedSignupWithKakao.onNext(result)
+                    self?.checkRegisteredKakaoMember(accessToken)
+                    
                 }
             })
             .disposed(by: disposeBag)

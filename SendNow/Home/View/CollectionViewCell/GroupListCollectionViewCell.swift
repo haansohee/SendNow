@@ -6,12 +6,15 @@
 //
 
 import UIKit
+import RxSwift
 
 final class GroupListCollectionViewCell: UICollectionViewCell, ReuseIdentifierProtocol {
+    private(set) var disposeBag = DisposeBag()
+    
     private let groupNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "그룹이름 테스트"
+        label.text = "정산 모임이 아직 없어요. 🥲"
         label.textAlignment = .left
         label.textColor = .label
         label.font = .systemFont(ofSize: 16.0, weight: .bold)
@@ -21,7 +24,7 @@ final class GroupListCollectionViewCell: UICollectionViewCell, ReuseIdentifierPr
     private let creationDateLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "2024년 4월 16일"
+        label.text = ""
         label.textAlignment = .right
         label.textColor = .label
         label.font = .systemFont(ofSize: 11.0)
@@ -31,12 +34,17 @@ final class GroupListCollectionViewCell: UICollectionViewCell, ReuseIdentifierPr
     private let invitedFriendsNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "김땡땡, 박땡땡, 이땡땡, 최땡땡"
+        label.text = "친구를 초대해 정산 모임을 만들어 보세요!"
         label.textAlignment = .left
         label.textColor = .secondaryLabel
         label.font = .systemFont(ofSize: 12.0, weight: .light)
         return label
     }()
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -80,8 +88,14 @@ extension GroupListCollectionViewCell {
     
     private func configureGroupListCollectionViewCell( ) {
         contentView.layer.masksToBounds = false
-        contentView.layer.cornerRadius = 5.0
-        contentView.layer.borderColor = UIColor.systemGray5.cgColor
-        contentView.layer.borderWidth = 0.3
+        contentView.layer.cornerRadius = 24.0
+        contentView.backgroundColor = .systemBackground
+    }
+    
+    func setGroupListCollectionViewCellLabel(_ groupList: GroupListDomain) {
+        let friendsName = groupList.groupFriends.joined(separator: ", ")
+        groupNameLabel.text = groupList.groupName
+        creationDateLabel.text = groupList.createdDate
+        invitedFriendsNameLabel.text = friendsName
     }
 }

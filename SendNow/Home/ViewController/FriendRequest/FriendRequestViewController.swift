@@ -28,6 +28,7 @@ extension FriendRequestViewController {
         friendRequestView.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .systemBackground
         navigationItem.title = "친구 추가하기"
+        navigationController?.navigationBar.tintColor = UIColor(named: "TitleColor")
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: friendRequestView.requestListButton)
     }
     
@@ -115,6 +116,7 @@ extension FriendRequestViewController {
                     self?.confirmAlert(title: "바로보내", message: "이미 친구인 회원이에요.")
                     return }
                 self?.confirmAlert(title: "바로보내", message: "친구 요청이 완료되었어요.")
+                NotificationCenter.default.post(name: NSNotification.Name("sendFriendRequest"), object: isSendedFriendRequest)
             })
             .disposed(by: disposeBag)
     }

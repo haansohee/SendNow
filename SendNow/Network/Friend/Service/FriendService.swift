@@ -6,12 +6,22 @@
 //
 
 import Foundation
+import UIKit
+
+enum FriendAPIPath: String {
+    case setFriendRequestList = "/SendNow/setFriendRequestList/"
+    case updateFriendState = "/SendNow/updateFriendState/"
+    case deleteFriendRequestList = "/SendNow/deleteFriendRequestList/"
+    case getFriendInformation = "/SendNow/getFriendInfo?searchID="
+    case getFriendRequestListInformation = "/SendNow/getFriendRequestListInfo?userID="
+    case getMyFriendList = "/SendNow/getMyFriendList?userID="
+}
 
 final class FriendService {
     private let networkSessionManager = NetworkSessionManager()
     
     func setFriendRequest(with friendRequestSendDomain: FriendRequestSendDomain, completion: @escaping(Bool)->Void) {
-        let path = "/SendNow/setFriendRequestList/"
+        let path = FriendAPIPath.setFriendRequestList.rawValue
         let friendRequestSend = friendRequestSendDomain.toRequestDTO()
         networkSessionManager.urlPostMethod(path: path, encodeValue: friendRequestSend) { result in
             completion(result)
@@ -19,7 +29,7 @@ final class FriendService {
     }
     
     func updateFriendState(with updateFriendStateDomain: UpdateFriendStateDomain, completion: @escaping(Bool)->Void) {
-        let path = "/SendNow/updateFriendState/"
+        let path = FriendAPIPath.updateFriendState.rawValue
         let updateFriendStateInfo = updateFriendStateDomain.toRequestDTO()
         networkSessionManager.urlPostMethod(path: path, encodeValue: updateFriendStateInfo) { result in
             completion(result)
@@ -28,7 +38,7 @@ final class FriendService {
     }
     
     func deleteFriendRequestList(with deleteFriendRequestDomain: DeleteFriendRequestDomain, completion: @escaping(Bool)->Void) {
-        let path = "/SendNow/deleteFriendRequestList/"
+        let path = FriendAPIPath.deleteFriendRequestList.rawValue
         let deleteFriendRequestInfo = deleteFriendRequestDomain.toRequestDTO()
         networkSessionManager.urlDeleteMethod(path: path, encodeValue: deleteFriendRequestInfo) { result in
             completion(result)
@@ -36,7 +46,7 @@ final class FriendService {
     }
     
     func getFriendInformation(with friendSearchId: String, completion: @escaping(SearchFriendDomain)->Void) {
-        let path = "/SendNow/getFriendInfo?searchID=\(friendSearchId)"
+        let path = "\(FriendAPIPath.getFriendInformation.rawValue)\(friendSearchId)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: SearchFriendResponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
@@ -49,7 +59,7 @@ final class FriendService {
     }
     
     func getFriendRequestListInformation(with userID: Int, completion: @escaping([FriendRequestListDomain])->Void) {
-        let path = "/SendNow/getFriendRequestListInfo?userID=\(userID)"
+        let path = "\(FriendAPIPath.getFriendRequestListInformation.rawValue)\(userID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: [FriendRequestListResponseDTO].self) { result in
             switch result {
             case .success(let responseDTO):
@@ -62,7 +72,7 @@ final class FriendService {
     }
     
     func getMyFriendList(with userID: Int, completion: @escaping([MyFriendListDomain])->Void) {
-        let path = "/SendNow/getMyFriendList?userID=\(userID)"
+        let path = "\(FriendAPIPath.getMyFriendList.rawValue)\(userID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: [MyFriendListResponseDTO].self) { result in
             switch result {
             case .success(let responseDTO):
