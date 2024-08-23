@@ -29,8 +29,6 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureHomeView()
-//        configureHomeViewNicknameLabel()
-//        configureHomeViewMySearchIdLabel()
         addSubviews()
         setLayoutConstraintsHomeView()
         addInvitedFriendNotification()
@@ -101,7 +99,6 @@ extension HomeViewController {
             .asDriver()
             .drive(onNext: {[weak self] _ in
                 let invitedGroupViewController = UINavigationController(rootViewController: InvitedGroupViewController())
-//                self?.homeViewModel.testNotification()
                 self?.present(invitedGroupViewController, animated: true)
             })
             .disposed(by: disposeBag)
