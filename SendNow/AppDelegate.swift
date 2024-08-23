@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import FirebaseCore
+import FirebaseMessaging
 import KakaoSDKAuth
 import RxKakaoSDKAuth
 import RxKakaoSDKCommon
@@ -18,6 +20,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         RxKakaoSDK.initSDK(appKey: nativeAppKey as! String)
         IQKeyboardManager.shared.enable = true
         IQKeyboardManager.shared.resignOnTouchOutside = true
+        FirebaseApp.configure()
+        
+        UNUserNotificationCenter.current().delegate = self
+        let authOptions:  UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { isSetNoti, error in
+            if let error = error {
+                print("Notification Authorization Request ERROR : \(error.localizedDescription)")
+            }
+            UserDefaults.standard.set(isSetNoti, forKey: MemberInfoField.isSetNoti.rawValue)
+        }
+        application.registerForRemoteNotifications()
+        
+        Messaging.messaging().delegate = self
         return true
     }
 
@@ -31,3 +46,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        Messaging.messaging().apnsToken = deviceToken
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        let currentBadgeCount = UserDefaults.standard.integer(forKey: MemberInfoField.notificationBadge.rawValue)
+        UserDefaults.standard.set(currentBadgeCount + 1, forKey: MemberInfoField.notificationBadge.rawValue)
+        UNUserNotificationCenter.current().setBadgeCount(currentBadgeCount + 1) { error in
+            if let error = error {
+                print("Set Badge Count ERROR: \(error.localizedDescription)")
+            }
+        }
+        completionHandler([.list, .banner, .badge, .banner])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        UNUserNotificationCenter.current().setBadgeCount(0)
+        let userInfo = response.notification.request.content.userInfo
+        if let identifier = userInfo["identifier"] as? String {
+            // notification identifier 의 경우에 따라 처리
+            print("🚨 Notification Identifier: \(identifier)")
+        }
+    }
+}
+
+extension AppDelegate: MessagingDelegate {
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        guard let fcmToken = fcmToken else { return }
+        UserDefaults.standard.set(fcmToken, forKey: MemberInfoField.fcmToken.rawValue)
+    }
+}

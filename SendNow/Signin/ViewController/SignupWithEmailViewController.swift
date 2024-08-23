@@ -176,6 +176,7 @@ extension SignupWithEmailViewController {
                       let email = self?.signupWithEmailView.emailTextField.text,
                       let emailAddress = self?.signupWithEmailView.emailAddressTextField.text,
                       let password = self?.signupWithEmailView.passwordTextField.text,
+                      let fcmToken = UserDefaults.standard.string(forKey: MemberInfoField.fcmToken.rawValue),
                       !(searchID.isEmpty),
                       !(nickname.isEmpty),
                       !(email.isEmpty),
@@ -193,11 +194,13 @@ extension SignupWithEmailViewController {
                       isEnabledSignupButton else {
                     self?.blankAlert(title: "바로보내 회원가입", message: "이메일 인증 및 아이디 중복 검사, 정확한 비밀번호 작성 등 모두 진행해 주세요!")
                     return }
-                
+                let isSetNoti = UserDefaults.standard.bool(forKey: MemberInfoField.isSetNoti.rawValue)
                 let signinWithEmailInfo = SigninWithEmailDomain(searchID: searchID,
                                                                 nickname: nickname,
                                                                 email: "\(email)@\(emailAddress)",
-                                                                password: password)
+                                                                password: password,
+                                                                isSetNoti: isSetNoti,
+                                                                fcmToken: fcmToken)
                 self?.signupWithEmailViewModel.signupWithEmail(signinWithEmailInfo)
             })
             .disposed(by: disposeBag)

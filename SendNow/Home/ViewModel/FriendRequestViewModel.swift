@@ -10,10 +10,12 @@ import RxSwift
 
 final class FriendRequestViewModel {
     private let friendService = FriendService()
+    private let notificationService = NotificationService()
     private let userID = UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)
     private(set) var searchFriendInformation: SearchFriendDomain?
     private(set) var friendRequestSendListInfo: [FriendRequestListDomain]?
     private(set) var friendRequestReceiveListInfo: [FriendRequestListDomain]?
+    private(set) var friendRequestReceivedUserID: Int?
     let isEmptySearchFriend = PublishSubject<Bool>()
     let isSendedFriendRequest = PublishSubject<Bool>()
     let isLoadedFriendRequestListInfo = PublishSubject<Bool>()
@@ -25,6 +27,9 @@ final class FriendRequestViewModel {
             return }
         let friendRequestSendInfo = FriendRequestSendDomain(fromUserID: userID, fromUserNickname: fromUserNickname, toUserID: toUserID)
         friendService.setFriendRequest(with: friendRequestSendInfo) {[weak self] result in
+            if result {
+                self?.friendRequestReceivedUserID = toUserID
+            }
             self?.isSendedFriendRequest.onNext(result)
         }
     }
@@ -58,6 +63,14 @@ final class FriendRequestViewModel {
         let friendRequestStateInfo = UpdateFriendStateDomain(fromUserID: fromUserID, toUserID: toUserID, isFriended: true)
         friendService.updateFriendState(with: friendRequestStateInfo) {[weak self] result in
             self?.isUpdatedFriendRequestState.onNext(result)
+        }
+    }
+    
+    func sendFriendNotification() {
+        guard let receiverUserID = friendRequestReceivedUserID else { return }
+        let friendNotificationInfo = FriendNotificationDomain(senderUserID: userID, receiverUserID: receiverUserID)
+        notificationService.sendFriendNotification(with: friendNotificationInfo) { result in
+            print("🚨 sendFriendNotification Result : \(result)")
         }
     }
 }

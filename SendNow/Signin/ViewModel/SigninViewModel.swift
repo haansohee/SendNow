@@ -29,6 +29,8 @@ final class SigninViewModel {
     let isExistedSearchID = PublishSubject<Bool>()
     let isExistedEmail = PublishSubject<Bool>()
     let isPasswordMatching = PublishSubject<Bool>()
+    let fcmToken = UserDefaults.standard.string(forKey: MemberInfoField.fcmToken.rawValue)
+    let isSetNoti = UserDefaults.standard.bool(forKey: MemberInfoField.isSetNoti.rawValue)
     
     func signinWithKakao() {
         guard UserApi.isKakaoTalkLoginAvailable() else { return }
@@ -49,42 +51,35 @@ final class SigninViewModel {
                   let nickname = kakaoMemberInfo.nickname,
                   let userID = kakaoMemberInfo.userID,
                   let kakaoID = kakaoMemberInfo.kakaoID else {
-                self?.isRegisteredKakaoMember.onNext(true)
+                self?.isRegisteredKakaoMember.onNext(false)
                 return
             }
             guard !kakaoToken.isEmpty,
                   !searchID.isEmpty,
                   !email.isEmpty,
                   !nickname.isEmpty else {
-                self?.isRegisteredKakaoMember.onNext(true)
+                self?.isRegisteredKakaoMember.onNext(false)
                 return }
-            UserDefaults.standard.set(userID, forKey: MemberInfoField.userID.rawValue)
-            UserDefaults.standard.set(kakaoToken, forKey: MemberInfoField.kakaoToken.rawValue)
-            UserDefaults.standard.set(searchID, forKey: MemberInfoField.searchID.rawValue)
-            UserDefaults.standard.set(email, forKey: MemberInfoField.email.rawValue)
-            UserDefaults.standard.set(nickname, forKey: MemberInfoField.nickname.rawValue)
-            UserDefaults.standard.set(kakaoID, forKey: MemberInfoField.kakaoID.rawValue)
-            UserDefaults.standard.set(SigninType.kakao.rawValue, forKey: MemberInfoField.signinType.rawValue)
-            UserDefaults.standard.set(kakaoMemberInfo.bankName ?? nil, forKey: MemberInfoField.bankName.rawValue)
-            UserDefaults.standard.set(kakaoMemberInfo.accountNumber ?? nil, forKey: MemberInfoField.accountNumber.rawValue)
-            UserDefaults.standard.set(kakaoMemberInfo.kakaoPayUrl ?? nil, forKey: MemberInfoField.kakaoPayUrl.rawValue)
-            self?.isRegisteredKakaoMember.onNext(false)
+            let kakaoMemberInformation = KakaoMemberDomain(userID: userID, searchID: searchID, nickname: nickname, email: email, kakaoToken: kakaoToken, kakaoID: kakaoID, bankName: kakaoMemberInfo.bankName ?? "", accountNumber: kakaoMemberInfo.accountNumber ?? "", kakaoPayUrl: kakaoMemberInfo.kakaoPayUrl ?? "")
+            self?.kakaoMemberInformation = kakaoMemberInformation
+            self?.setUserDefaultsKakaoMember()
+            self?.isRegisteredKakaoMember.onNext(true)
         }
     }
     
-    func signupWithKakao(id: String) {
+    func signupWithKakao(searchId: String) {
         UserApi.shared.rx.me()
             .subscribe(onSuccess: { [weak self] user in
                 guard let accessToken = UserDefaults.standard.string(forKey: MemberInfoField.kakaoToken.rawValue),
                       let nickname = user.kakaoAccount?.profile?.nickname as? String,
                       let kakaoID = user.id,
                       let email = user.kakaoAccount?.email as? String else { return }
-                let signinWithKakaoDomain = SigninWithKakaoDomain(searchID: id, nickname: nickname, email: email, kakaoToken: accessToken, kakaoID: kakaoID)
+                guard let fcmToken = self?.fcmToken,
+                      let isSetNoti = self?.isSetNoti else { return }
+                let signinWithKakaoDomain = SigninWithKakaoDomain(searchID: searchId, nickname: nickname, email: email, kakaoToken: accessToken, kakaoID: kakaoID, isSetNoti: isSetNoti, fcmToken: fcmToken)
                 self?.memberService.setKakaoMemberInfo(with: signinWithKakaoDomain) { result in
                     guard result else { return }
                     self?.isSuccessedSignupWithKakao.onNext(result)
-                    self?.checkRegisteredKakaoMember(accessToken)
-                    
                 }
             })
             .disposed(by: disposeBag)
@@ -104,23 +99,18 @@ final class SigninViewModel {
                   !(appleToken.isEmpty),
                   !(email.isEmpty),
                   !(nickname.isEmpty) else { return }
-            
+            guard let fcmToken = self?.fcmToken,
+                  let isSetNoti = self?.isSetNoti else { return }
             guard let searchID = appleMemberInfo.searchID,
                   !(searchID.isEmpty) else {
-                let signupWithAppleInfo = SigninWithAppleDomain(searchID: "", nickname: nickname, email: email, appleToken: appleToken)
+                let signupWithAppleInfo = SigninWithAppleDomain(searchID: "", nickname: nickname, email: email, appleToken: appleToken, isSetNoti: isSetNoti, fcmToken: fcmToken)
                 self?.signupWithAppleInfo = signupWithAppleInfo
                 self?.isExistedSearchID.onNext(false)
                 return
             }
-            UserDefaults.standard.set(userID, forKey: MemberInfoField.userID.rawValue)
-            UserDefaults.standard.set(appleToken, forKey: MemberInfoField.appleToken.rawValue)
-            UserDefaults.standard.set(searchID, forKey: MemberInfoField.searchID.rawValue)
-            UserDefaults.standard.set(email, forKey: MemberInfoField.email.rawValue)
-            UserDefaults.standard.set(nickname, forKey: MemberInfoField.nickname.rawValue)
-            UserDefaults.standard.set(SigninType.apple.rawValue, forKey: MemberInfoField.signinType.rawValue)
-            UserDefaults.standard.set(appleMemberInfo.bankName ?? nil, forKey: MemberInfoField.bankName.rawValue)
-            UserDefaults.standard.set(appleMemberInfo.accountNumber ?? nil, forKey: MemberInfoField.accountNumber.rawValue)
-            UserDefaults.standard.set(appleMemberInfo.kakaoPayUrl ?? nil, forKey: MemberInfoField.kakaoPayUrl.rawValue)
+            let appleMemberInformation = AppleMemberDomain(userID: userID, searchID: searchID, nickname: nickname, email: email, appleToken: appleToken, bankName: appleMemberInfo.bankName ?? "" , accountNumber: appleMemberInfo.accountNumber ?? "", kakaoPayUrl: appleMemberInfo.kakaoPayUrl ?? "")
+            self?.appleMemberInformation = appleMemberInformation
+            self?.setUserDefaultsAppleMember()
             self?.isExistedSearchID.onNext(true)
         }
     }
@@ -168,6 +158,33 @@ final class SigninViewModel {
         UserDefaults.standard.set(emailMemberInformation.bankName ?? nil, forKey: MemberInfoField.bankName.rawValue)
         UserDefaults.standard.set(emailMemberInformation.accountNumber ?? nil, forKey: MemberInfoField.accountNumber.rawValue)
         UserDefaults.standard.set(emailMemberInformation.kakaoPayUrl ?? nil, forKey: MemberInfoField.kakaoPayUrl.rawValue)
+    }
+    
+    func setUserDefaultsKakaoMember() {
+        guard let kakaoMemberInformation = kakaoMemberInformation else { return }
+        UserDefaults.standard.set(kakaoMemberInformation.userID, forKey: MemberInfoField.userID.rawValue)
+        UserDefaults.standard.set(kakaoMemberInformation.kakaoToken, forKey: MemberInfoField.kakaoToken.rawValue)
+        UserDefaults.standard.set(kakaoMemberInformation.searchID, forKey: MemberInfoField.searchID.rawValue)
+        UserDefaults.standard.set(kakaoMemberInformation.email, forKey: MemberInfoField.email.rawValue)
+        UserDefaults.standard.set(kakaoMemberInformation.nickname, forKey: MemberInfoField.nickname.rawValue)
+        UserDefaults.standard.set(kakaoMemberInformation.kakaoID, forKey: MemberInfoField.kakaoID.rawValue)
+        UserDefaults.standard.set(SigninType.kakao.rawValue, forKey: MemberInfoField.signinType.rawValue)
+        UserDefaults.standard.set(kakaoMemberInformation.bankName, forKey: MemberInfoField.bankName.rawValue)
+        UserDefaults.standard.set(kakaoMemberInformation.accountNumber, forKey: MemberInfoField.accountNumber.rawValue)
+        UserDefaults.standard.set(kakaoMemberInformation.kakaoPayUrl, forKey: MemberInfoField.kakaoPayUrl.rawValue)
+    }
+    
+    func setUserDefaultsAppleMember() {
+        guard let appleMemberInformation = appleMemberInformation else { return }
+        UserDefaults.standard.set(appleMemberInformation.userID, forKey: MemberInfoField.userID.rawValue)
+        UserDefaults.standard.set(appleMemberInformation.appleToken, forKey: MemberInfoField.appleToken.rawValue)
+        UserDefaults.standard.set(appleMemberInformation.searchID, forKey: MemberInfoField.searchID.rawValue)
+        UserDefaults.standard.set(appleMemberInformation.email, forKey: MemberInfoField.email.rawValue)
+        UserDefaults.standard.set(appleMemberInformation.nickname, forKey: MemberInfoField.nickname.rawValue)
+        UserDefaults.standard.set(SigninType.apple.rawValue, forKey: MemberInfoField.signinType.rawValue)
+        UserDefaults.standard.set(appleMemberInformation.bankName, forKey: MemberInfoField.bankName.rawValue)
+        UserDefaults.standard.set(appleMemberInformation.accountNumber, forKey: MemberInfoField.accountNumber.rawValue)
+        UserDefaults.standard.set(appleMemberInformation.kakaoPayUrl, forKey: MemberInfoField.kakaoPayUrl.rawValue)
     }
     
     func isPasswordMatching(_ inputPassword: String) {

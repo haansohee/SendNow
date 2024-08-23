@@ -12,10 +12,12 @@ struct SigninWithEmailDomain {
     let nickname: String
     let email: String
     let password: String
+    let isSetNoti: Bool
+    let fcmToken: String
 }
 
 extension SigninWithEmailDomain {
     func toRequestDTO() -> SigninWithEmailRequestDTO {
-        return .init(searchID: searchID, nickname: nickname, email: email, password: password)
+        return .init(searchID: searchID, nickname: nickname, email: email, password: password, isSetNoti: isSetNoti, fcmToken: fcmToken)
     }
 }

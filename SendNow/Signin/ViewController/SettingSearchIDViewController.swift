@@ -67,6 +67,8 @@ extension SettingSearchIDViewController {
         bindSignupButton()
         bindIsSuccessedSignupWithKakao()
         bindIsSuccessedUpdatedSearchID()
+        bindIsExistedSearchID()
+        bindIsRegisteredKakaoMember()
     }
     
     private func bindIdDuplicateButton() {
@@ -102,7 +104,7 @@ extension SettingSearchIDViewController {
                       !id.isEmpty else { return }
                 switch self?.signinViewModel.signinType {
                 case .kakao:
-                    self?.signinViewModel.signupWithKakao(id: id)
+                    self?.signinViewModel.signupWithKakao(searchId: id)
                 case .apple:
                     guard let appleToken = self?.signinViewModel.signupWithAppleInfo?.appleToken else { return }
                     self?.signinViewModel.updateSearchID(appleToken, id)
@@ -117,6 +119,7 @@ extension SettingSearchIDViewController {
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: {[weak self] isSuccessedSignupWithKakao in
                 guard isSuccessedSignupWithKakao else { return }
+                self?.signinViewModel.signinWithKakao()
                 let rootViewController = MainTabBarController()
                 guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
                 sceneDelegate.changeRootViewController(rootViewController, animated: true)
@@ -132,6 +135,28 @@ extension SettingSearchIDViewController {
                 guard isSuccessedUpdatedSearchID,
                       let appleToken = self?.signinViewModel.signupWithAppleInfo?.appleToken else { return }
                 self?.signinViewModel.signinWithApple(appleToken)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindIsExistedSearchID() {
+        signinViewModel.isExistedSearchID
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isExistedSearchID in
+                guard isExistedSearchID else { return }
+                let rootViewController = MainTabBarController()
+                guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+                sceneDelegate.changeRootViewController(rootViewController, animated: true)
+                self?.navigationController?.popViewController(animated: true)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindIsRegisteredKakaoMember() {
+        signinViewModel.isRegisteredKakaoMember
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isRegisteredKakaoMember in
+                guard isRegisteredKakaoMember else { return }
                 let rootViewController = MainTabBarController()
                 guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
                 sceneDelegate.changeRootViewController(rootViewController, animated: true)

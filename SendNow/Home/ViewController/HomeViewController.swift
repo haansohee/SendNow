@@ -29,8 +29,6 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureHomeView()
-        configureHomeViewNicknameLabel()
-        configureHomeViewMySearchIdLabel()
         addSubviews()
         setLayoutConstraintsHomeView()
         addInvitedFriendNotification()
@@ -140,7 +138,9 @@ extension HomeViewController {
         homeViewModel.isLoadedMemberInformation
             .asDriver(onErrorJustReturn: "noValue")
             .drive(onNext: {[weak self] isLoadedMemberInformation in
+                print("isLoadedMemberInformation: \(isLoadedMemberInformation)")
                 self?.configureHomeViewNicknameLabel()
+                self?.configureHomeViewMySearchIdLabel()
             })
             .disposed(by: disposeBag)
     }

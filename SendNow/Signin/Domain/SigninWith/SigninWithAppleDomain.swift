@@ -12,11 +12,13 @@ struct SigninWithAppleDomain {
     let nickname: String
     let email: String
     let appleToken: String
+    let isSetNoti: Bool
+    let fcmToken: String
 }
 
 extension SigninWithAppleDomain {
     func toRequestDTO() -> SigninWithAppleRequestDTO {
-        return .init(searchID: searchID, nickname: nickname, email: email, appleToken: appleToken)
+        return .init(searchID: searchID, nickname: nickname, email: email, appleToken: appleToken, isSetNoti: isSetNoti, fcmToken: fcmToken)
     }
 }
 
