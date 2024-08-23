@@ -99,7 +99,7 @@ final class HomeView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("정산 그룹 만들기", for: .normal)
         button.setTitleColor(UIColor(named: "TitleColor"), for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 17.0, weight: .light)
+        button.titleLabel?.font = .systemFont(ofSize: 17.0, weight: .semibold)
         return button
     }()
     
