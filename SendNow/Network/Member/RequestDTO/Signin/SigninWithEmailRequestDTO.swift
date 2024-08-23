@@ -12,4 +12,6 @@ struct SigninWithEmailRequestDTO: Codable {
     let nickname: String
     let email: String
     let password: String
+    let isSetNoti: Bool
+    let fcmToken: String
 }

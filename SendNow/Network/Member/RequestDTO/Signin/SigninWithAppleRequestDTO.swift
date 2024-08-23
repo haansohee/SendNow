@@ -12,4 +12,6 @@ struct SigninWithAppleRequestDTO: Codable {
     let nickname: String
     let email: String
     let appleToken: String
+    let isSetNoti: Bool
+    let fcmToken: String
 }

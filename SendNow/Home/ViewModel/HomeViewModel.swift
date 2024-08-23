@@ -11,8 +11,10 @@ import RxSwift
 final class HomeViewModel {
     private let friendService = FriendService()
     private let groupService = GroupService()
+    private let notificationService = NotificationService()
     private let InvitedFriendList = "InvitedFriendList"
     private let userID = UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)
+    private var groupName: String?
     private(set) var loginMemberInformation: LoginMemberInformation?
     private(set) var myFriendList: [MyFriendListDomain]?
     private(set) var myGroupList: [GroupListDomain]?
@@ -27,7 +29,8 @@ final class HomeViewModel {
         guard let signinType = UserDefaults.standard.string(forKey: MemberInfoField.signinType.rawValue),
               let nickname = UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue),
               let email = UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue),
-              let searchID = UserDefaults.standard.string(forKey: MemberInfoField.searchID.rawValue) else { return }
+              let searchID = UserDefaults.standard.string(forKey: MemberInfoField.searchID.rawValue) else {
+            return }
         let bankName = UserDefaults.standard.string(forKey: MemberInfoField.bankName.rawValue) ?? nil
         let accountNumber = UserDefaults.standard.string(forKey: MemberInfoField.accountNumber.rawValue) ?? nil
         let kakaoPayUrl = UserDefaults.standard.string(forKey: MemberInfoField.kakaoPayUrl.rawValue) ?? nil
@@ -143,6 +146,7 @@ final class HomeViewModel {
     }
     
     func invitedFriendToGroup(groupName: String) {
+        self.groupName = groupName
         guard let invitedFriendList = UserDefaults.standard.array(forKey: InvitedFriendList) as? [Int] else { return }
         let groupCreationDomain = GroupCreationDomain(groupName: groupName, userIDList: invitedFriendList, creatorID: userID)
         groupService.setGroupList(with: groupCreationDomain) {[weak self] result in
@@ -152,5 +156,14 @@ final class HomeViewModel {
     
     func removeSelectedFriend() {
         UserDefaults.standard.removeObject(forKey: InvitedFriendList)
+    }
+    
+    func sendNotification() {
+        guard let invitedFriendList = UserDefaults.standard.array(forKey: InvitedFriendList) as? [Int],
+              let groupName = groupName else { return }
+        let notificationDomain = GroupNotificationDomain(senderUserID: userID, receiverUserID: invitedFriendList, groupName: groupName)
+        notificationService.sendGroupNotification(with: notificationDomain) { result in
+            print("send notification result: \(result)")
+        }
     }
 }

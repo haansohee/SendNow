@@ -20,4 +20,7 @@ enum MemberInfoField: String {
     case bankName
     case accountNumber
     case kakaoPayUrl
+    case isSetNoti
+    case fcmToken
+    case notificationBadge
 }

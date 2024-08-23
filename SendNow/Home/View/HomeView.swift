@@ -38,7 +38,6 @@ final class HomeView: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 20.0, weight: .bold)
-        label.text = "테스트 닉네임"
         label.textColor = .black
         label.textAlignment = .left
         label.numberOfLines = 0

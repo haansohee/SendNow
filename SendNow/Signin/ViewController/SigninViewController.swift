@@ -115,7 +115,7 @@ extension SigninViewController {
         signinViewModel.isRegisteredKakaoMember
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: {[weak self] isRegisteredKakaoMember in
-                guard isRegisteredKakaoMember else {
+                guard !isRegisteredKakaoMember else {
                     let rootViewController = MainTabBarController()
                     guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
                     sceneDelegate.changeRootViewController(rootViewController, animated: true)
@@ -205,13 +205,22 @@ extension SigninViewController: ASAuthorizationControllerDelegate {
                         guard let familyName = fullName.familyName,
                               let givenName = fullName.givenName else { return }
                         let nickname = "\(familyName)\(givenName)"
-                        let appleMemberInfo = SigninWithAppleDomain(searchID: "", nickname: nickname, email: email, appleToken: appleToken)
+                        guard let fcmToken = self?.signinViewModel.fcmToken,
+                              let isSetNoti = self?.signinViewModel.isSetNoti else { return }
+                        let appleMemberInfo = SigninWithAppleDomain(searchID: "",
+                                                                    nickname: nickname,
+                                                                    email: email,
+                                                                    appleToken: appleToken,
+                                                                    isSetNoti: isSetNoti,
+                                                                    fcmToken: fcmToken)
                         self?.signinViewModel.signupWithApple(appleMemberInfo)
                     } else {
                         self?.signinViewModel.signinWithApple(appleToken)
                     }
                     return
-                default: return
+                default:
+                    print("🚨ERROR!! : \(credentialState.rawValue)")
+                    return
                 }
             }
         }

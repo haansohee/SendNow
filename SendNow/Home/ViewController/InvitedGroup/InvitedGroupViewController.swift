@@ -131,6 +131,7 @@ extension InvitedGroupViewController {
         homeViewModel.isInvitedFriendToGroup
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: {[weak self] isInvitedFriendToGroup in
+                self?.homeViewModel.sendNotification()
                 self?.homeViewModel.removeSelectedFriend()
                 guard isInvitedFriendToGroup else { return }
                 NotificationCenter.default.post(name: NSNotification.Name("invitedFriend"), object: isInvitedFriendToGroup)
