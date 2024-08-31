@@ -231,7 +231,6 @@ extension SpendingDetailsAddViewController {
             .asDriver(onErrorJustReturn: false)
             .drive(onNext:{[weak self] isUploadedExpenseInfo in
                 guard isUploadedExpenseInfo else { return }
-                NotificationCenter.default.post(name: NSNotification.Name("uploadExpense"), object: isUploadedExpenseInfo)
                 self?.dismiss(animated: true)
             })
             .disposed(by: disposeBag)

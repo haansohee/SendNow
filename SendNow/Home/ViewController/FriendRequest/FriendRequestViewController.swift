@@ -11,8 +11,17 @@ import RxSwift
 
 final class FriendRequestViewController: UIViewController {
     private let friendRequestView = FriendRequestView()
-    private let friendRequestViewModel = FriendRequestViewModel()
+    private let friendRequestViewModel: FriendRequestViewModel
     private let disposeBag = DisposeBag()
+    
+    init(viewModel: FriendRequestViewModel = FriendRequestViewModel()) {
+        self.friendRequestViewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -116,8 +125,6 @@ extension FriendRequestViewController {
                     self?.confirmAlert(title: "바로보내", message: "이미 친구인 회원이에요.")
                     return }
                 self?.confirmAlert(title: "바로보내", message: "친구 요청이 완료되었어요.")
-                self?.friendRequestViewModel.sendFriendNotification()
-                NotificationCenter.default.post(name: NSNotification.Name("sendFriendRequest"), object: isSendedFriendRequest)
             })
             .disposed(by: disposeBag)
     }

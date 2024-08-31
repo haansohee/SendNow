@@ -76,23 +76,11 @@ extension HomeViewController {
     
     //MARK: Bind
     private func bindAll() {
-//        bindInvitedGroupButton()
         bindSignoutButton()
-//        bindMemberInfoEditButton()
         bindFriendRequestButton()
         bindIsLoadedMemberInformation()
         bindIsLoadedMyFriendList()
     }
-    
-//    private func bindInvitedGroupButton() {
-//        homeView.friendRequestButtonn.rx.tap
-//            .asDriver()
-//            .drive(onNext: {[weak self] _ in
-//                let invitedGroupViewController = UINavigationController(rootViewController: InvitedGroupViewController())
-//                self?.present(invitedGroupViewController, animated: true)
-//            })
-//            .disposed(by: disposeBag)
-//    }
     
     private func bindSignoutButton() {
         homeView.signoutButton.rx.tap
@@ -105,15 +93,6 @@ extension HomeViewController {
             })
             .disposed(by: disposeBag)
     }
-    
-//    private func bindMemberInfoEditButton() {
-//        homeView.memberInfoEditButton.rx.tap
-//            .asDriver()
-//            .drive(onNext: {[weak self] _ in
-//                self?.navigationController?.pushViewController(MemberInfoUpdateViewController(), animated: true)
-//            })
-//            .disposed(by: disposeBag)
-//    }
     
     private func bindFriendRequestButton() {
         homeView.friendRequestButton.rx.tap

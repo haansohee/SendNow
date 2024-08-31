@@ -29,6 +29,8 @@ final class FriendRequestViewModel {
         friendService.setFriendRequest(with: friendRequestSendInfo) {[weak self] result in
             if result {
                 self?.friendRequestReceivedUserID = toUserID
+                self?.sendFriendNotification()
+                NotificationCenter.default.post(name: NSNotification.Name("sendFriendRequest"), object: result)
             }
             self?.isSendedFriendRequest.onNext(result)
         }
@@ -62,6 +64,9 @@ final class FriendRequestViewModel {
     func updateFriendRequestState(toUserID: Int, fromUserID: Int) {
         let friendRequestStateInfo = UpdateFriendStateDomain(fromUserID: fromUserID, toUserID: toUserID, isFriended: true)
         friendService.updateFriendState(with: friendRequestStateInfo) {[weak self] result in
+            if result {
+                NotificationCenter.default.post(name: NSNotification.Name("sendFriendRequest"), object: result)
+            }
             self?.isUpdatedFriendRequestState.onNext(result)
         }
     }

@@ -16,11 +16,8 @@ final class HomeViewModel {
     private var groupName: String?
     private(set) var loginMemberInformation: LoginMemberInformation?
     private(set) var myFriendList: [MyFriendListDomain]?
-    private var invitedFriends: [Int]?
     let isLoadedMemberInformation = BehaviorSubject(value: "noValue")
     let isLoadedMyFriendList = PublishSubject<Void>()
-    let isExistedInvitedFriend = PublishSubject<Bool>()
-    let isInvitedFriendToGroup = PublishSubject<Bool>()
     
     func loadMemberInformation() {
         guard let signinType = UserDefaults.standard.string(forKey: MemberInfoField.signinType.rawValue),
@@ -106,44 +103,6 @@ final class HomeViewModel {
             guard !result.isEmpty else { return }
             self?.myFriendList = result
             self?.isLoadedMyFriendList.onNext(Void())
-        }
-    }
-    
-    func selectInvitedFriend(friendUserID: Int) {
-        guard let invitedFriendList = UserDefaults.standard.array(forKey: InvitedFriendList) as? [Int] else {
-            UserDefaults.standard.set([friendUserID], forKey: InvitedFriendList)
-            return
-        }
-        invitedFriends = invitedFriendList
-        invitedFriends?.append(friendUserID)
-        UserDefaults.standard.set(invitedFriends, forKey: InvitedFriendList)
-    }
-    
-    func deselectInvitedFriend(friendUserID: Int) {
-        guard let invitedFriendList = UserDefaults.standard.array(forKey: InvitedFriendList) as? [Int] else { return }
-        invitedFriends = invitedFriendList
-        guard let removeInedex = invitedFriends?.firstIndex(of: friendUserID) else { return }
-        invitedFriends?.remove(at: removeInedex)
-        UserDefaults.standard.set(invitedFriends, forKey: InvitedFriendList)
-    }
-    
-    func checkSelectedFriend() {
-        guard let invitedFriendList = UserDefaults.standard.array(forKey: InvitedFriendList) as? [Int] else {
-            isExistedInvitedFriend.onNext(false)
-            return }
-        isExistedInvitedFriend.onNext(true)
-    }
-    
-    func removeSelectedFriend() {
-        UserDefaults.standard.removeObject(forKey: InvitedFriendList)
-    }
-    
-    func sendNotification() {
-        guard let invitedFriendList = UserDefaults.standard.array(forKey: InvitedFriendList) as? [Int],
-              let groupName = groupName else { return }
-        let notificationDomain = GroupNotificationDomain(senderUserID: userID, receiverUserID: invitedFriendList, groupName: groupName)
-        notificationService.sendGroupNotification(with: notificationDomain) { result in
-            print("send notification result: \(result)")
         }
     }
 }

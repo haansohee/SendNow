@@ -36,7 +36,7 @@ final class InvitedGroupViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        homeViewModel.removeSelectedFriend()
+        groupListViewModel.removeSelectedFriend()
     }
     
     override var childForStatusBarStyle: UIViewController? {
@@ -103,7 +103,7 @@ extension InvitedGroupViewController {
     private func bindInvitedButton() {
         invitedGroupView.invitedButton.rx.tap
             .subscribe(onNext: {[weak self] _ in
-                self?.homeViewModel.checkSelectedFriend()
+                self?.groupListViewModel.checkSelectedFriend()
             })
             .disposed(by: disposeBag)
     }
@@ -118,7 +118,7 @@ extension InvitedGroupViewController {
     }
     
     private func bindIsExistedInvitedFriend() {
-        homeViewModel.isExistedInvitedFriend
+        groupListViewModel.isExistedInvitedFriend
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: {[weak self] isExistedInvitedFriend in
                 guard isExistedInvitedFriend else {
@@ -130,27 +130,12 @@ extension InvitedGroupViewController {
             .disposed(by: disposeBag)
     }
     
-    private func bindIsInvitedFriendToGroup() {
-        homeViewModel.isInvitedFriendToGroup
+    private func bindIsInvitedFriendToGroup() {       
+        groupListViewModel.isInvitedFriendToGroup
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: {[weak self] isInvitedFriendToGroup in
-                self?.homeViewModel.sendNotification()
-                self?.homeViewModel.removeSelectedFriend()
                 guard isInvitedFriendToGroup else { return }
-                NotificationCenter.default.post(name: NSNotification.Name("invitedFriend"), object: isInvitedFriendToGroup)
                 self?.dismiss(animated: true)
-            })
-            .disposed(by: disposeBag)
-        
-        homeViewModel.isInvitedFriendToGroup
-            .subscribe(onNext: {[weak self] isInvitedFriendToGroup in
-                self?.homeViewModel.sendNotification()
-                self?.homeViewModel.removeSelectedFriend()
-                guard isInvitedFriendToGroup else { return }
-                NotificationCenter.default.post(name: NSNotification.Name("invitedFriend"), object: isInvitedFriendToGroup)
-                DispatchQueue.main.async {
-                    self?.dismiss(animated: true)
-                }
             })
             .disposed(by: disposeBag)
     }
@@ -177,12 +162,12 @@ extension InvitedGroupViewController: UICollectionViewDataSource {
                 guard cell.selectedButton.isSelected else {
                     cell.selectedButton.isSelected = true
                     cell.selectedButton.setImage(UIImage(systemName: "circle.fill"), for: .selected)
-                    self?.homeViewModel.selectInvitedFriend(friendUserID: myFriendList[indexPath.row].userID)
+                    self?.groupListViewModel.selectInvitedFriend(friendUserID: myFriendList[indexPath.row].userID)
                     return
                 }
                 cell.selectedButton.isSelected = false
                 cell.selectedButton.setImage(UIImage(systemName: "circle"), for: .normal)
-                self?.homeViewModel.deselectInvitedFriend(friendUserID: myFriendList[indexPath.row].userID)
+                self?.groupListViewModel.deselectInvitedFriend(friendUserID: myFriendList[indexPath.row].userID)
             })
             .disposed(by: cell.disposeBag)
         
