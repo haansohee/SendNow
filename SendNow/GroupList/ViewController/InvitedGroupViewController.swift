@@ -11,12 +11,15 @@ import RxSwift
 
 final class InvitedGroupViewController: UIViewController {
     private let invitedGroupView = InvitedGroupView()
-    private let homeViewModel = HomeViewModel()
+    private let homeViewModel: HomeViewModel
+    private let groupListViewModel: GroupListViewModel
     private let disposeBag = DisposeBag()
     
-    init() {
+    init(homeViewModel: HomeViewModel = HomeViewModel(), groupListViewModel: GroupListViewModel = GroupListViewModel()) {
+        self.homeViewModel = homeViewModel
+        self.groupListViewModel = groupListViewModel
         super.init(nibName: nil, bundle: nil)
-        homeViewModel.loadMyFriend()
+        self.homeViewModel.loadMyFriend()
     }
     
     required init?(coder: NSCoder) {
@@ -79,7 +82,7 @@ extension InvitedGroupViewController {
             let doneAction = UIAlertAction(title: "확인", style: .default) {[weak self] _ in
                 guard let groupNameText = alertController.textFields?[0].text,
                       !groupNameText.isEmpty else { return }
-                self?.homeViewModel.invitedFriendToGroup(groupName: groupNameText)
+                self?.groupListViewModel.invitedFriendToGroup(groupName: groupNameText)
             }
             let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in }
             alertController.addAction(doneAction)
@@ -136,6 +139,18 @@ extension InvitedGroupViewController {
                 guard isInvitedFriendToGroup else { return }
                 NotificationCenter.default.post(name: NSNotification.Name("invitedFriend"), object: isInvitedFriendToGroup)
                 self?.dismiss(animated: true)
+            })
+            .disposed(by: disposeBag)
+        
+        homeViewModel.isInvitedFriendToGroup
+            .subscribe(onNext: {[weak self] isInvitedFriendToGroup in
+                self?.homeViewModel.sendNotification()
+                self?.homeViewModel.removeSelectedFriend()
+                guard isInvitedFriendToGroup else { return }
+                NotificationCenter.default.post(name: NSNotification.Name("invitedFriend"), object: isInvitedFriendToGroup)
+                DispatchQueue.main.async {
+                    self?.dismiss(animated: true)
+                }
             })
             .disposed(by: disposeBag)
     }

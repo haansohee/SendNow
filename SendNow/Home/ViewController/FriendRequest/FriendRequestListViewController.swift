@@ -25,10 +25,11 @@ final class FriendRequestListViewController: UIViewController {
         return collectionView
     }()
     
-    private let friendRequestViewModel = FriendRequestViewModel()
+    private let friendRequestViewModel: FriendRequestViewModel
     private let disposeBag = DisposeBag()
     
-    init() {
+    init(viewModel: FriendRequestViewModel = FriendRequestViewModel()) {
+        self.friendRequestViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         friendRequestViewModel.getFriendRequestList()
     }
