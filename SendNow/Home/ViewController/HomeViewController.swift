@@ -19,7 +19,7 @@ final class HomeViewController: UIViewController {
         self.homeViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         homeViewModel.loadMemberInformation()
-        homeViewModel.loadMyGroup()
+        homeViewModel.loadMyFriend()
     }
     
     required init?(coder: NSCoder) {
@@ -31,26 +31,24 @@ final class HomeViewController: UIViewController {
         configureHomeView()
         addSubviews()
         setLayoutConstraintsHomeView()
-        addInvitedFriendNotification()
         bindAll()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         homeViewModel.loadMemberInformation()
-        homeViewModel.loadMyGroup()
     }
 }
 
 extension HomeViewController {
     private func configureHomeView() {
         homeView.translatesAutoresizingMaskIntoConstraints = false
-        homeView.groupListCollectionView.delegate = self
-        homeView.groupListCollectionView.dataSource = self
+        homeView.friendListCollectionView.delegate = self
+        homeView.friendListCollectionView.dataSource = self
         view.backgroundColor = UIColor(named: "BackColor")
         navigationItem.title = "홈"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: homeView.notificationButton)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: homeView.friendRequestButton)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: homeView.settingButton)
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: homeView.friendRequestButtonn)
     }
     
     private func addSubviews() {
@@ -76,32 +74,12 @@ extension HomeViewController {
         homeView.mySearchIdLabel.text = "나의 검색 ID : \(searchID)"
     }
     
-    private func addInvitedFriendNotification() {
-        NotificationCenter.default.addObserver(self, selector: #selector(dataReceived), name: NSNotification.Name("invitedFriend"), object: nil)
-    }
-    
-    @objc private func dataReceived() {
-        homeViewModel.loadMyGroup()
-    }
-    
     //MARK: Bind
     private func bindAll() {
-        bindInvitedGroupButton()
         bindSignoutButton()
-        bindMemberInfoEditButton()
         bindFriendRequestButton()
         bindIsLoadedMemberInformation()
-        bindIsLoadedMyGroupList()
-    }
-    
-    private func bindInvitedGroupButton() {
-        homeView.invitedGroupButton.rx.tap
-            .asDriver()
-            .drive(onNext: {[weak self] _ in
-                let invitedGroupViewController = UINavigationController(rootViewController: InvitedGroupViewController())
-                self?.present(invitedGroupViewController, animated: true)
-            })
-            .disposed(by: disposeBag)
+        bindIsLoadedMyFriendList()
     }
     
     private func bindSignoutButton() {
@@ -112,15 +90,6 @@ extension HomeViewController {
                 let rootViewController = UINavigationController(rootViewController: SigninViewController())
                 guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
                 sceneDelegate.changeRootViewController(rootViewController, animated: true)
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    private func bindMemberInfoEditButton() {
-        homeView.memberInfoEditButton.rx.tap
-            .asDriver()
-            .drive(onNext: {[weak self] _ in
-                self?.navigationController?.pushViewController(MemberInfoUpdateViewController(), animated: true)
             })
             .disposed(by: disposeBag)
     }
@@ -138,19 +107,17 @@ extension HomeViewController {
         homeViewModel.isLoadedMemberInformation
             .asDriver(onErrorJustReturn: "noValue")
             .drive(onNext: {[weak self] isLoadedMemberInformation in
-                print("isLoadedMemberInformation: \(isLoadedMemberInformation)")
                 self?.configureHomeViewNicknameLabel()
                 self?.configureHomeViewMySearchIdLabel()
             })
             .disposed(by: disposeBag)
     }
     
-    private func bindIsLoadedMyGroupList() {
-        homeViewModel.isLoadedMyGroupList
+    private func bindIsLoadedMyFriendList() {
+        homeViewModel.isLoadedMyFriendList
             .asDriver(onErrorJustReturn: Void())
             .drive(onNext: {[weak self] _ in
-                self?.homeView.groupListCollectionView.reloadData()
-                
+                self?.homeView.friendListCollectionView.reloadData()
             })
             .disposed(by: disposeBag)
     }
@@ -159,21 +126,13 @@ extension HomeViewController {
 //MARK: UICollectionViewDataSource
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return homeViewModel.myGroupList?.count ?? 1
+        return homeViewModel.myFriendList?.count ?? 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GroupListCollectionViewCell.reuseIdentifier, for: indexPath) as? GroupListCollectionViewCell else { return UICollectionViewCell() }
-        guard let myGroupList = homeViewModel.myGroupList else { return cell }
-        cell.setGroupListCollectionViewCellLabel(myGroupList[indexPath.row])
-        cell.rx.tapGesture()
-            .when(.recognized)
-            .asDriver{ _ in .never() }
-            .drive(onNext: {[weak self] _ in
-                self?.navigationController?.pushViewController(SettleTabViewController(groupID: myGroupList[indexPath.row].groupID, groupName: myGroupList[indexPath.row].groupName), animated: true)
-            })
-            .disposed(by: cell.disposeBag)
-        
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FriendListCollectionViewCell.reuseIdentifier, for: indexPath) as? FriendListCollectionViewCell else { return UICollectionViewCell() }
+        guard let myGroupList = homeViewModel.myFriendList else { return cell }
+        cell.setFriendListCollectionViewCell(myGroupList[indexPath.row].nickname)
         return cell
     }
 }
@@ -182,7 +141,7 @@ extension HomeViewController: UICollectionViewDataSource {
 extension HomeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (UIScreen.main.bounds.width) - 36.0
-        let height = 100.0
+        let height = 70.0
         return CGSize(width: width, height: height)
     }
 }

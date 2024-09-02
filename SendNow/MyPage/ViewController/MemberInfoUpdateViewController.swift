@@ -11,11 +11,12 @@ import RxSwift
 
 final class MemberInfoUpdateViewController: UIViewController {
     private let memberInfoUpdateView = MemberInfoUpdateView()
-    private let homeViewModel = HomeViewModel()
+    private let homeViewModel: HomeViewModel
     private let memberInfoUpdateViewModel = MemberInfoUpdateViewModel()
     private let disposeBag = DisposeBag()
     
-    init() {
+    init(viewModel: HomeViewModel = HomeViewModel()) {
+        self.homeViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         homeViewModel.loadMemberInformation()
     }

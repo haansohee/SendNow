@@ -27,6 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { isSetNoti, error in
             if let error = error {
                 print("Notification Authorization Request ERROR : \(error.localizedDescription)")
+                return
             }
             UserDefaults.standard.set(isSetNoti, forKey: MemberInfoField.isSetNoti.rawValue)
         }
@@ -57,6 +58,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         UNUserNotificationCenter.current().setBadgeCount(currentBadgeCount + 1) { error in
             if let error = error {
                 print("Set Badge Count ERROR: \(error.localizedDescription)")
+                return
             }
         }
         completionHandler([.list, .banner, .badge, .banner])

@@ -20,7 +20,13 @@ final class MainTabBarController: UITabBarController {
         tabBar.backgroundColor = .systemBackground
         let homeTab = UINavigationController(rootViewController: HomeViewController())
         homeTab.tabBarItem = UITabBarItem(title: "홈", image: UIImage(systemName: "house"), tag: 0)
-        viewControllers = [homeTab]
+        let groupTab = UINavigationController(rootViewController: GroupListViewController())
+        groupTab.tabBarItem = UITabBarItem(title: "정산모임", image: UIImage(systemName: "rectangle.3.group.bubble"), tag: 1)
+        let notificationTab = UINavigationController(rootViewController: NotificationViewController())
+        notificationTab.tabBarItem = UITabBarItem(title: "알림", image: UIImage(systemName: "bell"), tag: 2)
+        let myPageTab = UINavigationController(rootViewController: MemberInfoUpdateViewController())
+        myPageTab.tabBarItem = UITabBarItem(title: "마이페이지", image: UIImage(systemName: "person.text.rectangle"), tag: 3)
+        viewControllers = [homeTab, groupTab, notificationTab, myPageTab]
         tabBarController?.setViewControllers(viewControllers, animated: true)
     }
 }

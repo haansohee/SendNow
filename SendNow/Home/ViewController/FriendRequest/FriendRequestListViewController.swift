@@ -25,10 +25,11 @@ final class FriendRequestListViewController: UIViewController {
         return collectionView
     }()
     
-    private let friendRequestViewModel = FriendRequestViewModel()
+    private let friendRequestViewModel: FriendRequestViewModel
     private let disposeBag = DisposeBag()
     
-    init() {
+    init(viewModel: FriendRequestViewModel = FriendRequestViewModel()) {
+        self.friendRequestViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         friendRequestViewModel.getFriendRequestList()
     }
@@ -132,7 +133,6 @@ extension FriendRequestListViewController {
                 guard isUpdatedFriendRequestState else {
                     self?.confirmAlert(title: "바로보내", message: "잠시후 다시 시도해 주세요.")
                     return }
-                NotificationCenter.default.post(name: NSNotification.Name("sendFriendRequest"), object: isUpdatedFriendRequestState)
                 self?.confirmAlert(title: "바로보내", message: "요청을 수락하였어요.")
             })
             .disposed(by: disposeBag)

@@ -8,19 +8,10 @@
 import UIKit
 
 final class HomeView: UIView {
-    let notificationButton: AnimationButton = {
+    let settingButton: AnimationButton = {
         let button = AnimationButton(frame: CGRect(x: 0, y: 0, width: 34, height: 34))
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 20.0, weight: .light)
-        button.setImage(UIImage(systemName: "bell", withConfiguration: imageConfig), for: .normal)
-        button.tintColor = UIColor(named: "TitleColor")
-        return button
-    }()
-    
-    let friendRequestButton: AnimationButton = {
-        let button = AnimationButton(frame: CGRect(x: 0, y: 0, width: 34, height: 34))
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 20.0, weight: .light)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "person.badge.plus", withConfiguration: imageConfig), for: .normal)
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 20.0, weight: .bold)
+        button.setImage(UIImage(systemName: "gear", withConfiguration: imageConfig), for: .normal)
         button.tintColor = UIColor(named: "TitleColor")
         return button
     }()
@@ -65,15 +56,6 @@ final class HomeView: UIView {
         return label
     }()
     
-    let memberInfoEditButton: AnimationButton = {
-        let button = AnimationButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("회원정보 수정 >", for: .normal)
-        button.setTitleColor(.black, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 12.0, weight: .thin)
-        return button
-    }()
-    
     let signoutButton: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -83,34 +65,34 @@ final class HomeView: UIView {
         return button
     }()
     
-    private let groupListLabel: UILabel = {
+    private let friendListLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 21.0, weight: .bold)
-        label.text = "그룹"
+        label.text = "내 친구"
         label.textColor = .label
         label.textAlignment = .left
         label.numberOfLines = 0
         return label
     }()
     
-    let invitedGroupButton: AnimationButton = {
+    let friendRequestButton: AnimationButton = {
         let button = AnimationButton()
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 25.0, weight: .bold)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("정산 그룹 만들기", for: .normal)
-        button.setTitleColor(UIColor(named: "TitleColor"), for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 17.0, weight: .semibold)
+        button.setImage(UIImage(systemName: "person.badge.plus", withConfiguration: imageConfig), for: .normal)
+        button.tintColor = UIColor(named: "TitleColor")
         return button
     }()
     
-    let groupListCollectionView: UICollectionView = {
+    let friendListCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 8.0
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(GroupListCollectionViewCell.self, forCellWithReuseIdentifier: GroupListCollectionViewCell.reuseIdentifier)
+        collectionView.register(FriendListCollectionViewCell.self, forCellWithReuseIdentifier: FriendListCollectionViewCell.reuseIdentifier)
         collectionView.backgroundColor = UIColor(named: "BackColor")
         collectionView.isPagingEnabled = false
         return collectionView
@@ -131,15 +113,14 @@ extension HomeView {
     private func addSubviews() {
         [
             memberContainerView,
-            groupListLabel,
-            invitedGroupButton,
-            groupListCollectionView
+            friendListLabel,
+            friendRequestButton,
+            friendListCollectionView
         ].forEach { self.addSubview($0) }
         [
             memberNicknameLabel,
             welcomeLabel,
             mySearchIdLabel,
-            memberInfoEditButton,
             signoutButton
         ].forEach { memberContainerView.addSubview($0) }
     }
@@ -170,26 +151,20 @@ extension HomeView {
             signoutButton.widthAnchor.constraint(equalToConstant: 80),
             signoutButton.heightAnchor.constraint(equalToConstant: 30.0),
             
-            memberInfoEditButton.topAnchor.constraint(equalTo: signoutButton.topAnchor),
-            memberInfoEditButton.trailingAnchor.constraint(equalTo: signoutButton.leadingAnchor),
-            memberInfoEditButton.widthAnchor.constraint(equalToConstant: 100),
-            memberInfoEditButton.heightAnchor.constraint(equalTo:signoutButton.heightAnchor),
+            friendListLabel.topAnchor.constraint(equalTo: memberContainerView.bottomAnchor, constant: 12.0),
+            friendListLabel.leadingAnchor.constraint(equalTo: memberContainerView.leadingAnchor),
+            friendListLabel.heightAnchor.constraint(equalToConstant: 50.0),
+            friendListLabel.widthAnchor.constraint(equalToConstant: 60.0),
             
+            friendRequestButton.topAnchor.constraint(equalTo: friendListLabel.topAnchor),
+            friendRequestButton.trailingAnchor.constraint(equalTo: memberContainerView.trailingAnchor),
+            friendRequestButton.heightAnchor.constraint(equalTo: friendListLabel.heightAnchor),
+            friendRequestButton.widthAnchor.constraint(equalToConstant: 60.0),
             
-            groupListLabel.topAnchor.constraint(equalTo: memberContainerView.bottomAnchor, constant: 12.0),
-            groupListLabel.leadingAnchor.constraint(equalTo: memberContainerView.leadingAnchor),
-            groupListLabel.heightAnchor.constraint(equalToConstant: 50.0),
-            groupListLabel.widthAnchor.constraint(equalToConstant: 60.0),
-            
-            invitedGroupButton.topAnchor.constraint(equalTo: groupListLabel.topAnchor),
-            invitedGroupButton.trailingAnchor.constraint(equalTo: memberContainerView.trailingAnchor),
-            invitedGroupButton.heightAnchor.constraint(equalTo: groupListLabel.heightAnchor),
-            invitedGroupButton.widthAnchor.constraint(equalToConstant: 120.0),
-            
-            groupListCollectionView.topAnchor.constraint(equalTo: groupListLabel.bottomAnchor, constant: 8.0),
-            groupListCollectionView.leadingAnchor.constraint(equalTo: memberContainerView.leadingAnchor),
-            groupListCollectionView.trailingAnchor.constraint(equalTo: memberContainerView.trailingAnchor),
-            groupListCollectionView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -8.0)
+            friendListCollectionView.topAnchor.constraint(equalTo: friendListLabel.bottomAnchor, constant: 8.0),
+            friendListCollectionView.leadingAnchor.constraint(equalTo: memberContainerView.leadingAnchor),
+            friendListCollectionView.trailingAnchor.constraint(equalTo: memberContainerView.trailingAnchor),
+            friendListCollectionView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -8.0)
         ])
     }
 }
