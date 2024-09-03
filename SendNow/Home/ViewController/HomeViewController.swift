@@ -48,7 +48,6 @@ extension HomeViewController {
         view.backgroundColor = UIColor(named: "BackColor")
         navigationItem.title = "홈"
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: homeView.settingButton)
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: homeView.friendRequestButtonn)
     }
     
     private func addSubviews() {

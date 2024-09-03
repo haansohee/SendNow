@@ -21,17 +21,13 @@ final class GroupService {
     func setGroupList(with groupCreationDomain: GroupCreationDomain, completion: @escaping(Bool)->Void) {
         let path = GroupAPIPath.setGroupList.rawValue
         let groupInfo = groupCreationDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: groupInfo) { result in
-            completion(result)
-        }
+        networkSessionManager.urlPostMethod(path: path, encodeValue: groupInfo, completion: completion)
     }
     
     func setExpensesUpload(with expenseUploadDomain: ExpenseUploadDomain, completion: @escaping(Bool)->Void) {
         let path = GroupAPIPath.setExpensesUpload.rawValue
         let expensesUploadInfo = expenseUploadDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: expensesUploadInfo) { result in
-            completion(result)
-        }
+        networkSessionManager.urlPostMethod(path: path, encodeValue: expensesUploadInfo, completion: completion)
     }
     
     func getGroupList(with userID: Int, completion: @escaping([GroupListDomain])->Void) {
