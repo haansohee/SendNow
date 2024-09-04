@@ -7,6 +7,7 @@
 
 import Foundation
 import RxSwift
+import UserNotifications
 
 final class NotificationViewModel {
     private let notificationService: NotificationService
@@ -33,12 +34,22 @@ final class NotificationViewModel {
     
     func updateNotificationIsRead(notificationID: Int) {
         notificationService.updateNotificationIsRead(with: notificationID, userID: 0) {[weak self] isUpdated in
+            if isUpdated {
+                let currentBadgeCount = UserDefaults.standard.integer(forKey: MemberInfoField.notificationBadge.rawValue) - 1
+                UserDefaults.standard.set(currentBadgeCount, forKey: MemberInfoField.notificationBadge.rawValue)
+                UNUserNotificationCenter.current().setBadgeCount(currentBadgeCount) { error in
+                    self?.isUpdatedNotification.onNext(false)
+                }
+            }
             self?.isUpdatedNotification.onNext(isUpdated)
         }
     }
     
     func updateNotificationAll() {
         notificationService.updateNotificationIsRead(with: 0, userID: userID) {[weak self] isUpdated in
+            if isUpdated {
+                UNUserNotificationCenter.current().setBadgeCount(0)
+            }
             self?.isUpdatedNotificationAll.onNext(isUpdated)
         }
     }

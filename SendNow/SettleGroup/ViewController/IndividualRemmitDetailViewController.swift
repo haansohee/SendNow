@@ -125,14 +125,15 @@ extension IndividualRemmitDetailViewController: UICollectionViewDataSource {
                     UIPasteboard.general.string = "\(bankName) \(accountNumber)"
                 })
                 .disposed(by: cell.disposeBag)
-                
             return cell
+            
         case individualRemmitDetailView.amountBalanceCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AmountBalanceCollectionViewCell.reuseIdentifier, for: indexPath) as? AmountBalanceCollectionViewCell else { return UICollectionViewCell() }
             guard let balanceInformation = settleGroupViewModel.groupSettlementInformations?.settlementBalance else { return cell }
             individualRemmitDetailView.setAmountBalanceCollectionViewHeight(Double(balanceInformation.count))
             cell.configureCell(balanceInformation[indexPath.row])
             return cell
+            
         default:
             return UICollectionViewCell()
         }

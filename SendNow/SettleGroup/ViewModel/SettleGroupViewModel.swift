@@ -54,7 +54,7 @@ final class SettleGroupViewModel {
             remainderUserID: remainderUserID)
         groupService.setExpensesUpload(with: expenseUploadDomain) {[weak self] result in
             if result {
-                NotificationCenter.default.post(name: NSNotification.Name("uploadExpense"), object: result)
+                NotificationCenter.default.post(name: NSNotification.Name(NotificationName.uploadExpense.rawValue), object: result)
             }
             self?.isUploadedExpenseInfo.onNext(result)
         }

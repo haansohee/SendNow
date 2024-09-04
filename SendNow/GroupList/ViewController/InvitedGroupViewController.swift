@@ -40,7 +40,7 @@ final class InvitedGroupViewController: UIViewController {
     }
     
     override var childForStatusBarStyle: UIViewController? {
-        let viewController = HomeViewController()
+        let viewController = GroupListViewController()
         return viewController
     }
 }
@@ -135,7 +135,7 @@ extension InvitedGroupViewController {
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: {[weak self] isInvitedFriendToGroup in
                 guard isInvitedFriendToGroup else { return }
-                self?.dismiss(animated: true)
+                self?.navigationController?.popViewController(animated: true)
             })
             .disposed(by: disposeBag)
     }

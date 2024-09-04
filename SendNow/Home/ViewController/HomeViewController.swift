@@ -13,13 +13,18 @@ import RxGesture
 final class HomeViewController: UIViewController {
     private let homeView = HomeView()
     private let homeViewModel: HomeViewModel
+    private let notificationViewModel: NotificationViewModel
     private let disposeBag = DisposeBag()
     
-    init(viewModel: HomeViewModel = HomeViewModel()) {
+    init(viewModel: HomeViewModel = HomeViewModel(),
+         notificationViewModel: NotificationViewModel = NotificationViewModel(
+            userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue))) {
         self.homeViewModel = viewModel
+        self.notificationViewModel = notificationViewModel
         super.init(nibName: nil, bundle: nil)
         homeViewModel.loadMemberInformation()
         homeViewModel.loadMyFriend()
+        notificationViewModel.getNotificationList()
     }
     
     required init?(coder: NSCoder) {
@@ -79,6 +84,7 @@ extension HomeViewController {
         bindFriendRequestButton()
         bindIsLoadedMemberInformation()
         bindIsLoadedMyFriendList()
+        bindIsLoadedNotificationInfo()
     }
     
     private func bindSignoutButton() {
@@ -117,6 +123,21 @@ extension HomeViewController {
             .asDriver(onErrorJustReturn: Void())
             .drive(onNext: {[weak self] _ in
                 self?.homeView.friendListCollectionView.reloadData()
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindIsLoadedNotificationInfo() {
+        notificationViewModel.isLoadedNotificationInfo
+            .asDriver(onErrorJustReturn: Void())
+            .drive(onNext: {[weak self] in
+                guard let tabItems = self?.tabBarController?.tabBar.items else {return }
+                guard self?.notificationViewModel.unreadNotificationList?.count != 0 else {
+                    tabItems[2].badgeValue = nil
+                    return }
+                tabItems[2].badgeColor = .clear
+                tabItems[2].setBadgeTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemRed], for: .normal)
+                tabItems[2].badgeValue = "●"
             })
             .disposed(by: disposeBag)
     }

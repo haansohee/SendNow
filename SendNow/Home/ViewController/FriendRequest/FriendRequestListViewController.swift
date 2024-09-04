@@ -89,7 +89,7 @@ extension FriendRequestListViewController {
     }
     
     private func addInvitedFriendNotification() {
-        NotificationCenter.default.addObserver(self, selector: #selector(dataReceived), name: NSNotification.Name("sendFriendRequest"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(dataReceived), name: NSNotification.Name(NotificationName.sendFriendRequest.rawValue), object: nil)
     }
     
     @objc private func dataReceived() {

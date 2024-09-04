@@ -63,7 +63,7 @@ final class GroupListViewModel {
         let groupCreationDomain = GroupCreationDomain(groupName: groupName, userIDList: invitedFriendList, creatorID: userID)
         groupService.setGroupList(with: groupCreationDomain) {[weak self] result in
             if result {
-                NotificationCenter.default.post(name: NSNotification.Name("invitedFriend"), object: result)
+                NotificationCenter.default.post(name: NSNotification.Name(NotificationName.invitedFriend.rawValue), object: result)
                 self?.sendNotification()
                 self?.removeSelectedFriend()
             }
