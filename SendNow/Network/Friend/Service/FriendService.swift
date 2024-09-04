@@ -23,26 +23,20 @@ final class FriendService {
     func setFriendRequest(with friendRequestSendDomain: FriendRequestSendDomain, completion: @escaping(Bool)->Void) {
         let path = FriendAPIPath.setFriendRequestList.rawValue
         let friendRequestSend = friendRequestSendDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: friendRequestSend) { result in
-            completion(result)
-        }
+        networkSessionManager.urlPostMethod(path: path, encodeValue: friendRequestSend, completion: completion)
     }
     
     func updateFriendState(with updateFriendStateDomain: UpdateFriendStateDomain, completion: @escaping(Bool)->Void) {
         let path = FriendAPIPath.updateFriendState.rawValue
         let updateFriendStateInfo = updateFriendStateDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: updateFriendStateInfo) { result in
-            completion(result)
-        }
+        networkSessionManager.urlPostMethod(path: path, encodeValue: updateFriendStateInfo, completion: completion)
         
     }
     
     func deleteFriendRequestList(with deleteFriendRequestDomain: DeleteFriendRequestDomain, completion: @escaping(Bool)->Void) {
         let path = FriendAPIPath.deleteFriendRequestList.rawValue
         let deleteFriendRequestInfo = deleteFriendRequestDomain.toRequestDTO()
-        networkSessionManager.urlDeleteMethod(path: path, encodeValue: deleteFriendRequestInfo) { result in
-            completion(result)
-        }
+        networkSessionManager.urlDeleteMethod(path: path, encodeValue: deleteFriendRequestInfo, completion: completion)
     }
     
     func getFriendInformation(with friendSearchId: String, completion: @escaping(SearchFriendDomain)->Void) {

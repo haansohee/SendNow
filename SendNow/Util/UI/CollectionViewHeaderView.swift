@@ -7,11 +7,11 @@
 
 import UIKit
 
-final class FriendReuqestListHeaderView: UICollectionReusableView, ReuseIdentifierProtocol {
+final class CollectionViewHeaderView: UICollectionReusableView, ReuseIdentifierProtocol {
     let label: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = . systemFont(ofSize: 14.0)
+        label.font = . systemFont(ofSize: 14.0, weight: .semibold)
         label.textColor = .lightGray
         label.textAlignment = .left
         return label

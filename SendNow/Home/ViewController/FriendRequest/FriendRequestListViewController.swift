@@ -21,7 +21,7 @@ final class FriendRequestListViewController: UIViewController {
         collectionView.backgroundColor = .systemBackground
         collectionView.isPagingEnabled = false
         collectionView.register(FriendRequestListCollectionViewCell.self, forCellWithReuseIdentifier: FriendRequestListCollectionViewCell.reuseIdentifier)
-        collectionView.register(FriendReuqestListHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: FriendReuqestListHeaderView.reuseIdentifier)
+        collectionView.register(CollectionViewHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionViewHeaderView.reuseIdentifier)
         return collectionView
     }()
     
@@ -208,9 +208,9 @@ extension FriendRequestListViewController: UICollectionViewDataSource {
         guard kind == UICollectionView.elementKindSectionHeader,
               let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
-                withReuseIdentifier: FriendReuqestListHeaderView.reuseIdentifier,
+                withReuseIdentifier: CollectionViewHeaderView.reuseIdentifier,
                 for: indexPath
-              ) as? FriendReuqestListHeaderView else { return UICollectionReusableView() }
+              ) as? CollectionViewHeaderView else { return UICollectionReusableView() }
         switch indexPath.section {
         case 0:
             header.label.text = "내가 보낸 친구 요청"
