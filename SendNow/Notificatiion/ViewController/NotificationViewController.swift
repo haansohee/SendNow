@@ -104,6 +104,13 @@ extension NotificationViewController {
             .asDriver(onErrorJustReturn: Void())
             .drive(onNext: {[weak self] in
                 self?.notificationListCollectionView.reloadData()
+                guard let tabItems = self?.tabBarController?.tabBar.items else {return }
+                guard self?.notificationViewModel.unreadNotificationList?.count != 0 else {
+                    tabItems[2].badgeValue = nil
+                    return }
+                tabItems[2].badgeColor = .clear
+                tabItems[2].setBadgeTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemRed], for: .normal)
+                tabItems[2].badgeValue = "●"
             })
             .disposed(by: disposeBag)
     }

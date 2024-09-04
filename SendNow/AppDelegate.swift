@@ -15,6 +15,8 @@ import IQKeyboardManagerSwift
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    var window: UIWindow?
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         guard let nativeAppKey = Bundle.main.infoDictionary?["KAKAO_NATIVE_APP_KEY"] else { return true }
         RxKakaoSDK.initSDK(appKey: nativeAppKey as! String)
@@ -38,12 +40,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // MARK: UISceneSession Lifecycle
-
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-    }
-
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
     }
 }
 
@@ -65,12 +63,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        UNUserNotificationCenter.current().setBadgeCount(0)
-        let userInfo = response.notification.request.content.userInfo
-        if let identifier = userInfo["identifier"] as? String {
-            // notification identifier 의 경우에 따라 처리
-            print("🚨 Notification Identifier: \(identifier)")
-        }
+        NotificationCenter.default.post(name: NSNotification.Name(NotificationName.notificationDidReceive.rawValue), object: nil, userInfo: ["index": 2])
+        completionHandler()
     }
 }
 

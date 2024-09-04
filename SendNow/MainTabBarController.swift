@@ -12,6 +12,7 @@ final class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupMainTabBar()
+        addChangeSelectedView()
     }
     
     private func setupMainTabBar() {
@@ -28,5 +29,15 @@ final class MainTabBarController: UITabBarController {
         myPageTab.tabBarItem = UITabBarItem(title: "마이페이지", image: UIImage(systemName: "person.text.rectangle"), tag: 3)
         viewControllers = [homeTab, groupTab, notificationTab, myPageTab]
         tabBarController?.setViewControllers(viewControllers, animated: true)
+    }
+    
+    private func addChangeSelectedView() {
+        NotificationCenter.default.addObserver(self, selector: #selector(showNotificationView(_:)), name: NSNotification.Name(NotificationName.notificationDidReceive.rawValue), object: nil)
+    }
+    
+    @objc private func showNotificationView(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let index = userInfo["index"] as? Int else { return }
+        self.selectedIndex = index
     }
 }

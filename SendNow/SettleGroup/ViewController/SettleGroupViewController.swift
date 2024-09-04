@@ -62,7 +62,7 @@ extension SettleGroupViewController {
     }
     
     private func notificationInvitedFriendObsever() {
-        NotificationCenter.default.addObserver(self, selector: #selector(dataReceived), name: NSNotification.Name("uploadExpense"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(dataReceived), name: NSNotification.Name(NotificationName.uploadExpense.rawValue), object: nil)
     }
     
     @objc private func dataReceived() {

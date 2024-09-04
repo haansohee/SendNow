@@ -82,7 +82,7 @@ extension GroupListViewController {
         ])
     }
     private func addInvitedFriendNotification() {
-        NotificationCenter.default.addObserver(self, selector: #selector(dataReceived), name: NSNotification.Name("invitedFriend"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(dataReceived), name: NSNotification.Name(NotificationName.invitedFriend.rawValue), object: nil)
     }
     
     @objc private func dataReceived() {
@@ -99,7 +99,7 @@ extension GroupListViewController {
         groupAddButton.rx.tap
             .asDriver(onErrorJustReturn: Void())
             .drive(onNext: {[weak self] in
-                self?.present(InvitedGroupViewController(), animated: true)
+                self?.navigationController?.pushViewController(InvitedGroupViewController(), animated: true)
             })
             .disposed(by: disposeBag)
     }
