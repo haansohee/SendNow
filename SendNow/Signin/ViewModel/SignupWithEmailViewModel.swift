@@ -12,11 +12,10 @@ import RxSwift
 final class SignupWithEmailViewModel {
     private let memberService = MemberService()
     private(set) var isEnabledSignupButton: Bool = false
-    private(set) var isCheckedDuplicatedID: Bool = false
-    private(set) var isCheckedAuthCode: Bool = false
     private(set) var isCheckedValidNickname: Bool = false
+    private(set) var isCheckedAuthCode: Bool = false
     private(set) var emailAuthCodeInfo: EmailAuthCodeDomain?
-    let isDuplicatedID = PublishSubject<Bool>()
+    let isDuplicatedNickname = PublishSubject<Bool>()
     let isDuplicatedEmail = PublishSubject<Bool>()
     let isCompletedSignup = PublishSubject<Bool>()
     
@@ -24,21 +23,18 @@ final class SignupWithEmailViewModel {
         self.isEnabledSignupButton = isEnabledSignupButton
     }
     
-    func setIsCheckedDuplicatedID(_ isCheckedDuplicatedID: Bool) {
-        self.isCheckedDuplicatedID = isCheckedDuplicatedID
+    func setIsDuplicatedNickname(_ isCheckedValidNickname: Bool) {
+        self.isCheckedValidNickname = isCheckedValidNickname
     }
     
     func setIsCheckedAuthCode(_ isCheckedAuthCode: Bool) {
         self.isCheckedAuthCode = isCheckedAuthCode
     }
     
-    func setIsCheckedValidNickname(_ isCheckedValiedNickname: Bool) {
-        self.isCheckedValidNickname = isCheckedValiedNickname
-    }
-    
-    func checkDuplicateID(nickname: String) {
-        memberService.getSearchID(with: nickname) {[weak self] result in
-            self?.isDuplicatedID.onNext(result.isEmpty)
+    func isDuplicatedNickname(nickname: String) {
+        let nicknameDuplicateInfo = UpdateNicknameDomain(userID: 0, nickname: nickname)
+        memberService.isDuplicatedNickname(with: nicknameDuplicateInfo) {[weak self] result in
+            self?.isDuplicatedNickname.onNext(result)
         }
     }
     

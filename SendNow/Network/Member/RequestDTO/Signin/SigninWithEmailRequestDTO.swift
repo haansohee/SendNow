@@ -8,7 +8,6 @@
 import Foundation
 
 struct SigninWithEmailRequestDTO: Codable {
-    let searchID: String
     let nickname: String
     let email: String
     let password: String

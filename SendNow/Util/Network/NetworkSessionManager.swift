@@ -20,7 +20,19 @@ final class NetworkSessionManager {
         ).validate(statusCode: 200..<500).responseDecodable(of: requestDTO) { response in
             switch response.result {
             case .success(let value):
-                completion(.success(value))
+                switch response.response?.statusCode {
+                case 200:
+                    completion(.success(value))
+                case 400:
+                    let error = NSError(domain: "", code: 400, userInfo: [NSLocalizedDescriptionKey: "Bad request"])
+                    completion(.failure(error))
+                case 500:
+                    let error = NSError(domain: "", code: 500, userInfo: [NSLocalizedDescriptionKey: "Internal server error"])
+                    completion(.failure(error))
+                default:
+                    let error = NSError(domain: "", code: response.response?.statusCode ?? 0, userInfo: [NSLocalizedDescriptionKey: "Unknown error"])
+                    completion(.failure(error))
+                }
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -36,10 +48,14 @@ final class NetworkSessionManager {
                    encoder: JSONParameterEncoder.default,
                    headers: ["Content-Type": "application/json"]
         ).validate(statusCode: 200..<500).responseString { response in
-            switch response.result {
-            case .success:
+            switch response.response?.statusCode {
+            case 200:
                 completion(true)
-            case .failure:
+            case 400:
+                completion(false)  // 요청 문제
+            case 500:
+                completion(false)  // 서버 문제
+            default:
                 completion(false)
             }
         }
@@ -54,10 +70,14 @@ final class NetworkSessionManager {
                    encoder: JSONParameterEncoder.default,
                    headers: ["Content-Type": "application/json"]
         ).validate(statusCode: 200..<500).responseString { response in
-            switch response.result {
-            case .success:
+            switch response.response?.statusCode {
+            case 200:
                 completion(true)
-            case .failure:
+            case 400:
+                completion(false)  // 요청 문제
+            case 500:
+                completion(false)  // 서버 문제
+            default:
                 completion(false)
             }
         }

@@ -16,7 +16,8 @@ final class HomeViewController: UIViewController {
     private let notificationViewModel: NotificationViewModel
     private let disposeBag = DisposeBag()
     
-    init(viewModel: HomeViewModel = HomeViewModel(),
+    init(viewModel: HomeViewModel = HomeViewModel(
+        userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)),
          notificationViewModel: NotificationViewModel = NotificationViewModel(
             userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue))) {
         self.homeViewModel = viewModel
@@ -42,6 +43,7 @@ final class HomeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         homeViewModel.loadMemberInformation()
+        homeViewModel.loadMyFriend()
     }
 }
 
@@ -71,11 +73,6 @@ extension HomeViewController {
     private func configureHomeViewNicknameLabel() {
         guard let nickname = homeViewModel.loginMemberInformation?.nickname else { return }
         homeView.memberNicknameLabel.text = nickname
-    }
-    
-    private func configureHomeViewMySearchIdLabel() {
-        guard let searchID = homeViewModel.loginMemberInformation?.searchID else { return }
-        homeView.mySearchIdLabel.text = "나의 검색 ID : \(searchID)"
     }
     
     //MARK: Bind
@@ -110,10 +107,9 @@ extension HomeViewController {
     
     private func bindIsLoadedMemberInformation() {
         homeViewModel.isLoadedMemberInformation
-            .asDriver(onErrorJustReturn: "noValue")
-            .drive(onNext: {[weak self] isLoadedMemberInformation in
+            .asDriver(onErrorJustReturn: Void())
+            .drive(onNext: {[weak self] in
                 self?.configureHomeViewNicknameLabel()
-                self?.configureHomeViewMySearchIdLabel()
             })
             .disposed(by: disposeBag)
     }

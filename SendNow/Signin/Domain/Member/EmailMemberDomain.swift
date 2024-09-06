@@ -9,7 +9,6 @@ import Foundation
 
 struct EmailMemberDomain {
     let userID: Int?
-    let searchID: String?
     let nickname: String?
     let email: String?
     let password: String?

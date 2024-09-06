@@ -155,37 +155,10 @@ final class SignupWithEmailView: UIScrollView {
         return textField
     }()
     
-    let idLabel: SignupDescriptionLabel = {
-        let label = SignupDescriptionLabel()
-        label.text = "친구 검색 시 사용될 아이디를 입력해 주세요. \n 영문자, 숫자, 특수문자만 입력 가능해요."
-        label.numberOfLines = 0
-        return label
-    }()
-    
-    let idTextField: PaddingTextField = {
-        let textField = PaddingTextField()
-        textField.backgroundColor = .systemGray6
-        textField.placeholder = "ID"
-        textField.font = .systemFont(ofSize: 12.0, weight: .light)
-        textField.keyboardType = .asciiCapable
-        return textField
-    }()
-    
-    let idDuplicateButton: AnimationButton = {
-        let button = AnimationButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("중복확인", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .lightGray
-        button.isEnabled = false
-        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
-        button.layer.cornerRadius = 3.0
-        return button
-    }()
-    
     let nicknameLabel: SignupDescriptionLabel = {
         let label = SignupDescriptionLabel()
-        label.text = "친구들에게 보여질 이름을 입력해 주세요."
+        label.text = "친구와 공유할 닉네임을 3~16자 이내로 입력해 주세요. \n 영어, 한글, 숫자만 입력 가능해요."
+        label.numberOfLines = 0
         return label
     }()
     
@@ -195,6 +168,18 @@ final class SignupWithEmailView: UIScrollView {
         textField.placeholder = "NICKNAME"
         textField.font = .systemFont(ofSize: 12.0, weight: .light)
         return textField
+    }()
+    
+    let nicknameDuplicateButton: AnimationButton = {
+        let button = AnimationButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("중복확인", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .lightGray
+        button.isEnabled = false
+        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
+        button.layer.cornerRadius = 3.0
+        return button
     }()
     
     let signupButton: AnimationButton = {
@@ -243,11 +228,9 @@ extension SignupWithEmailView {
             passwordLabel,
             passwordTextField,
             rePasswordTextField,
-            idLabel,
-            idTextField,
-            idDuplicateButton,
             nicknameLabel,
             nicknameTextField,
+            nicknameDuplicateButton,
             signupButton
         ].forEach { self.addSubview($0) }
     }
@@ -335,31 +318,21 @@ extension SignupWithEmailView {
             rePasswordTextField.trailingAnchor.constraint(equalTo: emailLabel.trailingAnchor),
             rePasswordTextField.heightAnchor.constraint(equalTo: emailTextField.heightAnchor),
             
-            idLabel.topAnchor.constraint(equalTo: rePasswordTextField.bottomAnchor, constant: 48.0),
-            idLabel.leadingAnchor.constraint(equalTo: emailLabel.leadingAnchor),
-            idLabel.trailingAnchor.constraint(equalTo: emailLabel.trailingAnchor),
-            idLabel.heightAnchor.constraint(equalTo: passwordLabel.heightAnchor),
-            
-            idTextField.topAnchor.constraint(equalTo: idLabel.bottomAnchor, constant: 5.0),
-            idTextField.leadingAnchor.constraint(equalTo: emailLabel.leadingAnchor),
-            idTextField.heightAnchor.constraint(equalTo: emailTextField.heightAnchor),
-            idTextField.widthAnchor.constraint(equalTo: emailAuthTextField.widthAnchor),
-            
-            idDuplicateButton.topAnchor.constraint(equalTo: idTextField.topAnchor),
-            idDuplicateButton.leadingAnchor.constraint(equalTo: idTextField.trailingAnchor, constant: 8.0),
-            idDuplicateButton.trailingAnchor.constraint(equalTo: emailLabel.trailingAnchor),
-            idDuplicateButton.heightAnchor.constraint(equalTo: emailTextField.heightAnchor),
-            
-            nicknameLabel.topAnchor.constraint(equalTo: idDuplicateButton.bottomAnchor, constant: 48.0),
+            nicknameLabel.topAnchor.constraint(equalTo: rePasswordTextField.bottomAnchor, constant: 48.0),
             nicknameLabel.leadingAnchor.constraint(equalTo: emailLabel.leadingAnchor),
             nicknameLabel.trailingAnchor.constraint(equalTo: emailLabel.trailingAnchor),
-            nicknameLabel.heightAnchor.constraint(equalTo: emailLabel.heightAnchor),
+            nicknameLabel.heightAnchor.constraint(equalTo: passwordLabel.heightAnchor),
             
             nicknameTextField.topAnchor.constraint(equalTo: nicknameLabel.bottomAnchor, constant: 5.0),
             nicknameTextField.leadingAnchor.constraint(equalTo: emailLabel.leadingAnchor),
-            nicknameTextField.trailingAnchor.constraint(equalTo: emailLabel.trailingAnchor),
             nicknameTextField.heightAnchor.constraint(equalTo: emailTextField.heightAnchor),
-
+            nicknameTextField.widthAnchor.constraint(equalTo: emailAuthTextField.widthAnchor),
+            
+            nicknameDuplicateButton.topAnchor.constraint(equalTo: nicknameTextField.topAnchor),
+            nicknameDuplicateButton.leadingAnchor.constraint(equalTo: nicknameTextField.trailingAnchor, constant: 8.0),
+            nicknameDuplicateButton.trailingAnchor.constraint(equalTo: emailLabel.trailingAnchor),
+            nicknameDuplicateButton.heightAnchor.constraint(equalTo: emailTextField.heightAnchor),
+            
             signupButton.topAnchor.constraint(equalTo: nicknameTextField.bottomAnchor, constant: 12.0),
             signupButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             signupButton.heightAnchor.constraint(equalToConstant: 35.0),

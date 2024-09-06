@@ -8,7 +8,6 @@
 import Foundation
 
 struct SigninWithKakaoDomain {
-    let searchID: String
     let nickname: String
     let email: String
     let kakaoToken: String
@@ -19,6 +18,6 @@ struct SigninWithKakaoDomain {
 
 extension SigninWithKakaoDomain {
     func toRequestDTO() -> SigninWithKakaoRequestDTO {
-        return .init(searchID: searchID, nickname: nickname, email: email, kakaoToken: kakaoToken, kakaoID: kakaoID, isSetNoti: isSetNoti, fcmToken: fcmToken)
+        return .init(nickname: nickname, email: email, kakaoToken: kakaoToken, kakaoID: kakaoID, isSetNoti: isSetNoti, fcmToken: fcmToken)
     }
 }

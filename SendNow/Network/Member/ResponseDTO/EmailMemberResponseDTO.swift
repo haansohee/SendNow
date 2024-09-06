@@ -9,7 +9,6 @@ import Foundation
 
 struct EmailMemberResponseDTO: Codable {
     let userID: Int?
-    let searchID: String?
     let nickname: String?
     let email: String?
     let password: String?
@@ -20,6 +19,6 @@ struct EmailMemberResponseDTO: Codable {
 
 extension EmailMemberResponseDTO {
     func toDomain() -> EmailMemberDomain {
-        return .init(userID: userID, searchID: searchID, nickname: nickname, email: email, password: password, bankName: bankName, accountNumber: accountNumber, kakaoPayUrl: kakaoPayUrl)
+        return .init(userID: userID, nickname: nickname, email: email, password: password, bankName: bankName, accountNumber: accountNumber, kakaoPayUrl: kakaoPayUrl)
     }
 }

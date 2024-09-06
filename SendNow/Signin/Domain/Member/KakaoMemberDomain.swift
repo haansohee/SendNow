@@ -9,7 +9,6 @@ import Foundation
 
 struct KakaoMemberDomain {
     let userID: Int?
-    let searchID: String?
     let nickname: String?
     let email: String?
     let kakaoToken: String?

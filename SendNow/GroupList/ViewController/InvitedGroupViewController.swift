@@ -15,7 +15,9 @@ final class InvitedGroupViewController: UIViewController {
     private let groupListViewModel: GroupListViewModel
     private let disposeBag = DisposeBag()
     
-    init(homeViewModel: HomeViewModel = HomeViewModel(), groupListViewModel: GroupListViewModel = GroupListViewModel()) {
+    init(homeViewModel: HomeViewModel = HomeViewModel(
+        userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)),
+         groupListViewModel: GroupListViewModel = GroupListViewModel()) {
         self.homeViewModel = homeViewModel
         self.groupListViewModel = groupListViewModel
         super.init(nibName: nil, bundle: nil)

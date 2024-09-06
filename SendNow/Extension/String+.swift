@@ -15,15 +15,11 @@ extension String {
         return regex.firstMatch(in: self, options: [], range: range) != nil
     }
     
-    var isValidID: Bool {
-        return self.matchRegularExpression("^[a-zA-Z0-9_]{8,16}$")
+    var isValidNickname: Bool {
+        return self.matchRegularExpression("^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣_]{3,16}$")
     }
     
     var isValidPassword: Bool {
         return self.matchRegularExpression("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=-]).{8,30}")
-    }
-    
-    var isValidNickname: Bool {
-        return self.matchRegularExpression("^[ㄱ-ㅎㅏ-ㅣ가-힣]{1,13}$")
     }
 }

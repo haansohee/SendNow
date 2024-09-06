@@ -10,7 +10,6 @@ import Foundation
 struct SearchFriendResponseDTO: Codable {
     let userID: Int
     let nickname: String
-    let searchID: String
     let bankName: String?
     let accountNumber: String?
     let kakaoPayUrl: String?
@@ -18,6 +17,6 @@ struct SearchFriendResponseDTO: Codable {
 
 extension SearchFriendResponseDTO {
     func toDomain() -> SearchFriendDomain {
-        return .init(userID: userID, nickname: nickname, searchID: searchID, bankName: bankName, accountNumber: accountNumber, kakaoPayUrl: kakaoPayUrl)
+        return .init(userID: userID, nickname: nickname, bankName: bankName, accountNumber: accountNumber, kakaoPayUrl: kakaoPayUrl)
     }
 }

@@ -14,7 +14,6 @@ enum MemberInfoField: String {
     case password
     case kakaoToken
     case appleToken
-    case searchID
     case kakaoID
     case signinType
     case bankName

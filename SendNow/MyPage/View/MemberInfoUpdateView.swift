@@ -10,7 +10,8 @@ import UIKit
 final class MemberInfoUpdateView: UIView {
     let nicknameLabel: SignupDescriptionLabel = {
         let label = SignupDescriptionLabel()
-        label.text = "수정할 닉네임을 입력하세요."
+        label.text = "수정할 닉네임을 3~16자 이내로 입력해 주세요. \n 영어, 한글, 숫자만 입력 가능해요.입력하세요."
+        label.numberOfLines = 0
         return label
     }()
     
@@ -20,6 +21,18 @@ final class MemberInfoUpdateView: UIView {
         textField.borderStyle = .none
         textField.font = .systemFont(ofSize: 12.0, weight: .light)
         return textField
+    }()
+    
+    let nicknameDuplicateButton: AnimationButton = {
+        let button = AnimationButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("중복확인", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .lightGray
+        button.isEnabled = false
+        button.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .medium)
+        button.layer.cornerRadius = 5.0
+        return button
     }()
     
     let nicknameUpdateButton: AnimationButton = {
@@ -157,7 +170,7 @@ final class MemberInfoUpdateView: UIView {
         return imageView
     }()
     
-    private let withoutButton: AnimationButton = {
+    let cancelAccountButton: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("탈퇴하기", for: .normal)
@@ -182,6 +195,7 @@ extension MemberInfoUpdateView {
         [
             nicknameLabel,
             nicknameTextField,
+            nicknameDuplicateButton,
             nicknameUpdateButton,
             accountNumberLabel,
             bankNameUploadTextField,
@@ -193,7 +207,7 @@ extension MemberInfoUpdateView {
             kakaoPayUrlUploadButton,
             kakaoPayUrlUploadDescriptionLabel,
             imageStackView,
-            withoutButton
+            cancelAccountButton
         ].forEach { self.addSubview($0) }
         [
             kakaoPayUploadDescriptionWonSignImageView,
@@ -213,19 +227,24 @@ extension MemberInfoUpdateView {
             nicknameLabel.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 24.0),
             nicknameLabel.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 24.0),
             nicknameLabel.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -24.0),
-            nicknameLabel.heightAnchor.constraint(equalToConstant: 40.0),
+            nicknameLabel.heightAnchor.constraint(equalToConstant: 30.0),
             
             nicknameTextField.topAnchor.constraint(equalTo: nicknameLabel.bottomAnchor, constant: 12.0),
             nicknameTextField.leadingAnchor.constraint(equalTo: nicknameLabel.leadingAnchor),
             nicknameTextField.widthAnchor.constraint(equalToConstant: 220.0),
             nicknameTextField.heightAnchor.constraint(equalToConstant: 35.0),
             
-            nicknameUpdateButton.topAnchor.constraint(equalTo: nicknameTextField.topAnchor),
-            nicknameUpdateButton.leadingAnchor.constraint(equalTo: nicknameTextField.trailingAnchor, constant: 8.0),
-            nicknameUpdateButton.trailingAnchor.constraint(equalTo: nicknameLabel.trailingAnchor),
-            nicknameUpdateButton.heightAnchor.constraint(equalTo: nicknameTextField.heightAnchor),
+            nicknameDuplicateButton.topAnchor.constraint(equalTo: nicknameTextField.topAnchor),
+            nicknameDuplicateButton.leadingAnchor.constraint(equalTo: nicknameTextField.trailingAnchor, constant: 8.0),
+            nicknameDuplicateButton.trailingAnchor.constraint(equalTo: nicknameLabel.trailingAnchor),
+            nicknameDuplicateButton.heightAnchor.constraint(equalTo: nicknameTextField.heightAnchor),
             
-            accountNumberLabel.topAnchor.constraint(equalTo: nicknameTextField.bottomAnchor, constant: 50.0),
+            nicknameUpdateButton.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor),
+            nicknameUpdateButton.topAnchor.constraint(equalTo: nicknameDuplicateButton.bottomAnchor, constant: 14.0),
+            nicknameUpdateButton.heightAnchor.constraint(equalTo: nicknameDuplicateButton.heightAnchor),
+            nicknameUpdateButton.widthAnchor.constraint(equalTo: nicknameDuplicateButton.widthAnchor),
+//
+            accountNumberLabel.topAnchor.constraint(equalTo: nicknameDuplicateButton.bottomAnchor, constant: 50.0),
             accountNumberLabel.leadingAnchor.constraint(equalTo: nicknameLabel.leadingAnchor),
             accountNumberLabel.trailingAnchor.constraint(equalTo: nicknameLabel.trailingAnchor),
             accountNumberLabel.heightAnchor.constraint(equalTo: nicknameLabel.heightAnchor),
@@ -262,9 +281,9 @@ extension MemberInfoUpdateView {
             kakaoPayUrlUploadTextField.heightAnchor.constraint(equalTo: nicknameTextField.heightAnchor),
             
             kakaoPayUrlUploadButton.topAnchor.constraint(equalTo: kakaoPayUrlUploadTextField.topAnchor),
-            kakaoPayUrlUploadButton.leadingAnchor.constraint(equalTo: nicknameUpdateButton.leadingAnchor),
-            kakaoPayUrlUploadButton.trailingAnchor.constraint(equalTo: nicknameUpdateButton.trailingAnchor),
-            kakaoPayUrlUploadButton.heightAnchor.constraint(equalTo: nicknameUpdateButton.heightAnchor),
+            kakaoPayUrlUploadButton.leadingAnchor.constraint(equalTo: nicknameDuplicateButton.leadingAnchor),
+            kakaoPayUrlUploadButton.trailingAnchor.constraint(equalTo: nicknameDuplicateButton.trailingAnchor),
+            kakaoPayUrlUploadButton.heightAnchor.constraint(equalTo: nicknameDuplicateButton.heightAnchor),
             
             kakaoPayUrlUploadDescriptionLabel.topAnchor.constraint(equalTo: kakaoPayUrlUploadTextField.bottomAnchor, constant: 36.0),
             kakaoPayUrlUploadDescriptionLabel.leadingAnchor.constraint(equalTo: kakaoPayLabel.leadingAnchor),
@@ -291,10 +310,21 @@ extension MemberInfoUpdateView {
             kakaoPayUploadDescriptionLinkImageView.widthAnchor.constraint(equalTo: kakaoPayUploadDescriptionWonSignImageView.widthAnchor),
             kakaoPayUploadDescriptionLinkImageView.heightAnchor.constraint(equalTo: kakaoPayUploadDescriptionWonSignImageView.heightAnchor),
             
-            withoutButton.topAnchor.constraint(equalTo: imageStackView.bottomAnchor, constant: 50.0),
-            withoutButton.leadingAnchor.constraint(equalTo: nicknameLabel.leadingAnchor),
-            withoutButton.trailingAnchor.constraint(equalTo: nicknameLabel.trailingAnchor),
-            withoutButton.heightAnchor.constraint(equalToConstant: 40.0)
+            cancelAccountButton.topAnchor.constraint(equalTo: imageStackView.bottomAnchor, constant: 50.0),
+            cancelAccountButton.leadingAnchor.constraint(equalTo: nicknameLabel.leadingAnchor),
+            cancelAccountButton.trailingAnchor.constraint(equalTo: nicknameLabel.trailingAnchor),
+            cancelAccountButton.heightAnchor.constraint(equalToConstant: 40.0)
         ])
+    }
+    
+    func configureNicknameDuplicateButton(_ isEnabled: Bool) {
+        nicknameDuplicateButton.isEnabled = isEnabled
+        nicknameDuplicateButton.backgroundColor = isEnabled ? UIColor(named: "SubTitleColor") : .lightGray
+        nicknameDuplicateButton.setTitleColor(isEnabled ? .black : .white, for: .normal)
+    }
+    
+    func configureNicknameUpdateButton(_ isEnabled: Bool) {
+        nicknameUpdateButton.isEnabled = isEnabled
+        nicknameUpdateButton.backgroundColor = isEnabled ? UIColor(named: "TitleColor") : .lightGray
     }
 }

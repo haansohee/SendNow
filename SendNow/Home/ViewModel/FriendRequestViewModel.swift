@@ -36,8 +36,8 @@ final class FriendRequestViewModel {
         }
     }
     
-    func searchFriendId(friendSearchId: String) {
-        friendService.getFriendInformation(with: friendSearchId) {[weak self] result in
+    func searchFriendNickname(nickname: String) {
+        friendService.getFriendInformation(with: nickname) {[weak self] result in
             self?.searchFriendInformation = result
             self?.isEmptySearchFriend.onNext(!result.nickname.isEmpty)
         }

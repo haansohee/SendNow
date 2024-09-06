@@ -47,15 +47,6 @@ final class HomeView: UIView {
         return label
     }()
     
-    let mySearchIdLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 13.0, weight: .light)
-        label.textColor = .black
-        label.textAlignment = .left
-        return label
-    }()
-    
     let signoutButton: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -120,7 +111,6 @@ extension HomeView {
         [
             memberNicknameLabel,
             welcomeLabel,
-            mySearchIdLabel,
             signoutButton
         ].forEach { memberContainerView.addSubview($0) }
     }
@@ -141,12 +131,7 @@ extension HomeView {
             welcomeLabel.widthAnchor.constraint(equalToConstant: 140.0),
             welcomeLabel.heightAnchor.constraint(equalToConstant: 30.0),
             
-            mySearchIdLabel.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor),
-            mySearchIdLabel.leadingAnchor.constraint(equalTo: memberContainerView.leadingAnchor, constant: 12.0),
-            mySearchIdLabel.trailingAnchor.constraint(equalTo: memberContainerView.trailingAnchor, constant: -12.0),
-            mySearchIdLabel.heightAnchor.constraint(equalToConstant: 30.0),
-            
-            signoutButton.topAnchor.constraint(equalTo: mySearchIdLabel.bottomAnchor),
+            signoutButton.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor),
             signoutButton.trailingAnchor.constraint(equalTo: memberContainerView.trailingAnchor, constant: -12.0),
             signoutButton.widthAnchor.constraint(equalToConstant: 80),
             signoutButton.heightAnchor.constraint(equalToConstant: 30.0),

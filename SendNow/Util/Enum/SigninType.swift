@@ -11,4 +11,5 @@ enum SigninType: String {
     case kakao
     case apple
     case email
+    case `default`
 }

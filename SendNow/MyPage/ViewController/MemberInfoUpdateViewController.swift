@@ -12,11 +12,16 @@ import RxSwift
 final class MemberInfoUpdateViewController: UIViewController {
     private let memberInfoUpdateView = MemberInfoUpdateView()
     private let homeViewModel: HomeViewModel
-    private let memberInfoUpdateViewModel = MemberInfoUpdateViewModel()
+    private let memberInfoUpdateViewModel: MemberInfoUpdateViewModel
     private let disposeBag = DisposeBag()
     
-    init(viewModel: HomeViewModel = HomeViewModel()) {
+    init(viewModel: HomeViewModel = HomeViewModel(userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)),
+         updateViewModel: MemberInfoUpdateViewModel = MemberInfoUpdateViewModel(
+            userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue),
+            signinType: SigninType(
+                rawValue: UserDefaults.standard.string(forKey: MemberInfoField.signinType.rawValue) ?? "") ?? .default)) {
         self.homeViewModel = viewModel
+        self.memberInfoUpdateViewModel = updateViewModel
         super.init(nibName: nil, bundle: nil)
         homeViewModel.loadMemberInformation()
     }
@@ -43,7 +48,6 @@ final class MemberInfoUpdateViewController: UIViewController {
 extension MemberInfoUpdateViewController {
     private func configureMemberInfoView() {
         memberInfoUpdateView.translatesAutoresizingMaskIntoConstraints = false
-        memberInfoUpdateView.nicknameTextField.delegate = self
         view.backgroundColor = .systemBackground
         navigationItem.title = "회원정보"
     }
@@ -83,13 +87,28 @@ extension MemberInfoUpdateViewController {
     
     //MARK: Bind
     private func bindAll() {
+        bindNicknameDuplicateButton()
         bindNicknameUpdateButton()
         bindBankNameUploadButton()
         bindKakaoPayUrlUploadButton()
         bindAccountNumberUploadButton()
+        bindCancelAccountButton()
+        bindNicknameTextField()
+        bindIsDuplicatedNickname()
         bindIsUpdatedNickname()
         bindIsUpdatedAccountNumber()
         bindIsUpdatedKakaoPayUrl()
+        bindIsCanceldAccount()
+    }
+    
+    private func bindNicknameDuplicateButton() {
+        memberInfoUpdateView.nicknameDuplicateButton.rx.tap
+            .subscribe(onNext: {[weak self] _ in
+                guard let nickname = self?.memberInfoUpdateView.nicknameTextField.text,
+                      !(nickname.isEmpty) else { return }
+                self?.memberInfoUpdateViewModel.isDuplicatedNickname(nickname)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func bindNicknameUpdateButton() {
@@ -153,6 +172,36 @@ extension MemberInfoUpdateViewController {
             }).disposed(by: disposeBag)
     }
     
+    private func bindCancelAccountButton() {
+        memberInfoUpdateView.cancelAccountButton.rx.tap
+            .subscribe(onNext: {[weak self] in
+                self?.cancelAccountAlert()
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindNicknameTextField() {
+        memberInfoUpdateView.nicknameTextField.rx.text
+            .orEmpty
+            .asDriver()
+            .drive(onNext: {[weak self] inputNickname in
+                let isValid = inputNickname.isValidNickname
+                self?.memberInfoUpdateView.nicknameLabel.text = isValid ? "" : "닉네임을 3~16자 이내로 입력해 주세요. \n 영어, 한글, 숫자만 입력 가능해요."
+                self?.memberInfoUpdateView.configureNicknameDuplicateButton(isValid)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindIsDuplicatedNickname() {
+        memberInfoUpdateViewModel.isDuplicatedNickname
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isDuplicatedNickname in
+                self?.memberInfoUpdateView.nicknameLabel.text = isDuplicatedNickname ? "사용 가능한 닉네임이에요." : "중복된 닉네임이에요."
+                self?.memberInfoUpdateView.configureNicknameUpdateButton(isDuplicatedNickname)
+            })
+            .disposed(by: disposeBag)
+    }
+    
     private func bindIsUpdatedNickname() {
         memberInfoUpdateViewModel.isUpdatedNickname
             .asDriver(onErrorJustReturn: false)
@@ -164,7 +213,11 @@ extension MemberInfoUpdateViewController {
                       !updateNickname.isEmpty else { return }
                 self?.confirmAlert(title: "바로보내", message: "변경이 완료되었어요.")
                 self?.memberInfoUpdateView.nicknameTextField.text = ""
+                self?.memberInfoUpdateView.nicknameLabel.text = "닉네임을 3~16자 이내로 입력해 주세요. \n 영어, 한글, 숫자만 입력 가능해요."
                 self?.memberInfoUpdateView.nicknameTextField.placeholder = updateNickname
+                self?.memberInfoUpdateView.configureNicknameUpdateButton(false)
+                self?.memberInfoUpdateView.configureNicknameDuplicateButton(false)
+                
             })
             .disposed(by: disposeBag)
     }
@@ -204,6 +257,20 @@ extension MemberInfoUpdateViewController {
             .disposed(by: disposeBag)
     }
     
+    private func bindIsCanceldAccount() {
+        memberInfoUpdateViewModel.isCanceledAccount
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isCanceledAccount in
+                guard isCanceledAccount else {
+                    self?.confirmAlert(title: "바로보내", message: "잠시후에 시도해 주세요.")
+                    return }
+                let rootViewController = UINavigationController(rootViewController: SigninViewController())
+                guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+                sceneDelegate.changeRootViewController(rootViewController, animated: true)
+            })
+            .disposed(by: disposeBag)
+    }
+    
     //MARK: Alert
     private func confirmAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -211,24 +278,18 @@ extension MemberInfoUpdateViewController {
         alertController.addAction(doneAction)
         self.present(alertController, animated: true)
     }
-}
-
-//MARK: UITextFieldDelegate
-extension MemberInfoUpdateViewController: UITextFieldDelegate {
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard let nickname = textField.text,
-              let newRange = Range(range, in: nickname) else { return true }
-        let inputNickname = string.trimmingCharacters(in: .whitespacesAndNewlines)
-        let newNickname = nickname.replacingCharacters(in: newRange, with: inputNickname).trimmingCharacters(in: .whitespacesAndNewlines)
-        let isValid = newNickname.isValidNickname
-        memberInfoUpdateView.nicknameUpdateButton.isEnabled = isValid
-        if isValid {
-            memberInfoUpdateView.nicknameLabel.text = "수정할 닉네임을 입력하세요."
-            memberInfoUpdateView.nicknameUpdateButton.backgroundColor = UIColor(named: "TitleColor")
-        } else {
-            memberInfoUpdateView.nicknameLabel.text = "한글만 가능하며, 13자 이내로 입력해 주세요."
-            memberInfoUpdateView.nicknameUpdateButton.backgroundColor = .lightGray
+    
+    private func cancelAccountAlert() {
+        let message = "탈퇴 후 해당 계정과 관련된 모든 데이터는 복구할 수 없으며, 계정을 다시 활성화할 수 없습니다. \n 탈퇴하시겠습니까? 🥲"
+        let alertController = UIAlertController(title: "바로보내", message: message, preferredStyle: .alert)
+        let doneAction = UIAlertAction(title: "탈퇴하기", style: .destructive) {[weak self] _ in
+            self?.memberInfoUpdateViewModel.cancelAccount()
         }
-        return true
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+        alertController.addAction(doneAction)
+        alertController.addAction(cancelAction)
+        DispatchQueue.main.async {[weak self] in
+            self?.present(alertController, animated: true)
+        }
     }
 }

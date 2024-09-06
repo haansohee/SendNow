@@ -13,6 +13,8 @@ final class PaddingTextField: UITextField {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.translatesAutoresizingMaskIntoConstraints = false
+        self.autocorrectionType = .no
+        self.spellCheckingType = .no
         borderStyle = .none
     }
     
@@ -28,3 +30,4 @@ final class PaddingTextField: UITextField {
         return bounds.inset(by: padding)
     }
 }
+
