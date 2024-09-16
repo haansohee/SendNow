@@ -10,9 +10,10 @@ import Foundation
 enum GroupAPIPath: String {
     case setGroupList = "/SendNow/setGroupList/"
     case setExpensesUpload = "/SendNow/setExpenseUpload/"
-    case getGroupList = "/SendNow/getGroupList?userID="
-    case getGroupMemberList = "/SendNow/getGroupMemberList?groupID="
-    case getGroupSettlementsInformations = "/SendNow/getGroupSettlementsInformations?groupID="
+    case getGroupList = "/SendNow/getGroupList"
+    case getGroupMemberList = "/SendNow/getGroupMemberList"
+    case getGroupExpenseInformations = "/SendNow/getGroupExpenseInformations"
+    case getGroupSettlementsInformations = "/SendNow/getGroupSettlementsInformations"
 }
 
 final class GroupService {
@@ -31,7 +32,7 @@ final class GroupService {
     }
     
     func getGroupList(with userID: Int, completion: @escaping([GroupListDomain])->Void) {
-        let path = "\(GroupAPIPath.getGroupList.rawValue)\(userID)"
+        let path = "\(GroupAPIPath.getGroupList.rawValue)?userID=\(userID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: [GroupListResponseDTO].self) { result in
             switch result {
             case .success(let responseDTO):
@@ -44,7 +45,7 @@ final class GroupService {
     }
     
     func getGroupMemberList(with groupID: Int, completion: @escaping([GroupMemberListDomain])->Void) {
-        let path = "\(GroupAPIPath.getGroupMemberList.rawValue)\(groupID)"
+        let path = "\(GroupAPIPath.getGroupMemberList.rawValue)?groupID=\(groupID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: [GroupMemberListResponseDTO].self) { result in
             switch result {
             case .success(let responseDTO):
@@ -57,7 +58,7 @@ final class GroupService {
     }
     
     func getGroupExpenseInformations(with userID: Int, groupID: Int, completion: @escaping(ExpenseInformationDomain)->Void) {
-        let path = "/SendNow/getGroupExpenseInformations?userID=\(userID)&groupID=\(groupID)"
+        let path = "\(GroupAPIPath.getGroupExpenseInformations.rawValue)?userID=\(userID)&groupID=\(groupID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: ExpenseInformationResponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
@@ -69,7 +70,7 @@ final class GroupService {
     }
     
     func getGroupSettlementsInformations(with groupID: Int, completion: @escaping(SettlementListDomain)->Void) {
-        let path = "\(GroupAPIPath.getGroupSettlementsInformations.rawValue)\(groupID)"
+        let path = "\(GroupAPIPath.getGroupSettlementsInformations.rawValue)?groupID=\(groupID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: SettlementListReponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):

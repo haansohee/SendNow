@@ -21,6 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard let nativeAppKey = Bundle.main.infoDictionary?["KAKAO_NATIVE_APP_KEY"] else { return true }
         RxKakaoSDK.initSDK(appKey: nativeAppKey as! String)
         IQKeyboardManager.shared.enable = true
+        IQKeyboardManager.shared.enableAutoToolbar = false
         IQKeyboardManager.shared.resignOnTouchOutside = true
         FirebaseApp.configure()
         
@@ -36,6 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.registerForRemoteNotifications()
         
         Messaging.messaging().delegate = self
+        Messaging.messaging().isAutoInitEnabled = true
         return true
     }
 

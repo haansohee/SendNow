@@ -8,7 +8,6 @@
 import Foundation
 
 struct SigninWithEmailDomain {
-    let searchID: String
     let nickname: String
     let email: String
     let password: String
@@ -18,6 +17,6 @@ struct SigninWithEmailDomain {
 
 extension SigninWithEmailDomain {
     func toRequestDTO() -> SigninWithEmailRequestDTO {
-        return .init(searchID: searchID, nickname: nickname, email: email, password: password, isSetNoti: isSetNoti, fcmToken: fcmToken)
+        return .init(nickname: nickname, email: email, password: password, isSetNoti: isSetNoti, fcmToken: fcmToken)
     }
 }

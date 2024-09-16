@@ -59,11 +59,8 @@ extension SigninViewController {
         bindSigninWithKakaoButton()
         bindSigninWithAppleButton()
         bindSigninButton()
-        bindRegistrationRequired()
-        bindIsExistedSearchID()
-        bindIsSuccessedSignupWithApple()
-        bindIsExistedEmail()
-        bindIsPasswordMatching()
+        bindIsSuccessSignin()
+        bindIsValidEmailPassword()
     }
     
     private func bindSignupWithEmailButton() {
@@ -100,68 +97,27 @@ extension SigninViewController {
     
     private func bindSigninButton() {
         signinView.signinButton.rx.tap
-            .asDriver()
-            .drive(onNext: {[weak self] _ in
+            .subscribe(onNext: {[weak self] _ in
                 guard let email = self?.signinView.emailTextField.text,
                       let password = self?.signinView.passwordTextField.text,
                       !(email.isEmpty),
-                      !(password.isEmpty) else { return }
-                self?.signinViewModel.signinWithEmail(email)
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    private func bindRegistrationRequired() {
-        signinViewModel.isRegisteredKakaoMember
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isRegisteredKakaoMember in
-                guard !isRegisteredKakaoMember else {
-                    let rootViewController = MainTabBarController()
-                    guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
-                    sceneDelegate.changeRootViewController(rootViewController, animated: true)
+                      !(password.isEmpty) else {
+                    DispatchQueue.main.async {
+                        self?.blankAlert(title: "바로보내", message: "이메일과 비밀번호를 입력해 주세요.")
+                    }
                     return }
-                self?.navigationController?.pushViewController(SettingSearchIDViewController(), animated: true)
+                self?.signinViewModel.isValidEmailPassword(email, password) // 가입되어 있는 이메일인지와 패스워드 일치여부 확인
             })
             .disposed(by: disposeBag)
     }
     
-    private func bindIsExistedSearchID() {
-        signinViewModel.isExistedSearchID
+    private func bindIsSuccessSignin() {
+        signinViewModel.isSuccessSignin
             .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isExistedSearchID in
-                guard !isExistedSearchID else {
-                    let rootViewController = MainTabBarController()
-                    guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
-                    sceneDelegate.changeRootViewController(rootViewController, animated: true)
+            .drive(onNext: {[weak self] isSuccessSignin in
+                guard isSuccessSignin else {
+                    self?.navigationController?.pushViewController(SettingNicknameViewController(), animated: true)
                     return }
-                guard let appleMemberInfo = self?.signinViewModel.signupWithAppleInfo else { return }
-                self?.navigationController?.pushViewController(SettingSearchIDViewController(appleMemberInfo: appleMemberInfo), animated: true)
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    private func bindIsSuccessedSignupWithApple() {
-        signinViewModel.isSuccessedSignupWithApple
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isSuccessedSignupWithApple in
-                guard isSuccessedSignupWithApple else { return }
-                guard let signupWithAppleInfo = self?.signinViewModel.signupWithAppleInfo else { return }
-                self?.navigationController?.pushViewController(SettingSearchIDViewController(appleMemberInfo: signupWithAppleInfo), animated: true)
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    private func bindIsExistedEmail() {
-        signinViewModel.isExistedEmail
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isExistedEmail in
-                guard isExistedEmail else {
-                    self?.blankAlert(title: "바로보내", message: "존재하지 않는 이메일이에요.")
-                    return
-                }
-                guard let inputPassword = self?.signinView.passwordTextField.text,
-                      !(inputPassword.isEmpty) else { return }
-                self?.signinViewModel.isPasswordMatching(inputPassword)
                 let rootViewController = MainTabBarController()
                 guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
                 sceneDelegate.changeRootViewController(rootViewController, animated: true)
@@ -169,14 +125,13 @@ extension SigninViewController {
             .disposed(by: disposeBag)
     }
     
-    private func bindIsPasswordMatching() {
-        signinViewModel.isPasswordMatching
+    private func bindIsValidEmailPassword() {
+        signinViewModel.isValidEmailPassword
             .asDriver(onErrorJustReturn: false)
-            .drive(onNext:{[weak self] isPasswordMatching in
-                guard isPasswordMatching else {
-                    self?.blankAlert(title: "바로보내", message: "이메일 혹은 비밀번호가 일치하지 않아요.")
+            .drive(onNext:{[weak self] isValidEmailPassword in  // 기입한 이메일의 가입 여부와 비밀번호 일치 여부 확인
+                guard isValidEmailPassword else {
+                    self?.blankAlert(title: "바로보내", message: "가입된 이메일이 아니거나 비밀번호가 일치하지 않아요.")
                     return }
-                self?.signinViewModel.setUserDefaultsEmailMember()
             })
             .disposed(by: disposeBag)
     }
@@ -196,28 +151,15 @@ extension SigninViewController: ASAuthorizationControllerDelegate {
             let userIdentifier = credential.user
             guard let identityToken = credential.identityToken,
                   let appleToken = String(data: identityToken, encoding: .utf8),
-                  let fullName = credential.fullName else { return }
+                  let authorizationCodeData = credential.authorizationCode,
+                  let authorizationCode = String(data: authorizationCodeData, encoding: .utf8) else { return }
             let provider = ASAuthorizationAppleIDProvider()
             provider.getCredentialState(forUserID: userIdentifier) {[weak self] credentialState, error in
                 switch credentialState {
                 case .authorized:
-                    if let email = credential.email {
-                        guard let familyName = fullName.familyName,
-                              let givenName = fullName.givenName else { return }
-                        let nickname = "\(familyName)\(givenName)"
-                        guard let fcmToken = self?.signinViewModel.fcmToken,
-                              let isSetNoti = self?.signinViewModel.isSetNoti else { return }
-                        let appleMemberInfo = SigninWithAppleDomain(searchID: "",
-                                                                    nickname: nickname,
-                                                                    email: email,
-                                                                    appleToken: appleToken,
-                                                                    isSetNoti: isSetNoti,
-                                                                    fcmToken: fcmToken)
-                        self?.signinViewModel.signupWithApple(appleMemberInfo)
-                    } else {
-                        self?.signinViewModel.signinWithApple(appleToken)
-                    }
+                    self?.signinViewModel.signinWithApple(appleToken, authorizationCode)
                     return
+                    
                 default:
                     print("🚨ERROR!! : \(credentialState.rawValue)")
                     return

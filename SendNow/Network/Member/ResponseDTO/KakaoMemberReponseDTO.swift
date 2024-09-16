@@ -9,7 +9,6 @@ import Foundation
 
 struct KakaoMemberReponseDTO: Codable {
     let userID: Int?
-    let searchID: String?
     let nickname: String?
     let email: String?
     let kakaoToken: String?
@@ -21,6 +20,6 @@ struct KakaoMemberReponseDTO: Codable {
 
 extension KakaoMemberReponseDTO {
     func toDomain() -> KakaoMemberDomain {
-        return .init(userID: userID, searchID: searchID, nickname: nickname, email: email, kakaoToken: kakaoToken, kakaoID: kakaoID, bankName: bankName, accountNumber: accountNumber, kakaoPayUrl: kakaoPayUrl)
+        return .init(userID: userID, nickname: nickname, email: email, kakaoToken: kakaoToken, kakaoID: kakaoID, bankName: bankName, accountNumber: accountNumber, kakaoPayUrl: kakaoPayUrl)
     }
 }

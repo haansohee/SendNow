@@ -8,7 +8,6 @@
 import Foundation
 
 struct SigninWithKakaoRequestDTO: Codable {
-    let searchID: String
     let nickname: String
     let email: String
     let kakaoToken: String

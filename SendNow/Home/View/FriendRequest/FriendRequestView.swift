@@ -17,16 +17,15 @@ final class FriendRequestView: UIView {
     
     private let requestFriendLabel: SignupDescriptionLabel = {
         let label = SignupDescriptionLabel()
-        label.text = "친구의 검색 ID를 입력하세요."
+        label.text = "친구의 닉네임을 입력하세요."
         return label
     }()
     
-    let friendIdTextField: PaddingTextField = {
+    let friendNicknameTextField: PaddingTextField = {
         let textField = PaddingTextField()
-        textField.placeholder = "FRIEND SEARCH ID"
+        textField.placeholder = "FRIEND NICKNAME"
         textField.backgroundColor = .systemGray6
         textField.font = .systemFont(ofSize: 12.0, weight: .light)
-        textField.keyboardType = .asciiCapable
         return textField
     }()
     
@@ -94,7 +93,7 @@ extension FriendRequestView {
     private func addSubviews() {
         [
             requestFriendLabel,
-            friendIdTextField,
+            friendNicknameTextField,
             searchButton,
             searchResultLabel,
             resultStackView
@@ -112,14 +111,14 @@ extension FriendRequestView {
             requestFriendLabel.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -36.0),
             requestFriendLabel.heightAnchor.constraint(equalToConstant: 40.0),
             
-            friendIdTextField.topAnchor.constraint(equalTo: requestFriendLabel.bottomAnchor, constant: 12.0),
-            friendIdTextField.leadingAnchor.constraint(equalTo: requestFriendLabel.leadingAnchor),
-            friendIdTextField.trailingAnchor.constraint(equalTo: requestFriendLabel.trailingAnchor),
-            friendIdTextField.heightAnchor.constraint(equalToConstant: 35.0),
+            friendNicknameTextField.topAnchor.constraint(equalTo: requestFriendLabel.bottomAnchor, constant: 12.0),
+            friendNicknameTextField.leadingAnchor.constraint(equalTo: requestFriendLabel.leadingAnchor),
+            friendNicknameTextField.trailingAnchor.constraint(equalTo: requestFriendLabel.trailingAnchor),
+            friendNicknameTextField.heightAnchor.constraint(equalToConstant: 35.0),
             
-            searchButton.topAnchor.constraint(equalTo: friendIdTextField.bottomAnchor, constant: 8.0),
-            searchButton.centerXAnchor.constraint(equalTo: friendIdTextField.centerXAnchor),
-            searchButton.heightAnchor.constraint(equalTo: friendIdTextField.heightAnchor),
+            searchButton.topAnchor.constraint(equalTo: friendNicknameTextField.bottomAnchor, constant: 8.0),
+            searchButton.centerXAnchor.constraint(equalTo: friendNicknameTextField.centerXAnchor),
+            searchButton.heightAnchor.constraint(equalTo: friendNicknameTextField.heightAnchor),
             searchButton.widthAnchor.constraint(equalToConstant: 70.0),
             
             searchResultLabel.topAnchor.constraint(equalTo: searchButton.bottomAnchor, constant: 44.0),

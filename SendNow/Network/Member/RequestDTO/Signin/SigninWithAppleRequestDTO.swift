@@ -8,10 +8,9 @@
 import Foundation
 
 struct SigninWithAppleRequestDTO: Codable {
-    let searchID: String
     let nickname: String
-    let email: String
     let appleToken: String
+    let authorizationCode: String
     let isSetNoti: Bool
     let fcmToken: String
 }

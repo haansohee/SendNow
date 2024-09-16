@@ -8,17 +8,16 @@
 import Foundation
 
 struct SigninWithAppleDomain {
-    let searchID: String
     let nickname: String
-    let email: String
     let appleToken: String
+    let authorizationCode: String
     let isSetNoti: Bool
     let fcmToken: String
 }
 
 extension SigninWithAppleDomain {
     func toRequestDTO() -> SigninWithAppleRequestDTO {
-        return .init(searchID: searchID, nickname: nickname, email: email, appleToken: appleToken, isSetNoti: isSetNoti, fcmToken: fcmToken)
+        return .init(nickname: nickname, appleToken: appleToken, authorizationCode: authorizationCode, isSetNoti: isSetNoti, fcmToken: fcmToken)
     }
 }
 

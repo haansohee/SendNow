@@ -37,8 +37,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 extension SceneDelegate {
     func changeRootViewController(_ viewController: UIViewController, animated: Bool) {
-        guard let window = self.window else { return }
-        window.rootViewController = viewController
-        UIView.transition(with: window, duration: 0.2, options: [.transitionCrossDissolve],animations: nil, completion: nil)
+        self.window?.rootViewController = viewController
+        UIView.transition(with: self.window!, duration: 0.2, options: [.transitionCrossDissolve],animations: nil, completion: nil)
     }
 }

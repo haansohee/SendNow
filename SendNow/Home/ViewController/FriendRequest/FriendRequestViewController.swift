@@ -72,12 +72,11 @@ extension FriendRequestViewController {
     
     private func bindSearchButton() {
         friendRequestView.searchButton.rx.tap
-            .asDriver()
-            .drive(onNext: {[weak self] _ in
-                guard let friendSearchId = self?.friendRequestView.friendIdTextField.text,
-                      !friendSearchId.isEmpty else { return }
-                self?.friendRequestView.searchResultLabel.text = "검색 중..."
-                self?.friendRequestViewModel.searchFriendId(friendSearchId: friendSearchId)
+            .subscribe(onNext: {[weak self] _ in
+                guard let friendNickname = self?.friendRequestView.friendNicknameTextField.text,
+                      !friendNickname.isEmpty else { return }
+//                self?.friendRequestView.searchResultLabel.text = "검색 중..."
+                self?.friendRequestViewModel.searchFriendNickname(nickname: friendNickname)
             })
             .disposed(by: disposeBag)
     }
