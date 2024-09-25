@@ -9,7 +9,6 @@ import Foundation
 import Tabman
 import Pageboy
 import UIKit
-
 final class SettleTabViewController: TabmanViewController {
     private var viewControllers: [UIViewController]?
     private var tabTitle: String?

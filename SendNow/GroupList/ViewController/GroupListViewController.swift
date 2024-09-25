@@ -51,6 +51,7 @@ final class GroupListViewController: UIViewController {
         setLayoutConstraintsGroupListView()
         bindAll()
         addInvitedFriendNotification()
+        addDeletedGroupNotification()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -82,12 +83,17 @@ extension GroupListViewController {
         ])
     }
     private func addInvitedFriendNotification() {
-        NotificationCenter.default.addObserver(self, selector: #selector(dataReceived), name: NSNotification.Name(NotificationName.invitedFriend.rawValue), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name(NotificationName.invitedFriend.rawValue), object: nil)
     }
     
-    @objc private func dataReceived() {
+    private func addDeletedGroupNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(notificationReceived), name: NSNotification.Name(NotificationName.deleteGroup.rawValue), object: nil)
+    }
+    
+    @objc private func notificationReceived() {
         groupListViewModel.loadMyGroup()
     }
+    
     
     //MARK: Bind
     private func bindAll() {
@@ -109,7 +115,6 @@ extension GroupListViewController {
             .asDriver(onErrorJustReturn: Void())
             .drive(onNext: {[weak self] in
                 self?.groupListCollectionView.reloadData()
-                
             })
             .disposed(by: disposeBag)
     }
@@ -118,22 +123,28 @@ extension GroupListViewController {
 extension GroupListViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return groupListViewModel.myGroupList?.count ?? 1
+        guard let myGroupList = groupListViewModel.myGroupList,
+              !myGroupList.isEmpty else { return 1 }
+        return myGroupList.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GroupListCollectionViewCell.reuseIdentifier, for: indexPath) as? GroupListCollectionViewCell else { return UICollectionViewCell() }
-        guard let myGroupList = groupListViewModel.myGroupList else { return cell }
+        
+        guard let myGroupList = groupListViewModel.myGroupList,
+              !myGroupList.isEmpty else {
+            cell.resetGroupListCollectionViewCellLabel()
+            return cell
+        }
         
         cell.setGroupListCollectionViewCellLabel(myGroupList[indexPath.row])
-        cell.rx.tapGesture()
-            .when(.recognized)
-            .asDriver{ _ in .never() }
-            .drive(onNext: {[weak self] _ in
-                self?.navigationController?.pushViewController(SettleTabViewController(groupID: myGroupList[indexPath.row].groupID, groupName: myGroupList[indexPath.row].groupName), animated: true)
-            })
-            .disposed(by: cell.disposeBag)
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let myGroupList = groupListViewModel.myGroupList,
+              !myGroupList.isEmpty else { return }
+        navigationController?.pushViewController(SettleTabViewController(groupID: myGroupList[indexPath.row].groupID, groupName: myGroupList[indexPath.row].groupName), animated: true)
     }
 }
 

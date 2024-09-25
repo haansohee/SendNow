@@ -162,6 +162,7 @@ extension SigninViewController: ASAuthorizationControllerDelegate {
                     
                 default:
                     print("🚨ERROR!! : \(credentialState.rawValue)")
+                    self?.blankAlert(title: "바로보내", message: "회원님의 애플 계정으로 로그인 및 회원가입이 불가능해요. \n 바로보내 고객센터로 문의해 주세요. \n 고객센터 이메일: balobonae@gmail.com")
                     return
                 }
             }
