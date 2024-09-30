@@ -8,6 +8,14 @@
 import UIKit
 
 final class SettleGroupView: UIView {
+    let groupRemoveButton: AnimationButton = {
+        let button = AnimationButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitleColor(.systemRed, for: .normal)
+        button.setTitle("그룹 삭제", for: .normal)
+        return button
+    }()
+    
     let spendingDetailCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical

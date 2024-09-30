@@ -10,10 +10,12 @@ import Foundation
 enum GroupAPIPath: String {
     case setGroupList = "/SendNow/setGroupList/"
     case setExpensesUpload = "/SendNow/setExpenseUpload/"
+    case deleteGroup = "/SendNow/deleteGroup"
     case getGroupList = "/SendNow/getGroupList"
     case getGroupMemberList = "/SendNow/getGroupMemberList"
     case getGroupExpenseInformations = "/SendNow/getGroupExpenseInformations"
     case getGroupSettlementsInformations = "/SendNow/getGroupSettlementsInformations"
+    case getGroupCreatorUserID = "/SendNow/getGroupCreatorUserID"
 }
 
 final class GroupService {
@@ -29,6 +31,12 @@ final class GroupService {
         let path = GroupAPIPath.setExpensesUpload.rawValue
         let expensesUploadInfo = expenseUploadDomain.toRequestDTO()
         networkSessionManager.urlPostMethod(path: path, encodeValue: expensesUploadInfo, completion: completion)
+    }
+    
+    func deleteGroup(with groupID: Int, completion: @escaping(Bool)->Void) {
+        print("delete Group Method")
+        let path = "\(GroupAPIPath.deleteGroup.rawValue)?groupID=\(groupID)"
+        networkSessionManager.urlDeleteMethod(path: path, encodeValue: groupID, completion: completion)
     }
     
     func getGroupList(with userID: Int, completion: @escaping([GroupListDomain])->Void) {
@@ -76,6 +84,19 @@ final class GroupService {
             case .success(let responseDTO):
                 completion(responseDTO.toDomain())
             case .failure(let error):
+                print("get Group Settlements Informations Error : \(error)")
+            }
+        }
+    }
+    
+    func getGroupCreatorUserID(with groupID: Int, userID: Int, completion: @escaping(Bool)->Void) {
+        let path = "\(GroupAPIPath.getGroupCreatorUserID.rawValue)?groupID=\(groupID)&userID=\(userID)"
+        networkSessionManager.urlGetMethod(path: path, requestDTO: Bool.self) { result in
+            switch result {
+            case .success(let responseDTO):
+                completion(responseDTO)
+            case .failure(let error):
+                completion(false)
                 print("get Group Settlements Informations Error : \(error)")
             }
         }

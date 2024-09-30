@@ -22,7 +22,6 @@ final class GroupListViewModel {
     
     func loadMyGroup() {
         groupService.getGroupList(with: userID) {[weak self] result in
-            guard !result.isEmpty else { return }
             self?.myGroupList = result
             self?.isLoadedMyGroupList.onNext(Void())
         }
@@ -47,7 +46,8 @@ final class GroupListViewModel {
     }
     
     func checkSelectedFriend() {
-        guard let invitedFriendList = UserDefaults.standard.array(forKey: InvitedFriendList) as? [Int] else {
+        guard let invitedFriendList = UserDefaults.standard.array(forKey: InvitedFriendList) as? [Int],
+              !invitedFriendList.isEmpty else {
             isExistedInvitedFriend.onNext(false)
             return }
         isExistedInvitedFriend.onNext(true)

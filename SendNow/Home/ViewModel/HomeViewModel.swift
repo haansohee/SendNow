@@ -100,7 +100,6 @@ final class HomeViewModel {
     
     func loadMyFriend() {
         friendService.getMyFriendList(with: userID) {[weak self] result in
-            guard !result.isEmpty else { return }
             self?.myFriendList = result
             self?.isLoadedMyFriendList.onNext(Void())
         }

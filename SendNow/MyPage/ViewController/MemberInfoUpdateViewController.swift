@@ -280,7 +280,7 @@ extension MemberInfoUpdateViewController {
     }
     
     private func cancelAccountAlert() {
-        let message = "탈퇴 후 해당 계정과 관련된 모든 데이터는 복구할 수 없으며, 계정을 다시 활성화할 수 없습니다. \n 탈퇴하시겠습니까? 🥲"
+        let message = "⚠️ 탈퇴 후 해당 계정과 관련된 모든 데이터는 복구할 수 없으며, 계정을 다시 활성화할 수 없습니다. \n 탈퇴하시겠습니까? 🥲"
         let alertController = UIAlertController(title: "바로보내", message: message, preferredStyle: .alert)
         let doneAction = UIAlertAction(title: "탈퇴하기", style: .destructive) {[weak self] _ in
             self?.memberInfoUpdateViewModel.cancelAccount()

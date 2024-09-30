@@ -12,4 +12,5 @@ enum NotificationName: String {
     case sendFriendRequest
     case invitedFriend
     case uploadExpense
+    case deleteGroup
 }

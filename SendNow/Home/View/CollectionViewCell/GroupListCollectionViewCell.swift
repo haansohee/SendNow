@@ -98,4 +98,10 @@ extension GroupListCollectionViewCell {
         creationDateLabel.text = groupList.createdDate
         invitedFriendsNameLabel.text = friendsName
     }
+    
+    func resetGroupListCollectionViewCellLabel() {
+        groupNameLabel.text = "정산 모임이 아직 없어요. 🥲"
+        creationDateLabel.text = ""
+        invitedFriendsNameLabel.text = "친구를 초대해 정산 모임을 만들어 보세요!"
+    }
 }

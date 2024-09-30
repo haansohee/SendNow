@@ -7,6 +7,11 @@
 
 import Foundation
 import RxSwift
+import NotificationCenter
+
+enum FailedError: Error {
+    case faile
+}
 
 final class SettleGroupViewModel {
     private let groupService = GroupService()
@@ -21,6 +26,8 @@ final class SettleGroupViewModel {
     let isLoadedGroupMemberInfo = PublishSubject<Bool>()
     let isLoadedGroupExpenseInfo = PublishSubject<Bool>()
     let isLoadedGroupSettlementInfo = PublishSubject<Bool>()
+    let isEqualCreatorUserID = PublishSubject<Bool>()
+    let isDeletedGroup = PublishSubject<Bool>()
     
     func setGroupID(_ groupID: Int) {
         self.groupID = groupID
@@ -36,6 +43,17 @@ final class SettleGroupViewModel {
     
     func selectRemainderAmountUser(userID: Int) {
         remainderUserID = userID
+    }
+    
+    func loadGroupCreatorID() {
+        guard let groupID = groupID else { return }
+        groupService.getGroupCreatorUserID(with: groupID, userID: userID) {[weak self] isEqual in
+            if isEqual {
+                self?.isEqualCreatorUserID.onNext(isEqual)
+            } else {
+                self?.isEqualCreatorUserID.onError(FailedError.faile)
+            }
+        }
     }
     
     func uploadExpenseInformation(expenseClassfication: String, expenseDetail: String, expenseAmount: String, expenseDate: Date, remainderUserID: Int) {
@@ -96,5 +114,19 @@ final class SettleGroupViewModel {
     func compareUserID(fromUserID: Int) -> Bool {
         let userID = UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)
         return fromUserID == userID
+    }
+    
+    func deleteGroup() {
+        guard let groupID = self.groupID else {
+            isDeletedGroup.onError(FailedError.faile)
+            return }
+        groupService.deleteGroup(with: groupID) {[weak self] isDeleted in
+            if isDeleted {
+                self?.isDeletedGroup.onNext(isDeleted)
+                NotificationCenter.default.post(name: NSNotification.Name(NotificationName.deleteGroup.rawValue), object: isDeleted)
+            } else {
+                self?.isDeletedGroup.onError(FailedError.faile)
+            }
+        }
     }
 }

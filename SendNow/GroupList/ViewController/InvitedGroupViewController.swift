@@ -83,7 +83,9 @@ extension InvitedGroupViewController {
             alertController.addTextField()
             let doneAction = UIAlertAction(title: "확인", style: .default) {[weak self] _ in
                 guard let groupNameText = alertController.textFields?[0].text,
-                      !groupNameText.isEmpty else { return }
+                      !groupNameText.isEmpty else {
+                    self?.invitedAlert(message: "모임 이름을 꼭 입력해 주세요!")
+                    return }
                 self?.groupListViewModel.invitedFriendToGroup(groupName: groupNameText)
             }
             let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in }
@@ -152,28 +154,30 @@ extension InvitedGroupViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: InvitedGroupCollectionViewCell.reuseIdentifier, for: indexPath) as? InvitedGroupCollectionViewCell else { return UICollectionViewCell() }
-        guard let myFriendList = homeViewModel.myFriendList else {
+        guard let myFriendList = homeViewModel.myFriendList,
+              !myFriendList.isEmpty else {
             cell.selectedButton.isHidden = true
             cell.friendNicknameLabel.text = "초대할 수 있는 친구가 없어요. 🥲"
             return cell }
         cell.friendNicknameLabel.text = myFriendList[indexPath.row].nickname
         cell.selectedButton.isHidden = false
-        cell.rx.didTapSelectedButton
-            .asDriver()
-            .drive(onNext: {[weak self] _ in
-                guard cell.selectedButton.isSelected else {
-                    cell.selectedButton.isSelected = true
-                    cell.selectedButton.setImage(UIImage(systemName: "circle.fill"), for: .selected)
-                    self?.groupListViewModel.selectInvitedFriend(friendUserID: myFriendList[indexPath.row].userID)
-                    return
-                }
-                cell.selectedButton.isSelected = false
-                cell.selectedButton.setImage(UIImage(systemName: "circle"), for: .normal)
-                self?.groupListViewModel.deselectInvitedFriend(friendUserID: myFriendList[indexPath.row].userID)
-            })
-            .disposed(by: cell.disposeBag)
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? InvitedGroupCollectionViewCell else { return }
+        guard let myFriendList = homeViewModel.myFriendList,
+              !myFriendList.isEmpty else { return }
+        if cell.selectedButton.isSelected {
+            cell.selectedButton.isSelected = false
+            cell.selectedButton.setImage(UIImage(systemName: "circle"), for: .normal)
+            groupListViewModel.deselectInvitedFriend(friendUserID: myFriendList[indexPath.row].userID)
+        } else {
+            cell.selectedButton.isSelected = true
+            cell.selectedButton.setImage(UIImage(systemName: "circle.fill"), for: .selected)
+            groupListViewModel.selectInvitedFriend(friendUserID: myFriendList[indexPath.row].userID)
+        }
     }
 }
 

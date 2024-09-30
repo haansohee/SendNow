@@ -91,7 +91,7 @@ final class MemberService {
     }
     
     func getAppleMemberInfo(with appleToken: String, completion: @escaping(AppleMemberDomain)->Void) {
-        let path = "\(MemberAPIPath.getAppleMemberInfo.rawValue)?applToken=\(appleToken)"
+        let path = "\(MemberAPIPath.getAppleMemberInfo.rawValue)?appleToken=\(appleToken)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: AppleMemberResponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
