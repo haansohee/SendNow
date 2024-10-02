@@ -16,7 +16,7 @@ final class MemberInfoUpdateViewModel {
     private let userID: Int
     private let signinType: SigninType
     private let memberService: MemberService
-    private let disposeBag: DisposeBag
+    private let disposeBag = DisposeBag()
     private var newAppleToken: String?
     let isDuplicatedNickname = PublishSubject<Bool>()
     let isUpdatedNickname = PublishSubject<Bool>()
@@ -25,11 +25,9 @@ final class MemberInfoUpdateViewModel {
     let isCanceledAccount = PublishSubject<Bool>()
     
     init(with memberService: MemberService = MemberService(),
-         disposeBag: DisposeBag = DisposeBag(),
          userID: Int,
          signinType: SigninType) {
         self.memberService = memberService
-        self.disposeBag = disposeBag
         self.userID = userID
         self.signinType = signinType
     }

@@ -9,10 +9,10 @@ import Foundation
 import RxSwift
 
 final class HomeViewModel {
-    private let friendService = FriendService()
-    private let notificationService = NotificationService()
+    private let friendService: FriendService
+    private let notificationService: NotificationService
     private let InvitedFriendList = "InvitedFriendList"
-    private let userID = UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)
+    private let userID: Int
     private var groupName: String?
     private(set) var loginMemberInformation: LoginMemberInformation?
     private(set) var myFriendList: [MyFriendListDomain]?
@@ -22,7 +22,9 @@ final class HomeViewModel {
     init(with friendService: FriendService = FriendService(),
          notificationService: NotificationService = NotificationService(),
          userID: Int) {
-        
+        self.friendService = friendService
+        self.notificationService = notificationService
+        self.userID = userID
     }
     
     func loadMemberInformation() {

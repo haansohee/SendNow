@@ -1,0 +1,65 @@
+//
+//  IndividualRemmitDetailViewModel.swift
+//  SendNow
+//
+//  Created by 한소희 on 10/2/24.
+//
+
+import Foundation
+import RxSwift
+
+final class IndividualRemmitDetailViewModel {
+    let userID: Int
+    private let groupService: GroupService
+    private let notificationService = NotificationService()
+    private(set) var groupID: Int?
+    private(set) var groupSettlementInformations: SettlementListDomain?
+    private(set) var remittanceInformations: [CompletionRemittanceDomain]?
+    let isLoadedGroupSettlementInfo = PublishSubject<Void>()
+    let isLoadedCompletionRemittanceInfo = PublishSubject<Void>()
+    
+    init(with groupService: GroupService = GroupService(), userID: Int) {
+        self.groupService = groupService
+        self.userID = userID
+    }
+    
+    
+    func setGroupID(_ groupID: Int) {
+        self.groupID = groupID
+    }
+    
+    func loadGroupSettlementInforamtion() {
+        guard let groupID = groupID else { return }
+        groupService.getGroupSettlementsInformations(with: groupID) {[weak self] result in
+            self?.groupSettlementInformations = result
+            self?.isLoadedGroupSettlementInfo.onNext(Void())
+        }
+    }
+    
+    func loadCompletionRemittanceInformation() {
+        guard let groupID = groupID else { return }
+        groupService.getCompletedRemittanceInformation(with: groupID, userID: userID) {[weak self] remittanceInfo in
+            self?.remittanceInformations = remittanceInfo
+            self?.isLoadedCompletionRemittanceInfo.onNext(Void())
+        }
+    }
+    
+    func setCompletedRemittance(_ remittanceInfo: RemittanceStatusDomain, completion: @escaping(Bool)->Void) {
+        groupService.setCompletedRemittance(with: remittanceInfo) {[weak self] isUpdatedRemittance in
+            guard isUpdatedRemittance else { return }
+            self?.loadCompletionRemittanceInformation()
+            completion(isUpdatedRemittance)
+        }
+    }
+    
+    func compareUserID(fromUserID: Int) -> Bool {
+        let userID = UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)
+        return fromUserID == userID
+    }
+    
+    func sendRemittanceNotification(settlementID: Int) {
+        notificationService.sendRemittanceNotification(with: settlementID) { isSendedNotification in
+            print("isSentNotification: \(isSendedNotification)")
+        }
+    }
+}

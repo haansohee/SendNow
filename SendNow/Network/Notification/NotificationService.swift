@@ -10,6 +10,7 @@ import Foundation
 enum NotificationAPIPath: String {
     case sendGroupNotification = "/SendNow/sendGroupNotification"
     case sendFriendNotification = "/SendNow/sendFriendNotification"
+    case sendRemittanceNotification = "/SendNow/sendRemittanceNotification"
     case getNotificationList = "/SendNow/getNotificationList"
     case updateNoficiationIsRead = "/SendNow/updateNotificationIsRead"
     case updateNotificationAll = "/SendNow/updateNotificationAll"
@@ -28,6 +29,14 @@ final class NotificationService {
         let path = NotificationAPIPath.sendFriendNotification.rawValue
         let notificationInfo = notificationDomain.toRequestDTO()
         networkSessionManager.urlPostMethod(path: path, encodeValue: notificationInfo, completion: completion)
+    }
+    
+    func sendRemittanceNotification(with settlementID: Int, completion: @escaping(Bool)->Void) {
+        let parameters: [String: Int] = [
+            "settlementID": settlementID
+        ]
+        let path = "\(NotificationAPIPath.sendRemittanceNotification.rawValue)"
+        networkSessionManager.urlPostMethod(path: path, encodeValue: parameters, completion: completion)
     }
     
     func getNotificationList(with userID: Int, completion: @escaping([NotificationListDomain])->Void) {

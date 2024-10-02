@@ -9,9 +9,9 @@ import Foundation
 import RxSwift
 
 final class FriendRequestViewModel {
-    private let friendService = FriendService()
-    private let notificationService = NotificationService()
-    private let userID = UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)
+    private let friendService: FriendService
+    private let notificationService: NotificationService
+    private let userID: Int
     private(set) var searchFriendInformation: SearchFriendDomain?
     private(set) var friendRequestSendListInfo: [FriendRequestListDomain]?
     private(set) var friendRequestReceiveListInfo: [FriendRequestListDomain]?
@@ -21,6 +21,14 @@ final class FriendRequestViewModel {
     let isLoadedFriendRequestListInfo = PublishSubject<Bool>()
     let isDeletedFriendRequest = PublishSubject<Bool>()
     let isUpdatedFriendRequestState = PublishSubject<Bool>()
+    
+    init(with friendService: FriendService = FriendService(),
+         notificationService: NotificationService = NotificationService(),
+         userID: Int) {
+        self.friendService = friendService
+        self.notificationService = notificationService
+        self.userID = userID
+    }
     
     func sendFriendRequest(toUserID: Int) {
         guard let fromUserNickname = UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue) else {

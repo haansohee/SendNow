@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 
 final class GroupListViewModel {
-    private let groupService = GroupService()
+    private let groupService: GroupService
     private let notificationService = NotificationService()
     private(set) var myGroupList: [GroupListDomain]?
     private var groupName: String?
@@ -18,7 +18,12 @@ final class GroupListViewModel {
     let isLoadedMyGroupList = PublishSubject<Void>()
     let isInvitedFriendToGroup = PublishSubject<Bool>()
     let isExistedInvitedFriend = PublishSubject<Bool>()
-    private let userID = UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)
+    private let userID: Int
+    
+    init(groupService: GroupService = GroupService(), userID: Int) {
+        self.groupService = groupService
+        self.userID = userID
+    }
     
     func loadMyGroup() {
         groupService.getGroupList(with: userID) {[weak self] result in
@@ -76,7 +81,6 @@ final class GroupListViewModel {
               let groupName = groupName else { return }
         let notificationDomain = GroupNotificationDomain(senderUserID: userID, receiverUserID: invitedFriendList, groupName: groupName)
         notificationService.sendGroupNotification(with: notificationDomain) { result in
-            print("send notification result: \(result)")
         }
     }
 }

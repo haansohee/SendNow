@@ -52,7 +52,7 @@ extension HomeViewController {
         homeView.translatesAutoresizingMaskIntoConstraints = false
         homeView.friendListCollectionView.delegate = self
         homeView.friendListCollectionView.dataSource = self
-        view.backgroundColor = UIColor(named: "BackColor")
+        view.backgroundColor = .secondarySystemBackground
         navigationItem.title = "홈"
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: homeView.settingButton)
     }

@@ -217,7 +217,7 @@ final class SpendingDetailsAddView: UIView {
         configureStackView()
         addSubviews()
         setLayoutConstraints()
-        backgroundColor = UIColor(named: "BackColor")
+        backgroundColor = .secondarySystemBackground
     }
     
     required init?(coder: NSCoder) {

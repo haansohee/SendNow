@@ -24,7 +24,7 @@ final class GroupListView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(GroupListCollectionViewCell.self, forCellWithReuseIdentifier: GroupListCollectionViewCell.reuseIdentifier)
-        collectionView.backgroundColor = UIColor(named: "BackColor")
+        collectionView.backgroundColor = .secondarySystemBackground
         collectionView.isPagingEnabled = false
         return collectionView
     }()
