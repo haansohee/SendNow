@@ -22,7 +22,7 @@ final class SettleGroupView: UIView {
         layout.minimumLineSpacing = 8.0
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = UIColor(named: "BackColor")
+        collectionView.backgroundColor = .secondarySystemBackground
         collectionView.isPagingEnabled = false
         collectionView.register(SpendingDetailCollectionViewCell.self, forCellWithReuseIdentifier: SpendingDetailCollectionViewCell.reuseIdentifier)
         return collectionView

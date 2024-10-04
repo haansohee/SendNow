@@ -11,14 +11,16 @@ import RxSwift
 
 final class IndividualRemmitDetailViewController: UIViewController {
     private let individualRemmitDetailView = IndividualRemmitDetailView()
-    private let settleGroupViewModel: SettleGroupViewModel
+    private let individualRemmitDetailViewModel: IndividualRemmitDetailViewModel
     private let disposeBag = DisposeBag()
     
-    init(viewModel: SettleGroupViewModel = SettleGroupViewModel(), groupID: Int) {
-        self.settleGroupViewModel = viewModel
+    init(viewModel: IndividualRemmitDetailViewModel = IndividualRemmitDetailViewModel(userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue))
+         , groupID: Int) {
+        self.individualRemmitDetailViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        settleGroupViewModel.setGroupID(groupID)
-        settleGroupViewModel.loadGroupSettlementInforamtion()
+        individualRemmitDetailViewModel.setGroupID(groupID)
+        individualRemmitDetailViewModel.loadGroupSettlementInforamtion()
+        individualRemmitDetailViewModel.loadCompletionRemittanceInformation()
     }
     
     required init?(coder: NSCoder) {
@@ -35,18 +37,22 @@ final class IndividualRemmitDetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        settleGroupViewModel.loadGroupSettlementInforamtion()
+        individualRemmitDetailViewModel.loadGroupSettlementInforamtion()
     }
 }
 
 extension IndividualRemmitDetailViewController {
     private func configureIndividualRemmitDetailView() {
         individualRemmitDetailView.translatesAutoresizingMaskIntoConstraints = false
-        individualRemmitDetailView.individualRemmitCollectionView.delegate = self
-        individualRemmitDetailView.individualRemmitCollectionView.dataSource = self
-        individualRemmitDetailView.amountBalanceCollectionView.delegate = self
-        individualRemmitDetailView.amountBalanceCollectionView.dataSource = self
-        view.backgroundColor = UIColor(named: "BackColor")
+        [
+            individualRemmitDetailView.individualRemmitCollectionView,
+            individualRemmitDetailView.amountBalanceCollectionView,
+            individualRemmitDetailView.completedRemittanceCollectionView
+        ].forEach {
+            $0.delegate = self
+            $0.dataSource = self
+        }
+        view.backgroundColor = .systemBackground
     }
     
     private func addSubviews() {
@@ -68,15 +74,24 @@ extension IndividualRemmitDetailViewController {
     
     private func bindAll() {
         bindIsLoadedGroupSettlementInfo()
+        bindIsLoadedCompletionRemittanceInfo()
     }
     
     private func bindIsLoadedGroupSettlementInfo() {
-        settleGroupViewModel.isLoadedGroupSettlementInfo
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isLoadedGroupSettlementInfo in
-                guard isLoadedGroupSettlementInfo else { return }
+        individualRemmitDetailViewModel.isLoadedGroupSettlementInfo
+            .asDriver(onErrorJustReturn: Void())
+            .drive(onNext: {[weak self] _ in
                 self?.individualRemmitDetailView.individualRemmitCollectionView.reloadData()
                 self?.individualRemmitDetailView.amountBalanceCollectionView.reloadData()
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindIsLoadedCompletionRemittanceInfo() {
+        individualRemmitDetailViewModel.isLoadedCompletionRemittanceInfo
+            .asDriver(onErrorJustReturn: Void())
+            .drive(onNext: {[weak self] _ in
+                    self?.individualRemmitDetailView.completedRemittanceCollectionView.reloadData()
             })
             .disposed(by: disposeBag)
     }
@@ -86,11 +101,15 @@ extension IndividualRemmitDetailViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch collectionView {
         case individualRemmitDetailView.individualRemmitCollectionView:
-            guard let detailsInfo = settleGroupViewModel.groupSettlementInformations?.settlementDetails else { return 0 }
+            guard let detailsInfo = individualRemmitDetailViewModel.groupSettlementInformations?.settlementDetails else { return 0 }
             return detailsInfo.count
+            
         case individualRemmitDetailView.amountBalanceCollectionView:
-            guard let balanceInfo = settleGroupViewModel.groupSettlementInformations?.settlementBalance else { return 0 }
+            guard let balanceInfo = individualRemmitDetailViewModel.groupSettlementInformations?.settlementBalance else { return 0 }
             return balanceInfo.count
+            
+        case individualRemmitDetailView.completedRemittanceCollectionView:
+            return individualRemmitDetailViewModel.remittanceInformations?.count ?? 1
 
         default:
             return 0
@@ -101,14 +120,14 @@ extension IndividualRemmitDetailViewController: UICollectionViewDataSource {
         switch collectionView {
         case individualRemmitDetailView.individualRemmitCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: IndividualRemmitDetailCollectionViewCell.reuseIdentifier, for: indexPath) as? IndividualRemmitDetailCollectionViewCell else { return UICollectionViewCell() }
-            guard let settlementInformations = settleGroupViewModel.groupSettlementInformations else { return cell }
+            guard let settlementInformations = individualRemmitDetailViewModel.groupSettlementInformations else { return cell }
             cell.configureIndividualRemmitDetailCollectionViewCell(information: settlementInformations.settlementDetails[indexPath.row])
             guard let kakaoPayUrl = settlementInformations.settlementDetails[indexPath.row].kakaoPayURL else {
                 cell.receiverKakaoPayButton.isHidden = true
                 return cell
             }
             cell.receiverKakaoPayButton.isHidden = false
-            cell.receiverKakaoPayButton.isEnabled = settleGroupViewModel.compareUserID(fromUserID: settlementInformations.settlementDetails[indexPath.row].fromUserID)
+            cell.receiverKakaoPayButton.isEnabled = individualRemmitDetailViewModel.compareUserID(fromUserID: settlementInformations.settlementDetails[indexPath.row].fromUserID)
             cell.rx.didTapKakaoPayUrlButton
                 .asDriver()
                 .drive(onNext: {[weak self] _ in
@@ -117,6 +136,7 @@ extension IndividualRemmitDetailViewController: UICollectionViewDataSource {
                     UIApplication.shared.open(url, options: [:])
                 })
                 .disposed(by: cell.disposeBag)
+            
             cell.rx.didTapCopyButton
                 .asDriver()
                 .drive(onNext: { _ in
@@ -129,9 +149,38 @@ extension IndividualRemmitDetailViewController: UICollectionViewDataSource {
             
         case individualRemmitDetailView.amountBalanceCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AmountBalanceCollectionViewCell.reuseIdentifier, for: indexPath) as? AmountBalanceCollectionViewCell else { return UICollectionViewCell() }
-            guard let balanceInformation = settleGroupViewModel.groupSettlementInformations?.settlementBalance else { return cell }
+            guard let balanceInformation = individualRemmitDetailViewModel.groupSettlementInformations?.settlementBalance else { return cell }
             individualRemmitDetailView.setAmountBalanceCollectionViewHeight(Double(balanceInformation.count))
             cell.configureCell(balanceInformation[indexPath.row])
+            if balanceInformation[indexPath.row].userID == individualRemmitDetailViewModel.userID {
+                cell.nicknameLabel.text = "\(balanceInformation[indexPath.row].nickname) (본인)"
+            }
+            return cell
+            
+        case individualRemmitDetailView.completedRemittanceCollectionView:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CompletedRemittanceCollectionViewCell.reuseIdentifier, for: indexPath) as? CompletedRemittanceCollectionViewCell else { return UICollectionViewCell () }
+            guard let remittanceInformation = individualRemmitDetailViewModel.remittanceInformations,
+                  !remittanceInformation.isEmpty else {
+                cell.configureEmptyCell()
+                return cell }
+            cell.configureLabel(with: remittanceInformation[indexPath.row])
+            
+            cell.rx.didTapCompletedButton
+                .subscribe(onNext: { [weak self] in
+                    let remittanceUpdatedStatus = !remittanceInformation[indexPath.row].isCompletedRemittance
+                    let remittanceStatusDomain = RemittanceStatusDomain(settlementID: remittanceInformation[indexPath.row].settlementID,
+                                                                        isCompletedRemittance: remittanceUpdatedStatus)
+                    self?.individualRemmitDetailViewModel.setCompletedRemittance(remittanceStatusDomain) { isUpdated in
+                        guard isUpdated else { return }
+                        DispatchQueue.main.async {
+                            cell.completedButton.setImage(UIImage(systemName: remittanceUpdatedStatus ? "checkmark.square.fill" : "square"), for: .normal)
+                        }
+                        if remittanceUpdatedStatus {
+                            self?.individualRemmitDetailViewModel.sendRemittanceNotification(settlementID: remittanceStatusDomain.settlementID)
+                        }
+                    }
+                })
+                .disposed(by: cell.disposeBag)
             return cell
             
         default:
@@ -144,13 +193,19 @@ extension IndividualRemmitDetailViewController: UICollectionViewDelegateFlowLayo
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch collectionView {
         case individualRemmitDetailView.individualRemmitCollectionView:
-            let width = (UIScreen.main.bounds.width) - 36.0
+            let width = collectionView.bounds.width - 12.0
             let height = 150.0
             return CGSize(width: width, height: height)
+            
         case individualRemmitDetailView.amountBalanceCollectionView:
-            let width = (UIScreen.main.bounds.width) - 36.0
+            let width = collectionView.bounds.width - 12.0
             let height = 30.0
             return CGSize(width: width, height: height)
+            
+        case individualRemmitDetailView.completedRemittanceCollectionView:
+            let size = collectionView.bounds.height - 12.0
+            return CGSize(width: size, height: size)
+            
         default:
             return .zero
         }

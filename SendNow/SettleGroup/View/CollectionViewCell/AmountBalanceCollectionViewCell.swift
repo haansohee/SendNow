@@ -8,7 +8,7 @@
 import UIKit
 
 final class AmountBalanceCollectionViewCell: UICollectionViewCell, ReuseIdentifierProtocol {
-    private let nicknameLabel: UILabel = {
+    let nicknameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
@@ -32,6 +32,9 @@ final class AmountBalanceCollectionViewCell: UICollectionViewCell, ReuseIdentifi
         super.init(frame: frame)
         addSubviews()
         setLayoutConstraints()
+        contentView.layer.masksToBounds = false
+        contentView.layer.cornerRadius = 12.0
+        contentView.backgroundColor = .systemBackground
     }
     
     required init?(coder: NSCoder) {

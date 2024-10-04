@@ -84,7 +84,7 @@ final class HomeView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(FriendListCollectionViewCell.self, forCellWithReuseIdentifier: FriendListCollectionViewCell.reuseIdentifier)
-        collectionView.backgroundColor = UIColor(named: "BackColor")
+        collectionView.backgroundColor = .secondarySystemBackground
         collectionView.isPagingEnabled = false
         return collectionView
     }()

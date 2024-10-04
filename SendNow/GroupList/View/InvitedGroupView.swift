@@ -32,7 +32,7 @@ final class InvitedGroupView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(InvitedGroupCollectionViewCell.self, forCellWithReuseIdentifier: InvitedGroupCollectionViewCell.reuseIdentifier)
-        collectionView.backgroundColor = UIColor(named: "BackColor")
+        collectionView.backgroundColor = .secondarySystemBackground
         collectionView.isPagingEnabled = false
         return collectionView
     }()

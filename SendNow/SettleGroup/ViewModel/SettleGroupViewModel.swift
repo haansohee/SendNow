@@ -14,20 +14,23 @@ enum FailedError: Error {
 }
 
 final class SettleGroupViewModel {
-    private let groupService = GroupService()
-    private let userID = UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)
+    private let groupService: GroupService
+    private let userID: Int
     private(set) var expenseClassfication: String?
     private(set) var groupID: Int?
     private(set) var remainderUserID: Int?
     private(set) var groupExpenseInformations: ExpenseInformationDomain?
     private(set) var groupMemberInformations: [GroupMemberListDomain]?
-    private(set) var groupSettlementInformations: SettlementListDomain?
     let isUploadedExpenseInfo = PublishSubject<Bool>()
     let isLoadedGroupMemberInfo = PublishSubject<Bool>()
     let isLoadedGroupExpenseInfo = PublishSubject<Bool>()
-    let isLoadedGroupSettlementInfo = PublishSubject<Bool>()
     let isEqualCreatorUserID = PublishSubject<Bool>()
     let isDeletedGroup = PublishSubject<Bool>()
+    
+    init(groupService: GroupService = GroupService(), userID: Int) {
+        self.groupService = groupService
+        self.userID = userID
+    }
     
     func setGroupID(_ groupID: Int) {
         self.groupID = groupID
@@ -48,11 +51,7 @@ final class SettleGroupViewModel {
     func loadGroupCreatorID() {
         guard let groupID = groupID else { return }
         groupService.getGroupCreatorUserID(with: groupID, userID: userID) {[weak self] isEqual in
-            if isEqual {
-                self?.isEqualCreatorUserID.onNext(isEqual)
-            } else {
-                self?.isEqualCreatorUserID.onError(FailedError.faile)
-            }
+            self?.isEqualCreatorUserID.onNext(isEqual)
         }
     }
     
@@ -96,24 +95,6 @@ final class SettleGroupViewModel {
             }
             self?.isLoadedGroupExpenseInfo.onNext(true)
         }
-    }
-    
-    func loadGroupSettlementInforamtion() {
-        guard let groupID = groupID else { return }
-        groupService.getGroupSettlementsInformations(with: groupID) {[weak self] result in
-            self?.groupSettlementInformations = result
-            guard !result.settlementDetails.isEmpty,
-                  !result.settlementBalance.isEmpty else {
-                self?.isLoadedGroupSettlementInfo.onNext(false)
-                return
-            }
-            self?.isLoadedGroupSettlementInfo.onNext(true)
-        }
-    }
-    
-    func compareUserID(fromUserID: Int) -> Bool {
-        let userID = UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)
-        return fromUserID == userID
     }
     
     func deleteGroup() {

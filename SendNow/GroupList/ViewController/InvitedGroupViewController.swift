@@ -17,7 +17,8 @@ final class InvitedGroupViewController: UIViewController {
     
     init(homeViewModel: HomeViewModel = HomeViewModel(
         userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)),
-         groupListViewModel: GroupListViewModel = GroupListViewModel()) {
+         groupListViewModel: GroupListViewModel = GroupListViewModel(
+            userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue))) {
         self.homeViewModel = homeViewModel
         self.groupListViewModel = groupListViewModel
         super.init(nibName: nil, bundle: nil)
@@ -52,7 +53,7 @@ extension InvitedGroupViewController {
         invitedGroupView.translatesAutoresizingMaskIntoConstraints = false
         invitedGroupView.invitedGroupCollectionView.delegate = self
         invitedGroupView.invitedGroupCollectionView.dataSource = self
-        view.backgroundColor = UIColor(named: "BackColor")
+        view.backgroundColor = .secondarySystemBackground
         navigationItem.title = "친구 초대하기"
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: invitedGroupView.invitedButton)
         self.modalPresentationCapturesStatusBarAppearance = true

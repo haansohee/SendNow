@@ -10,12 +10,14 @@ import Foundation
 enum GroupAPIPath: String {
     case setGroupList = "/SendNow/setGroupList/"
     case setExpensesUpload = "/SendNow/setExpenseUpload/"
+    case setCompletedRemittace = "/SendNow/setCompletedRemittance/"
     case deleteGroup = "/SendNow/deleteGroup"
     case getGroupList = "/SendNow/getGroupList"
     case getGroupMemberList = "/SendNow/getGroupMemberList"
     case getGroupExpenseInformations = "/SendNow/getGroupExpenseInformations"
     case getGroupSettlementsInformations = "/SendNow/getGroupSettlementsInformations"
     case getGroupCreatorUserID = "/SendNow/getGroupCreatorUserID"
+    case getCompletedRemittanceInformation = "/SendNow/getCompletedRemittanceInformation"
 }
 
 final class GroupService {
@@ -33,8 +35,13 @@ final class GroupService {
         networkSessionManager.urlPostMethod(path: path, encodeValue: expensesUploadInfo, completion: completion)
     }
     
+    func setCompletedRemittance(with remittanceStatus: RemittanceStatusDomain, completion: @escaping(Bool)->Void) {
+        let path = GroupAPIPath.setCompletedRemittace.rawValue
+        let remittanceInfo = remittanceStatus.toRequestDTO()
+        networkSessionManager.urlPostMethod(path: path, encodeValue: remittanceInfo, completion: completion)
+    }
+    
     func deleteGroup(with groupID: Int, completion: @escaping(Bool)->Void) {
-        print("delete Group Method")
         let path = "\(GroupAPIPath.deleteGroup.rawValue)?groupID=\(groupID)"
         networkSessionManager.urlDeleteMethod(path: path, encodeValue: groupID, completion: completion)
     }
@@ -96,8 +103,22 @@ final class GroupService {
             case .success(let responseDTO):
                 completion(responseDTO)
             case .failure(let error):
-                completion(false)
                 print("get Group Settlements Informations Error : \(error)")
+                completion(false)
+            }
+        }
+    }
+    
+    func getCompletedRemittanceInformation(with groupID: Int, userID: Int, completion: @escaping([CompletionRemittanceDomain])->Void) {
+        let path = "\(GroupAPIPath.getCompletedRemittanceInformation.rawValue)?groupID=\(groupID)&userID=\(userID)"
+        networkSessionManager.urlGetMethod(path: path, requestDTO: [CompletionRemittanceResponseDTO].self) { completionRemittanceInfo in
+            switch completionRemittanceInfo {
+            case .success(let completionRemittanceInformation):
+                let result = completionRemittanceInformation.map { $0.toDomain() }
+                completion(result)
+            case .failure(let error):
+                print("get Completed Remittance Information Error : \(error)")
+                completion([])
             }
         }
     }

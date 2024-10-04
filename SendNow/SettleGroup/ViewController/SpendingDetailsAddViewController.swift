@@ -15,7 +15,9 @@ final class SpendingDetailsAddViewController: UIViewController {
     private let settleGroupViewModel: SettleGroupViewModel
     private let disposeBag = DisposeBag()
     
-    init(viewModel: SettleGroupViewModel = SettleGroupViewModel(), groupID: Int) {
+    init(viewModel: SettleGroupViewModel = SettleGroupViewModel(
+        userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)),
+         groupID: Int) {
         self.settleGroupViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         settleGroupViewModel.setGroupID(groupID)
@@ -40,7 +42,7 @@ final class SpendingDetailsAddViewController: UIViewController {
     }
     
     override var childForStatusBarStyle: UIViewController? {
-        let viewController = HomeViewController()
+        let viewController = SettleGroupViewController()
         return viewController
     }
 }
@@ -52,7 +54,8 @@ extension SpendingDetailsAddViewController {
         spendingDetailAddView.remainderAmountPayUserCollectionView.delegate = self
         self.modalPresentationCapturesStatusBarAppearance = true
         self.sheetPresentationController?.prefersGrabberVisible = true
-        view.backgroundColor = UIColor(named: "BackColor")
+        self.sheetPresentationController?.preferredCornerRadius = 24
+        view.backgroundColor = .systemBackground
         navigationItem.title = "지출 내역 추가"
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: spendingDetailAddView.spendingDetailAddButton)
         navigationController?.navigationBar.backgroundColor = .systemBackground

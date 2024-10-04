@@ -18,7 +18,7 @@ final class GroupListViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(GroupListCollectionViewCell.self, forCellWithReuseIdentifier: GroupListCollectionViewCell.reuseIdentifier)
-        collectionView.backgroundColor = UIColor(named: "BackColor")
+        collectionView.backgroundColor = .secondarySystemBackground
         collectionView.isPagingEnabled = false
         return collectionView
     }()
@@ -34,7 +34,7 @@ final class GroupListViewController: UIViewController {
     private let groupListViewModel: GroupListViewModel
     private let disposeBag = DisposeBag()
     
-    init(viewModel: GroupListViewModel = GroupListViewModel()) {
+    init(viewModel: GroupListViewModel = GroupListViewModel(userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue))) {
         self.groupListViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         groupListViewModel.loadMyGroup()
@@ -65,7 +65,7 @@ extension GroupListViewController {
         groupListCollectionView.translatesAutoresizingMaskIntoConstraints = false
         groupListCollectionView.dataSource = self
         groupListCollectionView.delegate = self
-        view.backgroundColor = UIColor(named: "BackColor")
+        view.backgroundColor = .secondarySystemBackground
         navigationItem.title = "그룹 목록"
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: groupAddButton)
     }

@@ -14,7 +14,7 @@ final class FriendRequestViewController: UIViewController {
     private let friendRequestViewModel: FriendRequestViewModel
     private let disposeBag = DisposeBag()
     
-    init(viewModel: FriendRequestViewModel = FriendRequestViewModel()) {
+    init(viewModel: FriendRequestViewModel = FriendRequestViewModel(userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue))) {
         self.friendRequestViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }

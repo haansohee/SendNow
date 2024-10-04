@@ -14,10 +14,13 @@ final class SettleGroupViewController: UIViewController {
     private let settleGroupViewModel: SettleGroupViewModel
     private let disposeBag = DisposeBag()
     
-    init(viewModel: SettleGroupViewModel = SettleGroupViewModel(), groupID: Int) {
+    init(viewModel: SettleGroupViewModel = SettleGroupViewModel(
+        userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)),
+         groupID: Int? = nil) {
         self.settleGroupViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        settleGroupViewModel.setGroupID(groupID)
+        guard let id = groupID else { return }
+        settleGroupViewModel.setGroupID(id)
         settleGroupViewModel.loadGroupExpenseInformation()
         settleGroupViewModel.loadGroupCreatorID()
     }
@@ -109,14 +112,10 @@ extension SettleGroupViewController {
     
     private func bindIsEqualCreatorUserID() {
         settleGroupViewModel.isEqualCreatorUserID
-            .subscribe(onNext: {[weak self] isEqualCreatorUserID in
-                DispatchQueue.main.async {
-                    self?.settleGroupView.groupRemoveButton.isEnabled = isEqualCreatorUserID
-                    self?.settleGroupView.groupRemoveButton.setTitle(isEqualCreatorUserID ? "그룹 삭제" : "", for: .normal)
-                }
-            },
-                       onError: { error in
-                print("ERROR")
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isEqualCreatorUserID in
+                self?.settleGroupView.groupRemoveButton.isEnabled = isEqualCreatorUserID
+                self?.settleGroupView.groupRemoveButton.setTitle(isEqualCreatorUserID ? "그룹 삭제" : "", for: .normal)
             })
             .disposed(by: disposeBag)
     }
