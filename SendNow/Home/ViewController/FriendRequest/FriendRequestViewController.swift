@@ -54,13 +54,6 @@ extension FriendRequestViewController {
         ])
     }
     
-    private func confirmAlert(title: String, message: String) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let doneAction = UIAlertAction(title: "확인", style: .cancel) { _ in }
-        alertController.addAction(doneAction)
-        self.present(alertController, animated: true)
-    }
-    
     //MARK: Bind
     private func bindAll() {
         bindSearchButton()

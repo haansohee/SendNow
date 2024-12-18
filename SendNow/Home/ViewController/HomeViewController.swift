@@ -20,13 +20,13 @@ final class HomeViewController: UIViewController {
         userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)),
          notificationViewModel: NotificationViewModel = NotificationViewModel(
             userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue))) {
-        self.homeViewModel = viewModel
-        self.notificationViewModel = notificationViewModel
-        super.init(nibName: nil, bundle: nil)
-        homeViewModel.loadMemberInformation()
-        homeViewModel.loadMyFriend()
-        notificationViewModel.getNotificationList()
-    }
+                self.homeViewModel = viewModel
+                self.notificationViewModel = notificationViewModel
+                super.init(nibName: nil, bundle: nil)
+                homeViewModel.loadMemberInformation()
+                homeViewModel.loadMyFriend()
+                notificationViewModel.getNotificationList()
+            }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -107,7 +107,7 @@ extension HomeViewController {
     
     private func bindIsLoadedMemberInformation() {
         homeViewModel.isLoadedMemberInformation
-            .asDriver(onErrorJustReturn: Void())
+            .asDriver(onErrorJustReturn: ())
             .drive(onNext: {[weak self] in
                 self?.configureHomeViewNicknameLabel()
             })

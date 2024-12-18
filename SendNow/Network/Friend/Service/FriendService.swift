@@ -73,6 +73,7 @@ final class FriendService {
                 let myFriendList = responseDTO.map { $0.toDomain() }
                 completion(myFriendList)
             case .failure(let error):
+//                completion(.failure(error))
                 print("get My Friend List Info Error : \(error)")
             }
         }

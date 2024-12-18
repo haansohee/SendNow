@@ -143,7 +143,7 @@ extension SignupWithEmailViewController {
         signupWithEmailView.signupButton.rx.tap
             .asDriver()
             .drive(onNext: {[weak self] _ in
-                      guard let nickname = self?.signupWithEmailView.nicknameTextField.text,
+                guard let nickname = self?.signupWithEmailView.nicknameTextField.text,
                       let email = self?.signupWithEmailView.emailTextField.text,
                       let emailAddress = self?.signupWithEmailView.emailAddressTextField.text,
                       let password = self?.signupWithEmailView.passwordTextField.text,
@@ -152,7 +152,7 @@ extension SignupWithEmailViewController {
                       !(email.isEmpty),
                       !(emailAddress.isEmpty),
                       !(password.isEmpty) else {
-                    self?.blankAlert(title: "바로보내 회원가입", message: "이메일, 아이디, 비밀번호, 닉네임을 모두 입력해 주세요.")
+                    self?.confirmAlert(title: "바로보내 회원가입", message: "이메일, 아이디, 비밀번호, 닉네임을 모두 입력해 주세요.")
                     return }
                 guard let isCheckedAuthCode = self?.signupWithEmailViewModel.isCheckedAuthCode,
                       let isCheckedValidNickname = self?.signupWithEmailViewModel.isCheckedValidNickname,
@@ -160,7 +160,7 @@ extension SignupWithEmailViewController {
                       isCheckedAuthCode,
                       isCheckedValidNickname,
                       isEnabledSignupButton else {
-                    self?.blankAlert(title: "바로보내 회원가입", message: "이메일 인증 및 아이디 중복 검사, 정확한 비밀번호 작성 등 모두 진행해 주세요!")
+                    self?.confirmAlert(title: "바로보내 회원가입", message: "이메일 인증 및 아이디 중복 검사, 정확한 비밀번호 작성 등 모두 진행해 주세요!")
                     return }
                 let isSetNoti = UserDefaults.standard.bool(forKey: MemberInfoField.isSetNoti.rawValue)
                 let signinWithEmailInfo = SigninWithEmailDomain(nickname: nickname,
@@ -244,22 +244,16 @@ extension SignupWithEmailViewController {
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: {[weak self] isCompletedSignup in
                 self?.signupSuccessAlert(title: "바로 보내",
-                                         message: isCompletedSignup ? "회원가입이 완료되었어요. \n 로그인을 진행해 주세요!" : "서버가 불안정합니다. 잠시후에 시도해 주세요.")
+                                                      message: isCompletedSignup ? "회원가입이 완료되었어요. \n 로그인을 진행해 주세요!" : "서버가 불안정합니다. 잠시후에 시도해 주세요.")
             })
             .disposed(by: disposeBag)
     }
-    //MARK: Alert
-    private func blankAlert(title: String, message: String) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let doneAction = UIAlertAction(title: "확인", style: .cancel) { _ in }
-        alertController.addAction(doneAction)
-        self.present(alertController, animated: true)  
-    }
     
+    //MARK: Alert
     private func signupSuccessAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let doneAction = UIAlertAction(title: "확인", style: .default) {[weak self] _ in
-            self?.navigationController?.popViewController(animated: true)
+        let doneAction = UIAlertAction(title: "확인", style: .default) { _ in
+            self.navigationController?.popViewController(animated: true)
         }
         alertController.addAction(doneAction)
         self.present(alertController, animated: true)

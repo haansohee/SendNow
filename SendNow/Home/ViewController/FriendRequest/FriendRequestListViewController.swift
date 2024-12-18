@@ -81,13 +81,6 @@ extension FriendRequestListViewController {
         ])
     }
     
-    private func confirmAlert(title: String, message: String) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let doneAction = UIAlertAction(title: "확인", style: .cancel) { _ in }
-        alertController.addAction(doneAction)
-        self.present(alertController, animated: true)
-    }
-    
     private func addInvitedFriendNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(dataReceived), name: NSNotification.Name(NotificationName.sendFriendRequest.rawValue), object: nil)
     }

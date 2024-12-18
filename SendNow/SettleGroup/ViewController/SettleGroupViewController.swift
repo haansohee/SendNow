@@ -95,6 +95,7 @@ extension SettleGroupViewController {
             .drive(onNext: {[weak self] _ in
                 guard let groupID = self?.settleGroupViewModel.groupID else { return }
                 let spendingDetailViewController = UINavigationController(rootViewController: SpendingDetailsAddViewController(groupID: groupID))
+                spendingDetailViewController.modalPresentationStyle = UIModalPresentationStyle.fullScreen
                 self?.present(spendingDetailViewController, animated: true)
             })
             .disposed(by: disposeBag)
@@ -133,6 +134,7 @@ extension SettleGroupViewController {
             .disposed(by: disposeBag)
     }
     
+    // MARK: Alert
     private func confirmAlert() {
         let alertController = UIAlertController(title: "바로보내", message: "해당 그룹을 정말 삭제할까요? \n ⚠️ 삭제된 데이터는 복구되지 않습니다.", preferredStyle: .alert)
         let doneAction = UIAlertAction(title: "확인", style: .destructive) {[weak self] _ in

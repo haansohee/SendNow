@@ -8,9 +8,10 @@
 import Foundation
 
 enum NotificationSubject: Int {
-    case friendRequest = 0
-    case groupInvited = 1
-    case `default` = 2
+    case friendRequest
+    case groupInvited
+    case remittance
+    case `default`
 }
 
 struct NotificationListDomain {

@@ -73,29 +73,6 @@ extension InvitedGroupViewController {
         ])
     }
     
-    private func invitedAlert(message: String? = nil) {        
-        if let alertMessage = message {
-            let alertController = UIAlertController(title: "바로보내", message: alertMessage, preferredStyle: .alert)
-            let doneAction = UIAlertAction(title: "확인", style: .default) { _ in }
-            alertController.addAction(doneAction)
-            self.present(alertController, animated: true)
-        } else {
-            let alertController = UIAlertController(title: "바로보내", message: "모임 이름을 입력해 주세요.", preferredStyle: .alert)
-            alertController.addTextField()
-            let doneAction = UIAlertAction(title: "확인", style: .default) {[weak self] _ in
-                guard let groupNameText = alertController.textFields?[0].text,
-                      !groupNameText.isEmpty else {
-                    self?.invitedAlert(message: "모임 이름을 꼭 입력해 주세요!")
-                    return }
-                self?.groupListViewModel.invitedFriendToGroup(groupName: groupNameText)
-            }
-            let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in }
-            alertController.addAction(doneAction)
-            alertController.addAction(cancelAction)
-            self.present(alertController, animated: true)
-        }
-    }
-    
     
     //MARK: Bind
     private func bindAll() {
@@ -126,11 +103,12 @@ extension InvitedGroupViewController {
         groupListViewModel.isExistedInvitedFriend
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: {[weak self] isExistedInvitedFriend in
+                guard let viewModel = self?.groupListViewModel else { return }
                 guard isExistedInvitedFriend else {
-                    self?.invitedAlert(message: "초대할 친구를 선택해 주세요.")
+                    self?.invitedAlert(message: "초대할 친구를 선택해 주세요.", viewModel: viewModel)
                     return
                 }
-                self?.invitedAlert()
+                self?.invitedAlert(viewModel: viewModel)
             })
             .disposed(by: disposeBag)
     }

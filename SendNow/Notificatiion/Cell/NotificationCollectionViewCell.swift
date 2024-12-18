@@ -39,6 +39,7 @@ final class NotificationCollectionViewCell: UICollectionViewCell, ReuseIdentifie
         super.init(frame: frame)
         addSubviews()
         setLayoutConstraints()
+        configureNotificationCollectionViewCell()
     }
     
     required init?(coder: NSCoder) {
@@ -68,6 +69,12 @@ extension NotificationCollectionViewCell {
         ])
     }
     
+    private func configureNotificationCollectionViewCell() {
+        contentView.layer.masksToBounds = true
+        contentView.layer.cornerRadius = 24.0
+        contentView.backgroundColor = .systemBackground
+    }
+    
     func setReadNotificationCollectionViewCell(notificationBody: String, isRead: Bool, subject: NotificationSubject) {
         notificationBodyLabel.text = notificationBody
         notificationImage.isHidden = false
@@ -79,6 +86,8 @@ extension NotificationCollectionViewCell {
             notificationImage.image = UIImage(systemName: "person.fill.badge.plus", withConfiguration: imageConfig)
         case .groupInvited:
             notificationImage.image = UIImage(systemName: "rectangle.3.group.bubble.fill")
+        case .remittance:
+            notificationImage.image = UIImage(systemName: "wonsign.circle")
         default:
             notificationImage.image = UIImage(systemName: "exclamationmark.warninglight")
             return

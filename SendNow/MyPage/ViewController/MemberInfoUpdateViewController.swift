@@ -271,14 +271,7 @@ extension MemberInfoUpdateViewController {
             .disposed(by: disposeBag)
     }
     
-    //MARK: Alert
-    private func confirmAlert(title: String, message: String) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let doneAction = UIAlertAction(title: "확인", style: .cancel) { _ in }
-        alertController.addAction(doneAction)
-        self.present(alertController, animated: true)
-    }
-    
+    // MARK: Alert
     private func cancelAccountAlert() {
         let message = "⚠️ 탈퇴 후 해당 계정과 관련된 모든 데이터는 복구할 수 없으며, 계정을 다시 활성화할 수 없습니다. \n 탈퇴하시겠습니까? 🥲"
         let alertController = UIAlertController(title: "바로보내", message: message, preferredStyle: .alert)

@@ -41,10 +41,13 @@ final class SpendingDetailsAddViewController: UIViewController {
         settleGroupViewModel.loadGroupMemberInformation()
     }
     
-    override var childForStatusBarStyle: UIViewController? {
-        let viewController = SettleGroupViewController()
-        return viewController
-    }
+//    override var childForStatusBarStyle: UIViewController? {
+//        let viewController = SettleGroupViewController()
+//        return viewController
+//    }
+//    override var preferredStatusBarStyle: UIStatusBarStyle {
+//        return .default
+//    }
 }
 
 extension SpendingDetailsAddViewController {
@@ -52,12 +55,10 @@ extension SpendingDetailsAddViewController {
         spendingDetailAddView.translatesAutoresizingMaskIntoConstraints = false
         spendingDetailAddView.remainderAmountPayUserCollectionView.dataSource = self
         spendingDetailAddView.remainderAmountPayUserCollectionView.delegate = self
-        self.modalPresentationCapturesStatusBarAppearance = true
-        self.sheetPresentationController?.prefersGrabberVisible = true
-        self.sheetPresentationController?.preferredCornerRadius = 24
         view.backgroundColor = .systemBackground
         navigationItem.title = "지출 내역 추가"
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: spendingDetailAddView.spendingDetailAddButton)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: spendingDetailAddView.cancelButton)
         navigationController?.navigationBar.backgroundColor = .systemBackground
     }
     
@@ -106,10 +107,20 @@ extension SpendingDetailsAddViewController {
     }
     
     private func bindAll() {
+        bindCancelButton()
         bindSpendingDetailsClassficationView()
         bindpSendingDetailAddButton()
         bindIsUploadedExpenseInfo()
         bindIsLoadedGroupMemberInfo()
+    }
+    
+    private func bindCancelButton() {
+        spendingDetailAddView.cancelButton.rx.tap
+            .asDriver()
+            .drive(onNext: {[weak self] _ in
+                self?.dismiss(animated: true)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func bindSpendingDetailsClassficationView() {
