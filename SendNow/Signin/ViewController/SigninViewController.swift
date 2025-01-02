@@ -103,7 +103,7 @@ extension SigninViewController {
                       !(email.isEmpty),
                       !(password.isEmpty) else {
                     DispatchQueue.main.async {
-                        self?.blankAlert(title: "바로보내", message: "이메일과 비밀번호를 입력해 주세요.")
+                        self?.confirmAlert(title: "바로보내", message: "이메일과 비밀번호를 입력해 주세요.")
                     }
                     return }
                 self?.signinViewModel.isValidEmailPassword(email, password) // 가입되어 있는 이메일인지와 패스워드 일치여부 확인
@@ -130,17 +130,10 @@ extension SigninViewController {
             .asDriver(onErrorJustReturn: false)
             .drive(onNext:{[weak self] isValidEmailPassword in  // 기입한 이메일의 가입 여부와 비밀번호 일치 여부 확인
                 guard isValidEmailPassword else {
-                    self?.blankAlert(title: "바로보내", message: "가입된 이메일이 아니거나 비밀번호가 일치하지 않아요.")
+                    self?.confirmAlert(title: "바로보내", message: "가입된 이메일이 아니거나 비밀번호가 일치하지 않아요.")
                     return }
             })
             .disposed(by: disposeBag)
-    }
-    
-    private func blankAlert(title: String, message: String) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let doneAction = UIAlertAction(title: "확인", style: .cancel)
-        alertController.addAction(doneAction)
-        self.present(alertController, animated: true)
     }
 }
 
@@ -162,7 +155,7 @@ extension SigninViewController: ASAuthorizationControllerDelegate {
                     
                 default:
                     print("🚨ERROR!! : \(credentialState.rawValue)")
-                    self?.blankAlert(title: "바로보내", message: "회원님의 애플 계정으로 로그인 및 회원가입이 불가능해요. \n 바로보내 고객센터로 문의해 주세요. \n 고객센터 이메일: balobonae@gmail.com")
+                    self?.confirmAlert(title: "바로보내", message: "회원님의 애플 계정으로 로그인 및 회원가입이 불가능해요. \n 바로보내 고객센터로 문의해 주세요. \n 고객센터 이메일: balobonae@gmail.com")
                     return
                 }
             }

@@ -19,6 +19,15 @@ final class SpendingDetailsAddView: UIView {
         return button
     }()
     
+    let cancelButton: AnimationButton = {
+        let button = AnimationButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("닫기", for: .normal)
+        button.setTitleColor(.systemRed, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 14.0, weight: .bold)
+        return button
+    }()
+    
     private let dateStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false

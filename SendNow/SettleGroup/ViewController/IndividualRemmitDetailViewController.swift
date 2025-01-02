@@ -38,6 +38,7 @@ final class IndividualRemmitDetailViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         individualRemmitDetailViewModel.loadGroupSettlementInforamtion()
+        individualRemmitDetailViewModel.loadCompletionRemittanceInformation()
     }
 }
 
@@ -83,6 +84,7 @@ extension IndividualRemmitDetailViewController {
             .drive(onNext: {[weak self] _ in
                 self?.individualRemmitDetailView.individualRemmitCollectionView.reloadData()
                 self?.individualRemmitDetailView.amountBalanceCollectionView.reloadData()
+                self?.individualRemmitDetailView.completedRemittanceCollectionView.reloadData()
             })
             .disposed(by: disposeBag)
     }
@@ -109,7 +111,9 @@ extension IndividualRemmitDetailViewController: UICollectionViewDataSource {
             return balanceInfo.count
             
         case individualRemmitDetailView.completedRemittanceCollectionView:
-            return individualRemmitDetailViewModel.remittanceInformations?.count ?? 1
+            guard let remittanceInfo = individualRemmitDetailViewModel.remittanceInformations else {
+                return 1 }
+            return individualRemmitDetailViewModel.remittanceInformations?.count == 0 ? 1 : remittanceInfo.count
 
         default:
             return 0

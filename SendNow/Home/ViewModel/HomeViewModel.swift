@@ -7,6 +7,7 @@
 
 import Foundation
 import RxSwift
+import NotificationCenter
 
 final class HomeViewModel {
     private let friendService: FriendService

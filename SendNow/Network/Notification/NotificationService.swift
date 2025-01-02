@@ -14,6 +14,8 @@ enum NotificationAPIPath: String {
     case getNotificationList = "/SendNow/getNotificationList"
     case updateNoficiationIsRead = "/SendNow/updateNotificationIsRead"
     case updateNotificationAll = "/SendNow/updateNotificationAll"
+    case updateNotificationState = "/SendNow/updateNotificationState/"
+    case deleteNotification = "/SendNow/deleteNotification"
 }
 
 final class NotificationService {
@@ -32,11 +34,8 @@ final class NotificationService {
     }
     
     func sendRemittanceNotification(with settlementID: Int, completion: @escaping(Bool)->Void) {
-        let parameters: [String: Int] = [
-            "settlementID": settlementID
-        ]
-        let path = "\(NotificationAPIPath.sendRemittanceNotification.rawValue)"
-        networkSessionManager.urlPostMethod(path: path, encodeValue: parameters, completion: completion)
+        let path = "\(NotificationAPIPath.sendRemittanceNotification.rawValue)?settlementID=\(settlementID)"
+        networkSessionManager.urlPostMethod(path: path, encodeValue: settlementID, completion: completion)
     }
     
     func getNotificationList(with userID: Int, completion: @escaping([NotificationListDomain])->Void) {
@@ -56,5 +55,16 @@ final class NotificationService {
         let path = NotificationAPIPath.updateNoficiationIsRead.rawValue
         let notificationRequestDTO = UpdateNotificationRequestDTO(notificationID: notificationID, userID: userID)
         networkSessionManager.urlPostMethod(path: path, encodeValue: notificationRequestDTO, completion: completion)
+    }
+    
+    func updateNotificationState(with notificationStateDomain: NotificationStateDomain, completion: @escaping(Bool)->Void) {
+        let path = NotificationAPIPath.updateNotificationState.rawValue
+        let notificationRequestDTO = notificationStateDomain.toRequestDTO()
+        networkSessionManager.urlPostMethod(path: path, encodeValue: notificationRequestDTO, completion: completion)
+    }
+    
+    func deleteNotification(with userID: Int, completion: @escaping(Bool)->Void) {
+        let path = "\(NotificationAPIPath.deleteNotification.rawValue)?userID=\(userID)"
+        networkSessionManager.urlDeleteMethod(path: path, encodeValue: userID, completion: completion)
     }
 }
