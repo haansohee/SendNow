@@ -54,6 +54,7 @@ extension InvitedGroupViewController {
         invitedGroupView.invitedGroupCollectionView.delegate = self
         invitedGroupView.invitedGroupCollectionView.dataSource = self
         view.backgroundColor = .secondarySystemBackground
+        navigationController?.navigationBar.tintColor = UIColor(named: "TitleColor")
         navigationItem.title = "친구 초대하기"
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: invitedGroupView.invitedButton)
         self.modalPresentationCapturesStatusBarAppearance = true
@@ -128,7 +129,9 @@ extension InvitedGroupViewController {
 //MARK: UICollectionViewDataSource
 extension InvitedGroupViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return homeViewModel.myFriendList?.count ?? 1
+        guard let listCount = homeViewModel.myFriendList?.count,
+              listCount != 0 else { return 1}
+        return listCount
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

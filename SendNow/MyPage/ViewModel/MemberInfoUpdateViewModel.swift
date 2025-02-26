@@ -23,6 +23,7 @@ final class MemberInfoUpdateViewModel {
     let isUpdatedAccountNumber = PublishSubject<Bool>()
     let isUpdatedKakaoPayUrl = PublishSubject<Bool>()
     let isCanceledAccount = PublishSubject<Bool>()
+    let myPageItems = ["정보 수정하기 >", "개인정보처리방침 >"]
     
     init(with memberService: MemberService = MemberService(),
          userID: Int,

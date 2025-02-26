@@ -51,6 +51,7 @@ extension MemberInfoUpdateViewController {
         memberInfoUpdateView.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .systemBackground
         navigationItem.title = "회원정보"
+        navigationController?.navigationBar.tintColor = UIColor(named: "TitleColor")
     }
     
     private func addSubviews() {
