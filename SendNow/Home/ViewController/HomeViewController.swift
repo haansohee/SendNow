@@ -79,6 +79,7 @@ extension HomeViewController {
     private func bindAll() {
         bindSignoutButton()
         bindFriendRequestButton()
+        bindSettingButton()
         bindIsLoadedMemberInformation()
         bindIsLoadedMyFriendList()
         bindIsLoadedNotificationInfo()
@@ -105,11 +106,30 @@ extension HomeViewController {
             .disposed(by: disposeBag)
     }
     
+    private func bindSettingButton() {
+//        homeView.settingButton.rx.tap
+//            .asDriver()
+//            .drive(onNext: {[weak self] _ in
+//                self?.present(BankInfoRequiredViewController(), animated: true)
+//            })
+//            .disposed(by: disposeBag)
+    }
+    
     private func bindIsLoadedMemberInformation() {
         homeViewModel.isLoadedMemberInformation
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: {[weak self] in
                 self?.configureHomeViewNicknameLabel()
+                guard let bankName = self?.homeViewModel.loginMemberInformation?.bankName,
+                      let kakaoPayURL = self?.homeViewModel.loginMemberInformation?.kakaoPayUrl else {
+                    return
+                }
+                if bankName.isEmpty && bankName == "" && kakaoPayURL.isEmpty && kakaoPayURL == "" {
+                    print("은행정보: \(bankName)")
+                    print("카카오페이정보: \(kakaoPayURL)")
+                    print("비엇어요")
+                    self?.present(BankInfoRequiredViewController(), animated: true)
+                }
             })
             .disposed(by: disposeBag)
     }

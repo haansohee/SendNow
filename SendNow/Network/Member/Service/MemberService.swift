@@ -18,6 +18,7 @@ enum MemberAPIPath: String {
     case updateMemberNickname = "/SendNow/UpdateMemberNickname/"
     case updateKakaoPayUrl = "/SendNow/UpdateMemberKakaoPayUrl/"
     case updateMemberAccountNumber = "/SendNow/UpdateMemberAccountNumber/"
+    case updateMemberBankInfo = "/SendNow/UpdateMemberBankInfo/"
     case revokeAppleToken = "/SendNow/RevokeAppleToken"
     case cancelAccount = "/SendNow/CancelAccount"
     case getKakaoMemberInfo = "/SendNow/getKakaoMemberInfo"
@@ -63,6 +64,12 @@ final class MemberService {
         let path = MemberAPIPath.updateMemberAccountNumber.rawValue
         let updateAccountNumber = updateAccountNumberDomain.toRequestDTO()
         networkSessionManager.urlPostMethod(path: path, encodeValue: updateAccountNumber, completion: completion)
+    }
+    
+    func updateMemberBankInfo(with updateBankInformationDomain: UpdateBankInformationDomain, completion: @escaping(Bool)->Void) {
+        let path = MemberAPIPath.updateMemberBankInfo.rawValue
+        let updateMemberBankInfo = updateBankInformationDomain.toRequestDTO()
+        networkSessionManager.urlPostMethod(path: path, encodeValue: updateMemberBankInfo, completion: completion)
     }
     
     func revokeAppleToken(with cancelAccount: CancelAccountDomain, completion: @escaping(Bool)->Void) {

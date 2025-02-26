@@ -243,7 +243,7 @@ extension MemberInfoUpdateView {
             nicknameUpdateButton.topAnchor.constraint(equalTo: nicknameDuplicateButton.bottomAnchor, constant: 14.0),
             nicknameUpdateButton.heightAnchor.constraint(equalTo: nicknameDuplicateButton.heightAnchor),
             nicknameUpdateButton.widthAnchor.constraint(equalTo: nicknameDuplicateButton.widthAnchor),
-//
+
             accountNumberLabel.topAnchor.constraint(equalTo: nicknameDuplicateButton.bottomAnchor, constant: 50.0),
             accountNumberLabel.leadingAnchor.constraint(equalTo: nicknameLabel.leadingAnchor),
             accountNumberLabel.trailingAnchor.constraint(equalTo: nicknameLabel.trailingAnchor),
