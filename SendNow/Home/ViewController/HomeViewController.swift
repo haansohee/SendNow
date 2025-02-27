@@ -54,7 +54,6 @@ extension HomeViewController {
         homeView.friendListCollectionView.dataSource = self
         view.backgroundColor = .secondarySystemBackground
         navigationItem.title = "홈"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: homeView.settingButton)
     }
     
     private func addSubviews() {
@@ -79,7 +78,6 @@ extension HomeViewController {
     private func bindAll() {
         bindSignoutButton()
         bindFriendRequestButton()
-        bindSettingButton()
         bindIsLoadedMemberInformation()
         bindIsLoadedMyFriendList()
         bindIsLoadedNotificationInfo()
@@ -101,18 +99,11 @@ extension HomeViewController {
         homeView.friendRequestButton.rx.tap
             .asDriver()
             .drive(onNext: {[weak self] _ in
-                self?.navigationController?.pushViewController(FriendRequestViewController(), animated: true)
+                let viewController = FriendRequestViewController()
+                viewController.hidesBottomBarWhenPushed = true
+                self?.navigationController?.pushViewController(viewController, animated: true)
             })
             .disposed(by: disposeBag)
-    }
-    
-    private func bindSettingButton() {
-//        homeView.settingButton.rx.tap
-//            .asDriver()
-//            .drive(onNext: {[weak self] _ in
-//                self?.present(BankInfoRequiredViewController(), animated: true)
-//            })
-//            .disposed(by: disposeBag)
     }
     
     private func bindIsLoadedMemberInformation() {
@@ -125,9 +116,6 @@ extension HomeViewController {
                     return
                 }
                 if bankName.isEmpty && bankName == "" && kakaoPayURL.isEmpty && kakaoPayURL == "" {
-                    print("은행정보: \(bankName)")
-                    print("카카오페이정보: \(kakaoPayURL)")
-                    print("비엇어요")
                     self?.present(BankInfoRequiredViewController(), animated: true)
                 }
             })
@@ -162,12 +150,14 @@ extension HomeViewController {
 //MARK: UICollectionViewDataSource
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return homeViewModel.myFriendList?.count ?? 1
+        guard let listCount = homeViewModel.myFriendList?.count else { return 1 }
+        return listCount == 0 ? 1 : listCount
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FriendListCollectionViewCell.reuseIdentifier, for: indexPath) as? FriendListCollectionViewCell else { return UICollectionViewCell() }
-        guard let myGroupList = homeViewModel.myFriendList else { return cell }
+        guard let myGroupList = homeViewModel.myFriendList,
+              myGroupList.count != 0 else { return cell }
         cell.setFriendListCollectionViewCell(myGroupList[indexPath.row].nickname)
         return cell
     }

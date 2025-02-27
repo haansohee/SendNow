@@ -105,7 +105,9 @@ extension GroupListViewController {
         groupAddButton.rx.tap
             .asDriver(onErrorJustReturn: Void())
             .drive(onNext: {[weak self] in
-                self?.navigationController?.pushViewController(InvitedGroupViewController(), animated: true)
+                let viewController = InvitedGroupViewController()
+                viewController.hidesBottomBarWhenPushed = true
+                self?.navigationController?.pushViewController(viewController, animated: true)
             })
             .disposed(by: disposeBag)
     }
