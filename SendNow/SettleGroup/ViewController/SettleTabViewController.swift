@@ -15,7 +15,8 @@ final class SettleTabViewController: TabmanViewController {
     
     init(groupID: Int, groupName: String) {
         super.init(nibName: nil, bundle: nil)
-        viewControllers = [SettleGroupViewController(groupID: groupID), IndividualRemmitDetailViewController(groupID: groupID)]
+        viewControllers = [SettleGroupViewController(groupID: groupID),
+                           IndividualRemmitDetailViewController(groupID: groupID)]
         tabTitle = groupName
     }
     

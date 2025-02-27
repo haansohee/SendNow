@@ -146,7 +146,10 @@ extension GroupListViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let myGroupList = groupListViewModel.myGroupList,
               !myGroupList.isEmpty else { return }
-        navigationController?.pushViewController(SettleTabViewController(groupID: myGroupList[indexPath.row].groupID, groupName: myGroupList[indexPath.row].groupName), animated: true)
+        let viewController = SettleTabViewController(groupID: myGroupList[indexPath.row].groupID,
+                                                     groupName: myGroupList[indexPath.row].groupName)
+        viewController.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 

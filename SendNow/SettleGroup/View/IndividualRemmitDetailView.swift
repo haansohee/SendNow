@@ -15,7 +15,7 @@ final class IndividualRemmitDetailView: UIView {
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.contentInset = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
+        collectionView.contentInset = UIEdgeInsets(top: 20, left: 25, bottom: 20, right: 25)
         collectionView.register(AmountBalanceCollectionViewCell.self, forCellWithReuseIdentifier: AmountBalanceCollectionViewCell.reuseIdentifier)
         collectionView.backgroundColor = .secondarySystemBackground
         collectionView.isPagingEnabled = false
@@ -28,7 +28,7 @@ final class IndividualRemmitDetailView: UIView {
         layout.minimumLineSpacing = 5
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.contentInset = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
+        collectionView.contentInset = UIEdgeInsets(top: 20, left: 25, bottom: 20, right: 25)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(IndividualRemmitDetailCollectionViewCell.self, forCellWithReuseIdentifier: IndividualRemmitDetailCollectionViewCell.reuseIdentifier)
         collectionView.backgroundColor = .secondarySystemBackground
@@ -53,7 +53,7 @@ final class IndividualRemmitDetailView: UIView {
         layout.minimumLineSpacing = 8
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.contentInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        collectionView.contentInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(CompletedRemittanceCollectionViewCell.self, forCellWithReuseIdentifier: CompletedRemittanceCollectionViewCell.reuseIdentifier)
         collectionView.backgroundColor = .secondarySystemBackground
@@ -65,7 +65,7 @@ final class IndividualRemmitDetailView: UIView {
         super.init(frame: frame)
         addSubviews()
         setLayoutConstraints()
-        backgroundColor = .secondarySystemBackground
+        backgroundColor = .systemBackground
     }
     
     required init?(coder: NSCoder) {
@@ -85,11 +85,11 @@ extension IndividualRemmitDetailView {
     
     private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
-            amountBalanceCollectionView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 8.0),
-            amountBalanceCollectionView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 24.0),
-            amountBalanceCollectionView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -24.0),
+            amountBalanceCollectionView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor),
+            amountBalanceCollectionView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor),
+            amountBalanceCollectionView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor),
             
-            individualRemmitCollectionView.topAnchor.constraint(equalTo: amountBalanceCollectionView.bottomAnchor, constant: 12.0),
+            individualRemmitCollectionView.topAnchor.constraint(equalTo: amountBalanceCollectionView.bottomAnchor),
             individualRemmitCollectionView.leadingAnchor.constraint(equalTo: amountBalanceCollectionView.leadingAnchor),
             individualRemmitCollectionView.trailingAnchor.constraint(equalTo: amountBalanceCollectionView.trailingAnchor),
             
@@ -98,10 +98,10 @@ extension IndividualRemmitDetailView {
             remittaceCheckDescriptionLabel.trailingAnchor.constraint(equalTo: amountBalanceCollectionView.trailingAnchor),
             remittaceCheckDescriptionLabel.heightAnchor.constraint(equalToConstant: 30.0),
             
-            completedRemittanceCollectionView.topAnchor.constraint(equalTo: remittaceCheckDescriptionLabel.bottomAnchor, constant: 8.0),
+            completedRemittanceCollectionView.topAnchor.constraint(equalTo: remittaceCheckDescriptionLabel.bottomAnchor, constant: 2.0),
             completedRemittanceCollectionView.leadingAnchor.constraint(equalTo: amountBalanceCollectionView.leadingAnchor),
             completedRemittanceCollectionView.trailingAnchor.constraint(equalTo: amountBalanceCollectionView.trailingAnchor),
-            completedRemittanceCollectionView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -8.0),
+            completedRemittanceCollectionView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor),
             completedRemittanceCollectionView.heightAnchor.constraint(equalToConstant: 160.0),
         ])
     }
