@@ -8,7 +8,7 @@
 import UIKit
 
 final class SpendingDetailCollectionViewCell: UICollectionViewCell, ReuseIdentifierProtocol {
-    private let spendingClassficationNameLabel: UILabel = {
+    private let spendingClassificationNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = ""
@@ -84,7 +84,7 @@ final class SpendingDetailCollectionViewCell: UICollectionViewCell, ReuseIdentif
 extension SpendingDetailCollectionViewCell {
     private func addSubivews() {
         [
-            spendingClassficationNameLabel,
+            spendingClassificationNameLabel,
             detailContentLabel,
             paidNameLabel,
             paidByLabel,
@@ -95,17 +95,17 @@ extension SpendingDetailCollectionViewCell {
     
     private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
-            spendingClassficationNameLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 8.0),
-            spendingClassficationNameLabel.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 12.0),
-            spendingClassficationNameLabel.widthAnchor.constraint(equalToConstant: 50.0),
-            spendingClassficationNameLabel.heightAnchor.constraint(equalToConstant: 30.0),
+            spendingClassificationNameLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 8.0),
+            spendingClassificationNameLabel.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 12.0),
+            spendingClassificationNameLabel.widthAnchor.constraint(equalToConstant: 50.0),
+            spendingClassificationNameLabel.heightAnchor.constraint(equalToConstant: 30.0),
             
-            detailContentLabel.centerYAnchor.constraint(equalTo: spendingClassficationNameLabel.centerYAnchor),
-            detailContentLabel.leadingAnchor.constraint(equalTo: spendingClassficationNameLabel.trailingAnchor, constant: 5.0),
-            detailContentLabel.heightAnchor.constraint(equalTo: spendingClassficationNameLabel.heightAnchor),
+            detailContentLabel.centerYAnchor.constraint(equalTo: spendingClassificationNameLabel.centerYAnchor),
+            detailContentLabel.leadingAnchor.constraint(equalTo: spendingClassificationNameLabel.trailingAnchor, constant: 5.0),
+            detailContentLabel.heightAnchor.constraint(equalTo: spendingClassificationNameLabel.heightAnchor),
             
-            paidByLabel.topAnchor.constraint(equalTo: spendingClassficationNameLabel.bottomAnchor),
-            paidByLabel.leadingAnchor.constraint(equalTo: spendingClassficationNameLabel.leadingAnchor),
+            paidByLabel.topAnchor.constraint(equalTo: spendingClassificationNameLabel.bottomAnchor),
+            paidByLabel.leadingAnchor.constraint(equalTo: spendingClassificationNameLabel.leadingAnchor),
             paidByLabel.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: -8.0),
             paidByLabel.widthAnchor.constraint(equalToConstant: 50.0),
             
@@ -113,10 +113,10 @@ extension SpendingDetailCollectionViewCell {
             paidNameLabel.leadingAnchor.constraint(equalTo: paidByLabel.trailingAnchor),
             paidNameLabel.bottomAnchor.constraint(equalTo: paidByLabel.bottomAnchor),
             
-            expenseLabel.topAnchor.constraint(equalTo: spendingClassficationNameLabel.topAnchor),
+            expenseLabel.topAnchor.constraint(equalTo: spendingClassificationNameLabel.topAnchor),
             expenseLabel.leadingAnchor.constraint(equalTo: detailContentLabel.trailingAnchor),
             expenseLabel.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -12.0),
-            expenseLabel.heightAnchor.constraint(equalTo: spendingClassficationNameLabel.heightAnchor),
+            expenseLabel.heightAnchor.constraint(equalTo: spendingClassificationNameLabel.heightAnchor),
             
             dateLabel.topAnchor.constraint(equalTo: paidByLabel.topAnchor),
             dateLabel.trailingAnchor.constraint(equalTo: expenseLabel.trailingAnchor),
@@ -132,7 +132,7 @@ extension SpendingDetailCollectionViewCell {
     }
     
     func setSpendingDetailCollectionViewCellLabel(groupExpenseInfo: ExpenseInformations) {
-        spendingClassficationNameLabel.text = groupExpenseInfo.expenseClassfication
+        spendingClassificationNameLabel.text = groupExpenseInfo.expenseClassification
         detailContentLabel.text = groupExpenseInfo.expenseDetails
         paidNameLabel.text = groupExpenseInfo.paidBy
         expenseLabel.text = "\(groupExpenseInfo.expenseAmount)원"

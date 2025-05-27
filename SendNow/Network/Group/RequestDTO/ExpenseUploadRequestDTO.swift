@@ -10,7 +10,7 @@ import Foundation
 struct ExpenseUploadRequestDTO: Codable {
     let groupID: Int
     let userID: Int
-    let expenseClassfication: String
+    let expenseclassification: String
     let expenseDetail: String
     let expenseAmount: Int
     let expenseDate: String

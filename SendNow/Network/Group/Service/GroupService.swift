@@ -15,6 +15,7 @@ enum GroupAPIPath: String {
     case getGroupList = "/SendNow/getGroupList"
     case getGroupMemberList = "/SendNow/getGroupMemberList"
     case getGroupExpenseInformations = "/SendNow/getGroupExpenseInformations"
+    case getGroupExpenseDetailInformation = "/SendNow/getGroupExpenseDetailInformation"
     case getGroupSettlementsInformations = "/SendNow/getGroupSettlementsInformations"
     case getGroupCreatorUserID = "/SendNow/getGroupCreatorUserID"
     case getCompletedRemittanceInformation = "/SendNow/getCompletedRemittanceInformation"
@@ -82,6 +83,19 @@ final class GroupService {
                 print("get Group Expense Information Error : \(error)")
             }
         }
+    }
+    
+    func getGroupExpenseDetailInformation(with expenseID: Int, completion: @escaping(ExpenseDetailInformationDomain)->Void) {
+        let path = "\(GroupAPIPath.getGroupExpenseDetailInformation.rawValue)?expenseID=\(expenseID)"
+        networkSessionManager.urlGetMethod(path: path, requestDTO: ExpenseDetailInformationReponseDTO.self) { result in
+            switch result {
+            case .success(let repsonseDTO):
+                completion(repsonseDTO.toDomain())
+            case .failure(let error):
+                print("get Group Expense Detail Information Error: \(error)")
+            }
+        }
+        
     }
     
     func getGroupSettlementsInformations(with groupID: Int, completion: @escaping(SettlementListDomain)->Void) {

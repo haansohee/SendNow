@@ -20,7 +20,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         checkServerStatus {[weak self] isServerAvailable in
-            print("isServerAvailable: \(isServerAvailable)")
             if !isServerAvailable { self?.displayServerErrorAndTerminate() }
         }
         guard let nativeAppKey = Bundle.main.infoDictionary?["KAKAO_NATIVE_APP_KEY"] else { return true }

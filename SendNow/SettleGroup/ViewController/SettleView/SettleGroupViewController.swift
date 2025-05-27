@@ -166,6 +166,18 @@ extension SettleGroupViewController: UICollectionViewDataSource {
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let groupExpenseInformations = settleGroupViewModel.groupExpenseInformations,
+              let groupExpensDetailInformations = groupExpenseInformations.expenseInformations else { return }
+        let expenseID = groupExpensDetailInformations[indexPath.row].expenseID
+        let groupID = groupExpensDetailInformations[indexPath.row].groupID
+//        let viewController = UINavigationController(rootViewController: SpendingDetailsViewController(expenseID: expenseID,
+//                                                                                                      groupID: groupID))
+        let viewController = SpendingDetailsViewController(expenseID: expenseID, groupID: groupID)
+//        viewController.modalPresentationStyle = UIModalPresentationStyle.fullScreen
+//        self.present(viewController, animated: true)
+        navigationController?.pushViewController(viewController, animated: true)
+    }
     
 }
 
