@@ -11,7 +11,7 @@ struct ExpenseDetailInformationReponseDTO: Codable {
     let expenseID: Int
     let groupID: Int
     let paidBy: Int
-    let expenseclassification: String
+    let expenseClassfication: String
     let expenseDetails: String
     let expenseAmount: Int
     let expenseDate: String
@@ -24,7 +24,7 @@ extension ExpenseDetailInformationReponseDTO {
         return .init(expenseID: expenseID,
                      groupID: groupID,
                      paidBy: paidBy,
-                     expenseClassification: expenseclassification,
+                     expenseClassfication: expenseClassfication,
                      expenseDetails: expenseDetails,
                      expenseAmount: expenseAmount,
                      expenseDate: expenseDate,

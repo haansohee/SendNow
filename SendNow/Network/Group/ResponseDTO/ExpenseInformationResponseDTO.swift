@@ -18,7 +18,7 @@ struct ExpenseInformationsResponseDTO: Codable {
     let groupID: Int
     let userID: Int
     let paidBy: String
-    let expenseclassification: String
+    let expenseClassfication: String
     let expenseDetails: String
     let expenseAmount: Int
     let expenseDate: String
@@ -32,6 +32,6 @@ extension ExpenseInformationResponseDTO {
 
 extension ExpenseInformationsResponseDTO {
     func toDomain() -> ExpenseInformations {
-        return .init(expenseID: expenseID, groupID: groupID, userID: userID, paidBy: paidBy, expenseClassification: expenseclassification, expenseDetails: expenseDetails, expenseAmount: expenseAmount, expenseDate: expenseDate)
+        return .init(expenseID: expenseID, groupID: groupID, userID: userID, paidBy: paidBy, expenseClassfication: expenseClassfication, expenseDetails: expenseDetails, expenseAmount: expenseAmount, expenseDate: expenseDate)
     }
 }

@@ -24,6 +24,15 @@ final class SpendingDetailsViewController: UIViewController {
         return button
     }()
     
+    private let backButton: AnimationButton = {
+        let button = AnimationButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("< 뒤로가기", for: .normal)
+        button.setTitleColor(UIColor(named: "TitleColor"), for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 14.0, weight: .light)
+        return button
+    }()
+    
     private let saveButton: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -68,6 +77,7 @@ final class SpendingDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureSpendingDetailsView()
+        disableEditing()
         addSubviews()
         setLayoutConstraintsSpendingDetailsView()
         bindAll()
@@ -82,9 +92,15 @@ extension SpendingDetailsViewController {
         spendingDetailsView.spendingDetailAddButton.setTitle("수정", for: .normal)
         view.backgroundColor = .secondarySystemBackground
         self.navigationItem.hidesBackButton = true
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: spendingDetailsView.cancelButton)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: updateButton)
         navigationItem.title = "지출 상세 내역"
+    }
+    
+    private func disableEditing() {
+        spendingDetailsView.contentTextField.isEnabled = false
+        spendingDetailsView.paymentTextField.isEnabled = false
+//        spendingDetailsView.remainderAmountPayUserCollectionView.allowsSelection = false 수정 필요
     }
     
     private func addSubviews() {
@@ -117,10 +133,28 @@ extension SpendingDetailsViewController {
     
     // MARK: Bind
     private func bindAll() {
+        bindBackButton()
         bindUpdateButton()
         bindCancelButton()
         bindIsLoadedGroupMemberInfo()
         bindLoadedGroupExpenseDetailInfoSubject()
+    }
+    
+    private func bindBackButton() {
+        backButton.rx.tap
+            .asDriver()
+            .drive(onNext: {[weak self] _ in
+                switch self?.updateButton.tag {
+                case 0:
+                    self?.navigationController?.popViewController(animated: true)
+                case 1:
+                    print("수정 종료?")
+                    // 수정종료할가요?
+                default:
+                    return
+                }
+            })
+            .disposed(by: disposeBag)
     }
     
     private func bindUpdateButton() {
@@ -139,9 +173,10 @@ extension SpendingDetailsViewController {
                 self?.updateButton.tag = 1
                 self?.updateButton.isHidden = true
                 self?.updateButton.isEnabled = false
-                self?.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-
-//                self?.updateButton.setTitle("수정 완료", for: .normal)
+                
+                self?.spendingDetailsView.contentTextField.isEnabled = true
+                self?.spendingDetailsView.paymentTextField.isEnabled = true
+//                self?.spendingDetailsView.remainderAmountPayUserCollectionView.allowsSelection = true
             })
             .disposed(by: disposeBag)
     }
@@ -206,10 +241,13 @@ extension SpendingDetailsViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: InvitedGroupCollectionViewCell.reuseIdentifier, for: indexPath) as? InvitedGroupCollectionViewCell else { return UICollectionViewCell() }
-        guard let groupMemberInformations = settleGroupViewModel.groupMemberInformations else { return cell }
-//              let expenseDetailInfo = settleGroupViewModel.expenseDetailInformation else { return cell }
+        guard let groupMemberInformations = settleGroupViewModel.groupMemberInformations,
+              let expenseDetailInfo = settleGroupViewModel.expenseDetailInformation else { return cell }
         cell.friendNicknameLabel.text = groupMemberInformations[indexPath.row].nickname
         cell.selectedButton.isHidden = false
+        if expenseDetailInfo.remainderUserID == groupMemberInformations[indexPath.row].userID {
+            cell.selectedButton.setImage(UIImage(systemName: "circle.fill"), for: .normal)
+        }
         return cell
     }
 }

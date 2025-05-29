@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum classificationType: String {
+enum classficationType: String {
     case traffic = "교통"
     case accommodation = "숙박"
     case tourism = "관광"
@@ -65,7 +65,7 @@ final class SpendingDetailsAddView: UIView {
         return datePicker
     }()
     
-    private let classificationStackView: UIStackView = {
+    private let classficationStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
@@ -74,7 +74,7 @@ final class SpendingDetailsAddView: UIView {
         return stackView
     }()
     
-    private let classificationImageStackView: UIStackView = {
+    private let classficationImageStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
@@ -84,7 +84,7 @@ final class SpendingDetailsAddView: UIView {
         return stackView
     }()
     
-    private let classificationLabel: UILabel = {
+    private let classficationLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.sizeToFit()
@@ -94,38 +94,38 @@ final class SpendingDetailsAddView: UIView {
         return label
     }()
     
-    let trafficClassificationView: SpendingDetailsClassificationView = {
-        let categoryView = SpendingDetailsClassificationView()
-        categoryView.classificationImage.image = UIImage(systemName: "bus")
-        categoryView.classificationLabel.text = "교통"
+    let trafficclassficationView: SpendingDetailsclassficationView = {
+        let categoryView = SpendingDetailsclassficationView()
+        categoryView.classficationImage.image = UIImage(systemName: "bus")
+        categoryView.classficationLabel.text = "교통"
         return categoryView
     }()
     
-    let accommodationClassificationView: SpendingDetailsClassificationView = {
-        let categoryView = SpendingDetailsClassificationView()
-        categoryView.classificationImage.image = UIImage(systemName: "bed.double")
-        categoryView.classificationLabel.text = "숙박"
+    let accommodationclassficationView: SpendingDetailsclassficationView = {
+        let categoryView = SpendingDetailsclassficationView()
+        categoryView.classficationImage.image = UIImage(systemName: "bed.double")
+        categoryView.classficationLabel.text = "숙박"
         return categoryView
     }()
     
-    let tourismClassificationView: SpendingDetailsClassificationView = {
-        let categoryView = SpendingDetailsClassificationView()
-        categoryView.classificationImage.image = UIImage(systemName: "mountain.2")
-        categoryView.classificationLabel.text = "관광"
+    let tourismclassficationView: SpendingDetailsclassficationView = {
+        let categoryView = SpendingDetailsclassficationView()
+        categoryView.classficationImage.image = UIImage(systemName: "mountain.2")
+        categoryView.classficationLabel.text = "관광"
         return categoryView
     }()
     
-    let foodClassificationView: SpendingDetailsClassificationView = {
-        let categoryView = SpendingDetailsClassificationView()
-        categoryView.classificationImage.image = UIImage(systemName: "fork.knife")
-        categoryView.classificationLabel.text = "식비"
+    let foodclassficationView: SpendingDetailsclassficationView = {
+        let categoryView = SpendingDetailsclassficationView()
+        categoryView.classficationImage.image = UIImage(systemName: "fork.knife")
+        categoryView.classficationLabel.text = "식비"
         return categoryView
     }()
     
-    let etcClassificationView: SpendingDetailsClassificationView = {
-        let categoryView = SpendingDetailsClassificationView()
-        categoryView.classificationImage.image = UIImage(systemName: "ellipsis.circle")
-        categoryView.classificationLabel.text = "기타"
+    let etcclassficationView: SpendingDetailsclassficationView = {
+        let categoryView = SpendingDetailsclassficationView()
+        categoryView.classficationImage.image = UIImage(systemName: "ellipsis.circle")
+        categoryView.classficationLabel.text = "기타"
         return categoryView
     }()
     
@@ -246,7 +246,7 @@ extension SpendingDetailsAddView {
     private func addSubviews() {
         [
             dateStackView,
-            classificationStackView,
+            classficationStackView,
             contentStackView,
             paymentStackView,
             remainderAmountStackView
@@ -258,17 +258,17 @@ extension SpendingDetailsAddView {
         ].forEach { dateStackView.addArrangedSubview($0) }
         
         [
-            classificationLabel,
-            classificationImageStackView,
-        ].forEach { classificationStackView.addArrangedSubview($0) }
+            classficationLabel,
+            classficationImageStackView,
+        ].forEach { classficationStackView.addArrangedSubview($0) }
         
         [
-            trafficClassificationView,
-            accommodationClassificationView,
-            tourismClassificationView,
-            foodClassificationView,
-            etcClassificationView
-        ].forEach { classificationImageStackView.addArrangedSubview($0) }
+            trafficclassficationView,
+            accommodationclassficationView,
+            tourismclassficationView,
+            foodclassficationView,
+            etcclassficationView
+        ].forEach { classficationImageStackView.addArrangedSubview($0) }
         
         [
             contentLabel,
@@ -293,12 +293,12 @@ extension SpendingDetailsAddView {
             dateStackView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -24.0),
             dateStackView.heightAnchor.constraint(equalToConstant: 50.0),
             
-            classificationStackView.topAnchor.constraint(equalTo: dateStackView.bottomAnchor, constant: 24.0),
-            classificationStackView.leadingAnchor.constraint(equalTo: dateStackView.leadingAnchor),
-            classificationStackView.trailingAnchor.constraint(equalTo: dateStackView.trailingAnchor),
-            classificationStackView.heightAnchor.constraint(equalToConstant: 100.0),
+            classficationStackView.topAnchor.constraint(equalTo: dateStackView.bottomAnchor, constant: 24.0),
+            classficationStackView.leadingAnchor.constraint(equalTo: dateStackView.leadingAnchor),
+            classficationStackView.trailingAnchor.constraint(equalTo: dateStackView.trailingAnchor),
+            classficationStackView.heightAnchor.constraint(equalToConstant: 100.0),
             
-            contentStackView.topAnchor.constraint(equalTo: classificationStackView.bottomAnchor, constant: 24.0),
+            contentStackView.topAnchor.constraint(equalTo: classficationStackView.bottomAnchor, constant: 24.0),
             contentStackView.leadingAnchor.constraint(equalTo: dateStackView.leadingAnchor),
             contentStackView.trailingAnchor.constraint(equalTo: dateStackView.trailingAnchor),
             contentStackView.heightAnchor.constraint(equalTo: dateStackView.heightAnchor),
@@ -328,8 +328,8 @@ extension SpendingDetailsAddView {
     private func configureStackView() {
         [
             dateStackView,
-            classificationStackView,
-            classificationImageStackView,
+            classficationStackView,
+            classficationImageStackView,
             contentStackView,
             paymentStackView,
             remainderAmountStackView
@@ -346,31 +346,31 @@ extension SpendingDetailsAddView {
         datePicker.date = detailsInfo.expenseDate.stringToDate() ?? Date()
         contentTextField.text = detailsInfo.expenseDetails
         paymentTextField.text = String(detailsInfo.expenseAmount)
-        switch detailsInfo.expenseClassification {
-        case classificationType.traffic.rawValue:
-            trafficClassificationView.tag = 1
-            trafficClassificationView.classificationImage.tintColor = UIColor(named: "TitleColor")
-            trafficClassificationView.classificationLabel.textColor = UIColor(named: "TitleColor")
+        switch detailsInfo.expenseClassfication {
+        case classficationType.traffic.rawValue:
+            trafficclassficationView.tag = 1
+            trafficclassficationView.classficationImage.tintColor = UIColor(named: "TitleColor")
+            trafficclassficationView.classficationLabel.textColor = UIColor(named: "TitleColor")
             
-        case classificationType.accommodation.rawValue:
-            accommodationClassificationView.tag = 1
-            accommodationClassificationView.classificationImage.tintColor = UIColor(named: "TitleColor")
-            accommodationClassificationView.classificationLabel.textColor = UIColor(named: "TitleColor")
+        case classficationType.accommodation.rawValue:
+            accommodationclassficationView.tag = 1
+            accommodationclassficationView.classficationImage.tintColor = UIColor(named: "TitleColor")
+            accommodationclassficationView.classficationLabel.textColor = UIColor(named: "TitleColor")
             
-        case classificationType.tourism.rawValue:
-            tourismClassificationView.tag = 1
-            tourismClassificationView.classificationImage.tintColor = UIColor(named: "TitleColor")
-            tourismClassificationView.classificationLabel.textColor = UIColor(named: "TitleColor")
+        case classficationType.tourism.rawValue:
+            tourismclassficationView.tag = 1
+            tourismclassficationView.classficationImage.tintColor = UIColor(named: "TitleColor")
+            tourismclassficationView.classficationLabel.textColor = UIColor(named: "TitleColor")
             
-        case classificationType.food.rawValue:
-            foodClassificationView.tag = 1
-            foodClassificationView.classificationImage.tintColor = UIColor(named: "TitleColor")
-            foodClassificationView.classificationLabel.textColor = UIColor(named: "TitleColor")
+        case classficationType.food.rawValue:
+            foodclassficationView.tag = 1
+            foodclassficationView.classficationImage.tintColor = UIColor(named: "TitleColor")
+            foodclassficationView.classficationLabel.textColor = UIColor(named: "TitleColor")
             
-        case classificationType.etc.rawValue:
-            etcClassificationView.tag = 1
-            etcClassificationView.classificationImage.tintColor = UIColor(named: "TitleColor")
-            etcClassificationView.classificationLabel.textColor = UIColor(named: "TitleColor")
+        case classficationType.etc.rawValue:
+            etcclassficationView.tag = 1
+            etcclassficationView.classficationImage.tintColor = UIColor(named: "TitleColor")
+            etcclassficationView.classficationLabel.textColor = UIColor(named: "TitleColor")
 
         default:
             return

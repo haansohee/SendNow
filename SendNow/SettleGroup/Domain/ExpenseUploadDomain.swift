@@ -10,7 +10,7 @@ import Foundation
 struct ExpenseUploadDomain {
     let groupID: Int
     let userID: Int
-    let expenseclassification: String
+    let expenseClassfication: String
     let expenseDetail: String
     let expenseAmount: Int
     let expenseDate: String
@@ -19,6 +19,6 @@ struct ExpenseUploadDomain {
 
 extension ExpenseUploadDomain {
     func toRequestDTO() -> ExpenseUploadRequestDTO {
-        return .init(groupID: groupID, userID: userID, expenseclassification: expenseclassification, expenseDetail: expenseDetail, expenseAmount: expenseAmount, expenseDate: expenseDate, remainderUserID: remainderUserID)
+        return .init(groupID: groupID, userID: userID, expenseClassfication: expenseClassfication, expenseDetail: expenseDetail, expenseAmount: expenseAmount, expenseDate: expenseDate, remainderUserID: remainderUserID)
     }
 }

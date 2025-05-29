@@ -1,5 +1,5 @@
 //
-//  SpendingDetailsClassificationView.swift
+//  SpendingDetailsclassficationView.swift
 //  SendNow
 //
 //  Created by 한소희 on 5/14/24.
@@ -7,17 +7,17 @@
 
 import UIKit
 
-final class SpendingDetailsClassificationView: UIView {
+final class SpendingDetailsclassficationView: UIView {
     let switchTag: Int = 0
     
-    let classificationImage: UIImageView = {
+    let classficationImage: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.tintColor = .systemGray3
         return image
     }()
     
-    let classificationLabel: UILabel = {
+    let classficationLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
@@ -38,25 +38,25 @@ final class SpendingDetailsClassificationView: UIView {
     }
 }
 
-extension SpendingDetailsClassificationView {
+extension SpendingDetailsclassficationView {
     private func addSubviews() {
         [
-            classificationImage,
-            classificationLabel
+            classficationImage,
+            classficationLabel
         ].forEach { addSubview($0) }
     }
     
     private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
-            classificationImage.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor),
-            classificationImage.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor),
-            classificationImage.heightAnchor.constraint(equalToConstant: 24.0),
-            classificationImage.widthAnchor.constraint(equalToConstant: 24.0),
+            classficationImage.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor),
+            classficationImage.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor),
+            classficationImage.heightAnchor.constraint(equalToConstant: 24.0),
+            classficationImage.widthAnchor.constraint(equalToConstant: 24.0),
             
-            classificationLabel.topAnchor.constraint(equalTo: classificationImage.bottomAnchor),
-            classificationLabel.centerXAnchor.constraint(equalTo: classificationImage.centerXAnchor),
-            classificationLabel.widthAnchor.constraint(equalToConstant: 24.0),
-            classificationLabel.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor)
+            classficationLabel.topAnchor.constraint(equalTo: classficationImage.bottomAnchor),
+            classficationLabel.centerXAnchor.constraint(equalTo: classficationImage.centerXAnchor),
+            classficationLabel.widthAnchor.constraint(equalToConstant: 24.0),
+            classficationLabel.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
 }

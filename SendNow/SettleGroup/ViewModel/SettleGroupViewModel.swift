@@ -22,7 +22,7 @@ enum FailedError: Error {
 final class SettleGroupViewModel {
     private let groupService: GroupService
     private let userID: Int
-    private(set) var expenseclassification: String?
+    private(set) var expenseClassfication: String?
     private(set) var groupID: Int?
     private(set) var expenseID: Int?
     private(set) var remainderUserID: Int?
@@ -49,12 +49,12 @@ final class SettleGroupViewModel {
         self.expenseID = expenseID
     }
     
-    func selectExpenseClassification(_ classification: String) {
-        expenseclassification = classification
+    func selectexpenseClassfication(_ classfication: String) {
+        expenseClassfication = classfication
     }
     
-    func deselectExpenseClassification() {
-        expenseclassification = nil
+    func deselectexpenseClassfication() {
+        expenseClassfication = nil
     }
     
     func selectRemainderAmountUser(userID: Int) {
@@ -68,14 +68,14 @@ final class SettleGroupViewModel {
         }
     }
     
-    func uploadExpenseInformation(expenseclassification: String, expenseDetail: String, expenseAmount: String, expenseDate: Date, remainderUserID: Int) {
+    func uploadExpenseInformation(expenseClassfication: String, expenseDetail: String, expenseAmount: String, expenseDate: Date, remainderUserID: Int) {
         guard let groupID = groupID,
               let amount = Int(expenseAmount) else { return }
         let date = expenseDate.dateToString()
         let expenseUploadDomain = ExpenseUploadDomain(
             groupID: groupID,
             userID: userID,
-            expenseclassification: expenseclassification,
+            expenseClassfication: expenseClassfication,
             expenseDetail: expenseDetail,
             expenseAmount: amount,
             expenseDate: date,

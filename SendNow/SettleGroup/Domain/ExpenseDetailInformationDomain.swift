@@ -11,7 +11,7 @@ struct ExpenseDetailInformationDomain {
     let expenseID: Int
     let groupID: Int
     let paidBy: Int
-    let expenseClassification: String
+    let expenseClassfication: String
     let expenseDetails: String
     let expenseAmount: Int
     let expenseDate: String

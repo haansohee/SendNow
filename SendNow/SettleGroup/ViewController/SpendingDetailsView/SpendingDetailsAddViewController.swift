@@ -67,25 +67,25 @@ extension SpendingDetailsAddViewController {
         ])
     }
     
-    private func selectClassification(_ view: SpendingDetailsClassificationView, _ otherViews: [SpendingDetailsClassificationView], _ tag: Int) {
+    private func selectclassfication(_ view: SpendingDetailsclassficationView, _ otherViews: [SpendingDetailsclassficationView], _ tag: Int) {
         switch tag {
         case 0:
             view.tag = 1
-            view.classificationImage.tintColor = UIColor(named: "TitleColor")
-            view.classificationLabel.textColor = UIColor(named: "TitleColor")
-            guard let classification = view.classificationLabel.text,
-                  !classification.isEmpty else { return }
-            settleGroupViewModel.selectExpenseClassification(classification)
+            view.classficationImage.tintColor = UIColor(named: "TitleColor")
+            view.classficationLabel.textColor = UIColor(named: "TitleColor")
+            guard let classfication = view.classficationLabel.text,
+                  !classfication.isEmpty else { return }
+            settleGroupViewModel.selectexpenseClassfication(classfication)
             otherViews.forEach {
                 $0.tag = 0
-                $0.classificationImage.tintColor = .systemGray3
-                $0.classificationLabel.textColor = .systemGray3
+                $0.classficationImage.tintColor = .systemGray3
+                $0.classficationLabel.textColor = .systemGray3
             }
         case 1:
             view.tag = 0
-            view.classificationImage.tintColor = .systemGray3
-            view.classificationLabel.textColor = .systemGray3
-            settleGroupViewModel.deselectExpenseClassification()
+            view.classficationImage.tintColor = .systemGray3
+            view.classficationLabel.textColor = .systemGray3
+            settleGroupViewModel.deselectexpenseClassfication()
         default: return
         }
     }
@@ -100,7 +100,7 @@ extension SpendingDetailsAddViewController {
     
     private func bindAll() {
         bindCancelButton()
-        bindSpendingDetailsClassificationView()
+        bindSpendingDetailsclassficationView()
         bindpSendingDetailAddButton()
         bindIsUploadedExpenseInfo()
         bindIsLoadedGroupMemberInfo()
@@ -115,94 +115,94 @@ extension SpendingDetailsAddViewController {
             .disposed(by: disposeBag)
     }
     
-    private func bindSpendingDetailsClassificationView() {
-        spendingDetailAddView.trafficClassificationView.rx
+    private func bindSpendingDetailsclassficationView() {
+        spendingDetailAddView.trafficclassficationView.rx
             .tapGesture()
             .when(.recognized)
             .asDriver { _ in .never() }
             .drive(onNext: {[weak self] _ in
-                guard let trafficClassificationView = self?.spendingDetailAddView.trafficClassificationView,
-                      let accommodationclassificationView = self?.spendingDetailAddView.accommodationClassificationView,
-                      let tourismclassificationView = self?.spendingDetailAddView.tourismClassificationView,
-                      let foodclassificationView = self?.spendingDetailAddView.foodClassificationView,
-                      let etcclassificationView = self?.spendingDetailAddView.etcClassificationView else { return }
-                let otherViews = [accommodationclassificationView,
-                                  tourismclassificationView,
-                                  foodclassificationView,
-                                  etcclassificationView]
-                self?.selectClassification(trafficClassificationView, otherViews, trafficClassificationView.tag)
+                guard let trafficclassficationView = self?.spendingDetailAddView.trafficclassficationView,
+                      let accommodationclassficationView = self?.spendingDetailAddView.accommodationclassficationView,
+                      let tourismclassficationView = self?.spendingDetailAddView.tourismclassficationView,
+                      let foodclassficationView = self?.spendingDetailAddView.foodclassficationView,
+                      let etcclassficationView = self?.spendingDetailAddView.etcclassficationView else { return }
+                let otherViews = [accommodationclassficationView,
+                                  tourismclassficationView,
+                                  foodclassficationView,
+                                  etcclassficationView]
+                self?.selectclassfication(trafficclassficationView, otherViews, trafficclassficationView.tag)
             })
             .disposed(by: disposeBag)
         
-        spendingDetailAddView.accommodationClassificationView.rx
+        spendingDetailAddView.accommodationclassficationView.rx
             .tapGesture()
             .when(.recognized)
             .asDriver { _ in .never() }
             .drive(onNext: {[weak self] _ in
-                guard let trafficclassificationView = self?.spendingDetailAddView.trafficClassificationView,
-                      let accommodationclassificationView = self?.spendingDetailAddView.accommodationClassificationView,
-                      let tourismclassificationView = self?.spendingDetailAddView.tourismClassificationView,
-                      let foodclassificationView = self?.spendingDetailAddView.foodClassificationView,
-                      let etcclassificationView = self?.spendingDetailAddView.etcClassificationView else { return }
-                let otherViews = [trafficclassificationView,
-                                  tourismclassificationView,
-                                  foodclassificationView,
-                                  etcclassificationView]
-                self?.selectClassification(accommodationclassificationView, otherViews, accommodationclassificationView.tag)
+                guard let trafficclassficationView = self?.spendingDetailAddView.trafficclassficationView,
+                      let accommodationclassficationView = self?.spendingDetailAddView.accommodationclassficationView,
+                      let tourismclassficationView = self?.spendingDetailAddView.tourismclassficationView,
+                      let foodclassficationView = self?.spendingDetailAddView.foodclassficationView,
+                      let etcclassficationView = self?.spendingDetailAddView.etcclassficationView else { return }
+                let otherViews = [trafficclassficationView,
+                                  tourismclassficationView,
+                                  foodclassficationView,
+                                  etcclassficationView]
+                self?.selectclassfication(accommodationclassficationView, otherViews, accommodationclassficationView.tag)
             })
             .disposed(by: disposeBag)
         
-        spendingDetailAddView.tourismClassificationView.rx
+        spendingDetailAddView.tourismclassficationView.rx
             .tapGesture()
             .when(.recognized)
             .asDriver { _ in .never() }
             .drive(onNext: {[weak self] _ in
-                guard let trafficclassificationView = self?.spendingDetailAddView.trafficClassificationView,
-                      let accommodationclassificationView = self?.spendingDetailAddView.accommodationClassificationView,
-                      let tourismclassificationView = self?.spendingDetailAddView.tourismClassificationView,
-                      let foodclassificationView = self?.spendingDetailAddView.foodClassificationView,
-                      let etcclassificationView = self?.spendingDetailAddView.etcClassificationView else { return }
-                let otherViews = [trafficclassificationView,
-                                  accommodationclassificationView,
-                                  foodclassificationView,
-                                  etcclassificationView]
-                self?.selectClassification(tourismclassificationView, otherViews, tourismclassificationView.tag)
+                guard let trafficclassficationView = self?.spendingDetailAddView.trafficclassficationView,
+                      let accommodationclassficationView = self?.spendingDetailAddView.accommodationclassficationView,
+                      let tourismclassficationView = self?.spendingDetailAddView.tourismclassficationView,
+                      let foodclassficationView = self?.spendingDetailAddView.foodclassficationView,
+                      let etcclassficationView = self?.spendingDetailAddView.etcclassficationView else { return }
+                let otherViews = [trafficclassficationView,
+                                  accommodationclassficationView,
+                                  foodclassficationView,
+                                  etcclassficationView]
+                self?.selectclassfication(tourismclassficationView, otherViews, tourismclassficationView.tag)
             })
             .disposed(by: disposeBag)
         
-        spendingDetailAddView.foodClassificationView.rx
+        spendingDetailAddView.foodclassficationView.rx
             .tapGesture()
             .when(.recognized)
             .asDriver { _ in .never() }
             .drive(onNext: {[weak self] _ in
-                guard let trafficclassificationView = self?.spendingDetailAddView.trafficClassificationView,
-                      let accommodationclassificationView = self?.spendingDetailAddView.accommodationClassificationView,
-                      let tourismclassificationView = self?.spendingDetailAddView.tourismClassificationView,
-                      let foodclassificationView = self?.spendingDetailAddView.foodClassificationView,
-                      let etcclassificationView = self?.spendingDetailAddView.etcClassificationView else { return }
-                let otherViews = [trafficclassificationView,
-                                  accommodationclassificationView,
-                                  tourismclassificationView,
-                                  etcclassificationView]
-                self?.selectClassification(foodclassificationView, otherViews, foodclassificationView.tag)
+                guard let trafficclassficationView = self?.spendingDetailAddView.trafficclassficationView,
+                      let accommodationclassficationView = self?.spendingDetailAddView.accommodationclassficationView,
+                      let tourismclassficationView = self?.spendingDetailAddView.tourismclassficationView,
+                      let foodclassficationView = self?.spendingDetailAddView.foodclassficationView,
+                      let etcclassficationView = self?.spendingDetailAddView.etcclassficationView else { return }
+                let otherViews = [trafficclassficationView,
+                                  accommodationclassficationView,
+                                  tourismclassficationView,
+                                  etcclassficationView]
+                self?.selectclassfication(foodclassficationView, otherViews, foodclassficationView.tag)
             })
             .disposed(by: disposeBag)
         
-        spendingDetailAddView.etcClassificationView.rx
+        spendingDetailAddView.etcclassficationView.rx
             .tapGesture()
             .when(.recognized)
             .asDriver { _ in .never() }
             .drive(onNext: {[weak self] _ in
-                guard let trafficclassificationView = self?.spendingDetailAddView.trafficClassificationView,
-                      let accommodationclassificationView = self?.spendingDetailAddView.accommodationClassificationView,
-                      let tourismclassificationView = self?.spendingDetailAddView.tourismClassificationView,
-                      let foodclassificationView = self?.spendingDetailAddView.foodClassificationView,
-                      let etcclassificationView = self?.spendingDetailAddView.etcClassificationView else { return }
-                let otherViews = [trafficclassificationView,
-                                  accommodationclassificationView,
-                                  tourismclassificationView,
-                                  foodclassificationView]
-                self?.selectClassification(etcclassificationView, otherViews, etcclassificationView.tag)
+                guard let trafficclassficationView = self?.spendingDetailAddView.trafficclassficationView,
+                      let accommodationclassficationView = self?.spendingDetailAddView.accommodationclassficationView,
+                      let tourismclassficationView = self?.spendingDetailAddView.tourismclassficationView,
+                      let foodclassficationView = self?.spendingDetailAddView.foodclassficationView,
+                      let etcclassficationView = self?.spendingDetailAddView.etcclassficationView else { return }
+                let otherViews = [trafficclassficationView,
+                                  accommodationclassficationView,
+                                  tourismclassficationView,
+                                  foodclassficationView]
+                self?.selectclassfication(etcclassficationView, otherViews, etcclassficationView.tag)
             })
             .disposed(by: disposeBag)
     }
@@ -219,7 +219,7 @@ extension SpendingDetailsAddViewController {
                     self?.checkAlert(message: "상세 내역을 입력하세요!")
                     return
                 }
-                guard let expenseclassification = self?.settleGroupViewModel.expenseclassification else {
+                guard let expenseClassfication = self?.settleGroupViewModel.expenseClassfication else {
                     self?.checkAlert(message: "지출 내역의 분류를 선택하세요!")
                     return
                 }
@@ -227,7 +227,7 @@ extension SpendingDetailsAddViewController {
                     self?.checkAlert(message: "나머지 금액을 지불할 친구를 선택하세요!")
                     return
                 }
-                self?.settleGroupViewModel.uploadExpenseInformation(expenseclassification: expenseclassification, expenseDetail: detailContent, expenseAmount: expense, expenseDate: date, remainderUserID: remainderUser)
+                self?.settleGroupViewModel.uploadExpenseInformation(expenseClassfication: expenseClassfication, expenseDetail: detailContent, expenseAmount: expense, expenseDate: date, remainderUserID: remainderUser)
             })
             .disposed(by: disposeBag)
     }
