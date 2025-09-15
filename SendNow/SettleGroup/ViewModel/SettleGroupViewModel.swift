@@ -123,18 +123,13 @@ final class SettleGroupViewModel {
     }
     
     func loadGroupExpenseInformation() {
-        print("load group expense information")
         guard let groupID = groupID else { return }
-        print("groupID: \(groupID)")
-        print("!! userID: \(userID)")
         groupService.getGroupExpenseInformations(with: userID, groupID: groupID) {[weak self] result in
             self?.groupExpenseInformations = result
             guard let groupExpenses = result.groupExpenses,
                   let myExpenses = result.myExpenses else {
                 self?.groupExpenseInfoSubject.onNext(("0", "0"))
                 return }
-            print("group expense: \(groupExpenses)")
-            print("my total expense: \(myExpenses)")
             self?.groupExpenseInfoSubject.onNext((groupExpenses, myExpenses))
         }
     }

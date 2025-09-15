@@ -32,7 +32,6 @@ final class SettleGroupViewController: BaseUIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("view did load : SettleGroupViewController")
         configureSettleGroupView()
         addSubviews()
         setLayoutConstraintsSettleGroupView()
