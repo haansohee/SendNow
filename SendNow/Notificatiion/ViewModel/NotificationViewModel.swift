@@ -91,7 +91,6 @@ final class NotificationViewModel {
     
     func deleteNotificationAll() {
         notificationService.deleteNotification(with: userID) {[weak self] isDeleted in
-            print("isDeleted: \(isDeleted)")
             self?.isDeletedNotification.onNext(isDeleted)
         }
     }

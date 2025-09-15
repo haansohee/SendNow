@@ -9,8 +9,8 @@ import Foundation
 
 struct ExpenseInformationDomain {
     let expenseInformations: [ExpenseInformations]?
-    let myExpenses: Int?
-    let groupExpenses: Int?
+    let myExpenses: String?
+    let groupExpenses: String?
 }
 
 struct ExpenseInformations {
@@ -20,6 +20,6 @@ struct ExpenseInformations {
     let paidBy: String
     let expenseClassfication: String
     let expenseDetails: String
-    let expenseAmount: Int
+    let expenseAmount: String
     let expenseDate: String
 }

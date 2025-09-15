@@ -8,8 +8,9 @@
 import Foundation
 import UIKit
 import RxSwift
+import Toast
 
-final class SettleGroupViewController: UIViewController {
+final class SettleGroupViewController: BaseUIViewController {
     private let settleGroupView = SettleGroupView()
     private let settleGroupViewModel: SettleGroupViewModel
     private let disposeBag = DisposeBag()
@@ -31,6 +32,7 @@ final class SettleGroupViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("view did load : SettleGroupViewController")
         configureSettleGroupView()
         addSubviews()
         setLayoutConstraintsSettleGroupView()
@@ -49,7 +51,7 @@ extension SettleGroupViewController {
         settleGroupView.translatesAutoresizingMaskIntoConstraints = false
         settleGroupView.spendingDetailCollectionView.dataSource = self
         settleGroupView.spendingDetailCollectionView.delegate = self
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .secondarySystemBackground
         navigationController?.topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: settleGroupView.groupRemoveButton)
     }
     
@@ -102,17 +104,17 @@ extension SettleGroupViewController {
     }
     
     private func bindIsLoadedGroupExpenseInfo() {
-        settleGroupViewModel.isLoadedGroupExpenseInfo
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isLoadedGroupExpenseInfo in
-                guard isLoadedGroupExpenseInfo else { return }
+        settleGroupViewModel.groupExpenseInfoSubject
+            .asDriver(onErrorJustReturn: ("0", "0"))
+            .drive(onNext: {[weak self] group, personal in
                 self?.settleGroupView.spendingDetailCollectionView.reloadData()
+                self?.settleGroupView.configurePaymentLabel(group: group, personal: personal)
             })
             .disposed(by: disposeBag)
     }
     
     private func bindIsEqualCreatorUserID() {
-        settleGroupViewModel.isEqualCreatorUserID
+        settleGroupViewModel.isEqualGroupCreatorSubject
             .asDriver(onErrorJustReturn: false)
             .drive(onNext: {[weak self] isEqualCreatorUserID in
                 self?.settleGroupView.groupRemoveButton.isEnabled = isEqualCreatorUserID
@@ -161,8 +163,6 @@ extension SettleGroupViewController: UICollectionViewDataSource {
         cell.setSpendingDetailCollectionViewCellLabel(groupExpenseInfo: groupExpenseDetailInformations[indexPath.row])
         guard let myExpenses = groupExpenseInformations.myExpenses,
               let groupExpenses = groupExpenseInformations.groupExpenses else { return cell }
-        settleGroupView.myTotalContentLabel.text = "\(myExpenses)원"
-        settleGroupView.groupTotalContentLabel.text = "\(groupExpenses)원"
         return cell
     }
     
@@ -171,14 +171,18 @@ extension SettleGroupViewController: UICollectionViewDataSource {
               let groupExpensDetailInformations = groupExpenseInformations.expenseInformations else { return }
         let expenseID = groupExpensDetailInformations[indexPath.row].expenseID
         let groupID = groupExpensDetailInformations[indexPath.row].groupID
-//        let viewController = UINavigationController(rootViewController: SpendingDetailsViewController(expenseID: expenseID,
-//                                                                                                      groupID: groupID))
-        let viewController = SpendingDetailsViewController(expenseID: expenseID, groupID: groupID)
-//        viewController.modalPresentationStyle = UIModalPresentationStyle.fullScreen
-//        self.present(viewController, animated: true)
+        let expenseClassfication = groupExpensDetailInformations[indexPath.row].expenseClassfication
+        let expenseDate = groupExpensDetailInformations[indexPath.row].expenseDate
+        let expenseDetails = groupExpensDetailInformations[indexPath.row].expenseDetails
+        let viewController = SpendingDetailsViewController(
+            expenseID: expenseID,
+            groupID: groupID,
+            expenseClassfication: expenseClassfication,
+            expenseDate: expenseDate,
+            expenseDetails: expenseDetails
+        )
         navigationController?.pushViewController(viewController, animated: true)
     }
-    
 }
 
 extension SettleGroupViewController: UICollectionViewDelegateFlowLayout {

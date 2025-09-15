@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import RxSwift
 
-final class SignupWithEmailViewController: UIViewController {
+final class SignupWithEmailViewController: BaseUIViewController {
     private let signupWithEmailView = SignupWithEmailView()
     private let signupWithEmailViewModel: SignupWithEmailViewModel
     private let disposeBag = DisposeBag()

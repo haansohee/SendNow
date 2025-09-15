@@ -82,8 +82,6 @@ final class FriendRequestViewModel {
     func sendFriendNotification() {
         guard let receiverUserID = friendRequestReceivedUserID else { return }
         let friendNotificationInfo = FriendNotificationDomain(senderUserID: userID, receiverUserID: receiverUserID)
-        notificationService.sendFriendNotification(with: friendNotificationInfo) { result in
-            print("🚨 sendFriendNotification Result : \(result)")
-        }
+        notificationService.sendFriendNotification(with: friendNotificationInfo) { _ in }
     }
 }

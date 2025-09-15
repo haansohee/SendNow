@@ -9,8 +9,8 @@ import Foundation
 
 struct ExpenseInformationResponseDTO: Codable {
     let expenseInformations: [ExpenseInformationsResponseDTO]
-    let myExpenses: Int?
-    let groupExpenses: Int?
+    let myExpenses: String?
+    let groupExpenses: String?
 }
 
 struct ExpenseInformationsResponseDTO: Codable {
@@ -20,7 +20,7 @@ struct ExpenseInformationsResponseDTO: Codable {
     let paidBy: String
     let expenseClassfication: String
     let expenseDetails: String
-    let expenseAmount: Int
+    let expenseAmount: String
     let expenseDate: String
 }
 

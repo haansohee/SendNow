@@ -19,7 +19,7 @@ struct SettlementDetailsDomain {
     let toUserID: Int
     let fromNickname: String
     let toNickname: String
-    let amount: Int
+    let amount: String
     let bankName: String?
     let accountNumber: String?
     let kakaoPayURL: String?
@@ -28,6 +28,6 @@ struct SettlementDetailsDomain {
 struct SettlementBalanceDomain {
     let userID: Int
     let nickname: String
-    let sendAmount: Int?
-    let receiveAmount: Int?
+    let sendAmount: String?
+    let receiveAmount: String?
 }

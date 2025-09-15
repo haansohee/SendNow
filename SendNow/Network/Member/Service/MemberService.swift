@@ -14,6 +14,7 @@ enum MemberAPIPath: String {
     case setEmailMemberInfo = "/SendNow/setEmailMemberInfo/"
     case isValidEmailPassword = "/SendNow/isValidEmailPassword/"
     case isDuplicatedNickname = "/SendNow/isDuplicatedNickname"
+    case updateFcmToken = "/SendNow/UpdateMemerFcmToken/"
     case updateNickname = "/SendNow/updateNickname/"
     case updateMemberNickname = "/SendNow/UpdateMemberNickname/"
     case updateKakaoPayUrl = "/SendNow/UpdateMemberKakaoPayUrl/"
@@ -46,6 +47,12 @@ final class MemberService {
         let path = MemberAPIPath.setEmailMemberInfo.rawValue
         let member = signinWithEmailDomain.toRequestDTO()
         networkSessionManager.urlPostMethod(path: path, encodeValue: member, completion: completion)
+    }
+    
+    func updateMemberFcmToken(with udpateFcmTokenInformationDomain: UpdateFcmTokenInformationDomain, completion: @escaping(Bool)->Void) {
+        let path = MemberAPIPath.updateFcmToken.rawValue
+        let updateFcmTokenInfoRequestDTO = udpateFcmTokenInformationDomain.toRequestDTO()
+        networkSessionManager.urlPostMethod(path: path, encodeValue: updateFcmTokenInfoRequestDTO, completion: completion)
     }
     
     func updateNickname(with updateNicknameDomain: UpdateNicknameDomain, completion: @escaping(Bool)->Void) {

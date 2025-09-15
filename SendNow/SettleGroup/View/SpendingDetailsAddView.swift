@@ -194,41 +194,6 @@ final class SpendingDetailsAddView: UIView {
         return textField
     }()
     
-    private let remainderAmountStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.distribution = .fill
-        stackView.alignment = .fill
-        stackView.spacing = 10.0
-        stackView.backgroundColor = .red.withAlphaComponent(0.1)
-        return stackView
-    }()
-    
-    private let remainderAmountDescriptionLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "정산 금액이 나누어 떨어지지 않을 경우, \n 나머지 금액을 더 지불할 친구를 선택해 주세요. \n 지불할 친구는 나중에도 변경이 가능해요."
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 13.0, weight: .bold)
-        return label
-    }()
-    
-    let remainderAmountPayUserCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 8.0
-        
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(InvitedGroupCollectionViewCell.self, forCellWithReuseIdentifier: InvitedGroupCollectionViewCell.reuseIdentifier)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.contentInset = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
-        collectionView.backgroundColor = .systemBackground
-        collectionView.contentInset = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
-        return collectionView
-    }()
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureStackView()
@@ -248,8 +213,7 @@ extension SpendingDetailsAddView {
             dateStackView,
             classficationStackView,
             contentStackView,
-            paymentStackView,
-            remainderAmountStackView
+            paymentStackView
         ].forEach { addSubview($0) }
         
         [
@@ -279,11 +243,6 @@ extension SpendingDetailsAddView {
             paymentLabel,
             paymentTextField
         ].forEach { paymentStackView.addArrangedSubview($0) }
-        
-        [
-            remainderAmountDescriptionLabel,
-            remainderAmountPayUserCollectionView
-        ].forEach { remainderAmountStackView.addArrangedSubview($0) }
     }
     
     private func setLayoutConstraints() {
@@ -314,14 +273,8 @@ extension SpendingDetailsAddView {
             
             paymentLabel.heightAnchor.constraint(equalToConstant: 30.0),
             paymentLabel.widthAnchor.constraint(equalToConstant: 60.0),
+            
             paymentTextField.heightAnchor.constraint(equalToConstant: 30.0),
-            
-            remainderAmountStackView.topAnchor.constraint(equalTo: paymentStackView.bottomAnchor, constant: 24.0),
-            remainderAmountStackView.leadingAnchor.constraint(equalTo: dateStackView.leadingAnchor),
-            remainderAmountStackView.trailingAnchor.constraint(equalTo: dateStackView.trailingAnchor),
-            remainderAmountStackView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -12.0),
-            
-            remainderAmountDescriptionLabel.heightAnchor.constraint(equalToConstant: 60.0)
         ])
     }
     
@@ -331,8 +284,7 @@ extension SpendingDetailsAddView {
             classficationStackView,
             classficationImageStackView,
             contentStackView,
-            paymentStackView,
-            remainderAmountStackView
+            paymentStackView
         ].forEach {
             $0.layer.masksToBounds = false
             $0.layer.cornerRadius = stackViewCornerRadius

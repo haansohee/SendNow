@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import RxSwift
 
-final class MyPageViewController: UIViewController {
+final class MyPageViewController: BaseUIViewController {
     private let myPageCollectionView = MyPageCollectionView()
     let memberInfoUpdateViewModel: MemberInfoUpdateViewModel
     
@@ -50,10 +50,10 @@ extension MyPageViewController {
     
     private func setLayoutConstraintsMyPageCollectionView() {
         NSLayoutConstraint.activate([
-            myPageCollectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            myPageCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            myPageCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            myPageCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            myPageCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24.0),
+            myPageCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            myPageCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            myPageCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24.0)
         ])
     }
 }

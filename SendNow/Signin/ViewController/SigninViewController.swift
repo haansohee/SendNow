@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 import AuthenticationServices
 
-final class SigninViewController: UIViewController {
+final class SigninViewController: BaseUIViewController {
     private let signinView = SigninView()
     private let signinViewModel: SigninViewModel
     private let disposeBag = DisposeBag()
@@ -30,6 +30,7 @@ final class SigninViewController: UIViewController {
         configureSigninView()
         addSubviews()
         setLayoutConstraintsSigninView()
+        registerForFCMTokenNotification()
         bindAll()
     }
 }
@@ -51,6 +52,15 @@ extension SigninViewController {
             signinView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             signinView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+    }
+    
+    // MARK: NotificationCenter
+    private func registerForFCMTokenNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(updateFcmToken), name: NSNotification.Name(NotificationName.fetchApnsToken.rawValue), object: nil)
+    }
+    
+    @objc func updateFcmToken() {
+        signinViewModel.updateFCMToken()
     }
     
     //MARK: Bind

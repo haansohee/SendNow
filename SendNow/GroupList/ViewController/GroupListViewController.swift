@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import RxSwift
 
-final class GroupListViewController: UIViewController {
+final class GroupListViewController: BaseUIViewController {
     private let groupListCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical

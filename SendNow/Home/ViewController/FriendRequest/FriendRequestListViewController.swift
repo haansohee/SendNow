@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import RxSwift
 
-final class FriendRequestListViewController: UIViewController {
+final class FriendRequestListViewController: BaseUIViewController {
     private let friendReuqestListCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 10.0

@@ -13,10 +13,8 @@ struct ExpenseDetailInformationReponseDTO: Codable {
     let paidBy: Int
     let expenseClassfication: String
     let expenseDetails: String
-    let expenseAmount: Int
+    let expenseAmount: String
     let expenseDate: String
-    let remainderAmount: Int
-    let remainderUserID: Int
 }
 
 extension ExpenseDetailInformationReponseDTO {
@@ -27,8 +25,6 @@ extension ExpenseDetailInformationReponseDTO {
                      expenseClassfication: expenseClassfication,
                      expenseDetails: expenseDetails,
                      expenseAmount: expenseAmount,
-                     expenseDate: expenseDate,
-                     remainderAmount: remainderAmount,
-                     remainderUserID: remainderUserID)
+                     expenseDate: expenseDate)
     }
 }

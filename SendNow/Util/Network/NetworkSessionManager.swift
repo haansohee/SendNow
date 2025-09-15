@@ -70,6 +70,8 @@ final class NetworkSessionManager {
                    encoder: JSONParameterEncoder.default,
                    headers: ["Content-Type": "application/json"]
         ).validate(statusCode: 200..<500).responseString { response in
+            print("response statusCode: \(response.response?.statusCode ?? 0)")
+            print("response: \(response.result)")
             switch response.response?.statusCode {
             case 200:
                 completion(true)

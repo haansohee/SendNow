@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import RxSwift
 
-final class NotificationViewController: UIViewController {
+final class NotificationViewController: BaseUIViewController {
     private let notificationStateButton: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false

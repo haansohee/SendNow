@@ -9,8 +9,9 @@ import Foundation
 import UIKit
 import RxSwift
 import RxGesture
+import FirebaseMessaging
 
-final class HomeViewController: UIViewController {
+final class HomeViewController: BaseUIViewController {
     private let homeView = HomeView()
     private let homeViewModel: HomeViewModel
     private let notificationViewModel: NotificationViewModel
@@ -37,6 +38,7 @@ final class HomeViewController: UIViewController {
         configureHomeView()
         addSubviews()
         setLayoutConstraintsHomeView()
+        registerForFCMTokenNotification()
         bindAll()
     }
     
@@ -72,6 +74,15 @@ extension HomeViewController {
     private func configureHomeViewNicknameLabel() {
         guard let nickname = homeViewModel.loginMemberInformation?.nickname else { return }
         homeView.memberNicknameLabel.text = nickname
+    }
+    
+    // MARK: NotificationCenter
+    private func registerForFCMTokenNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(updateFcmToken), name: NSNotification.Name(NotificationName.fetchApnsToken.rawValue), object: nil)
+    }
+    
+    @objc func updateFcmToken() {
+        homeViewModel.updateFCMToken()
     }
     
     //MARK: Bind

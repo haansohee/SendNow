@@ -14,5 +14,4 @@ struct ExpenseUploadRequestDTO: Codable {
     let expenseDetail: String
     let expenseAmount: Int
     let expenseDate: String
-    let remainderUserID: Int
 }

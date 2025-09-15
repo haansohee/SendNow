@@ -22,6 +22,20 @@ final class SigninViewModel {
     let fcmToken = UserDefaults.standard.string(forKey: MemberInfoField.fcmToken.rawValue)
     let isSetNoti = UserDefaults.standard.bool(forKey: MemberInfoField.isSetNoti.rawValue)
     
+    func updateFCMToken() {
+        Messaging.messaging().token { token, error in
+            if let error = error {
+                print("ERROR/Fail Load FCM Token : \(error.localizedDescription)")
+                return
+            } else if let fcmToken = token {
+                UserDefaults.standard.set(fcmToken, forKey: MemberInfoField.fcmToken.rawValue)
+            } else {
+                print("FCM Token is nil....")
+                return
+            }
+        }
+    }
+    
     func signinWithKakao() {
         guard UserApi.isKakaoTalkLoginAvailable() else { return }
         UserApi.shared.rx.loginWithKakaoTalk()

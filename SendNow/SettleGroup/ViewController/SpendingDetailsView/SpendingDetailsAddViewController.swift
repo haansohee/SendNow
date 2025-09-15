@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import RxGesture
 
-final class SpendingDetailsAddViewController: UIViewController {
+final class SpendingDetailsAddViewController: BaseUIViewController {
     private let spendingDetailAddView = SpendingDetailsAddView()
     private let settleGroupViewModel: SettleGroupViewModel
     private let disposeBag = DisposeBag()
@@ -21,7 +21,6 @@ final class SpendingDetailsAddViewController: UIViewController {
         self.settleGroupViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         settleGroupViewModel.setGroupID(groupID)
-        settleGroupViewModel.loadGroupMemberInformation()
     }
     
     required init?(coder: NSCoder) {
@@ -38,20 +37,17 @@ final class SpendingDetailsAddViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        settleGroupViewModel.loadGroupMemberInformation()
+//        settleGroupViewModel.loadGroupMemberInformation()
     }
 }
 
 extension SpendingDetailsAddViewController {
     private func configureSettleGroupView() {
         spendingDetailAddView.translatesAutoresizingMaskIntoConstraints = false
-        spendingDetailAddView.remainderAmountPayUserCollectionView.dataSource = self
-        spendingDetailAddView.remainderAmountPayUserCollectionView.delegate = self
         view.backgroundColor = .systemBackground
         navigationItem.title = "지출 내역 추가"
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: spendingDetailAddView.spendingDetailAddButton)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: spendingDetailAddView.cancelButton)
-        navigationController?.navigationBar.backgroundColor = .systemBackground
     }
     
     private func addSubviews() {
@@ -67,7 +63,7 @@ extension SpendingDetailsAddViewController {
         ])
     }
     
-    private func selectclassfication(_ view: SpendingDetailsclassficationView, _ otherViews: [SpendingDetailsclassficationView], _ tag: Int) {
+    private func selectClassfication(_ view: SpendingDetailsclassficationView, _ otherViews: [SpendingDetailsclassficationView], _ tag: Int) {
         switch tag {
         case 0:
             view.tag = 1
@@ -75,7 +71,7 @@ extension SpendingDetailsAddViewController {
             view.classficationLabel.textColor = UIColor(named: "TitleColor")
             guard let classfication = view.classficationLabel.text,
                   !classfication.isEmpty else { return }
-            settleGroupViewModel.selectexpenseClassfication(classfication)
+            settleGroupViewModel.selectExpenseClassfication(classfication)
             otherViews.forEach {
                 $0.tag = 0
                 $0.classficationImage.tintColor = .systemGray3
@@ -103,7 +99,6 @@ extension SpendingDetailsAddViewController {
         bindSpendingDetailsclassficationView()
         bindpSendingDetailAddButton()
         bindIsUploadedExpenseInfo()
-        bindIsLoadedGroupMemberInfo()
     }
     
     private func bindCancelButton() {
@@ -130,7 +125,7 @@ extension SpendingDetailsAddViewController {
                                   tourismclassficationView,
                                   foodclassficationView,
                                   etcclassficationView]
-                self?.selectclassfication(trafficclassficationView, otherViews, trafficclassficationView.tag)
+                self?.selectClassfication(trafficclassficationView, otherViews, trafficclassficationView.tag)
             })
             .disposed(by: disposeBag)
         
@@ -148,7 +143,7 @@ extension SpendingDetailsAddViewController {
                                   tourismclassficationView,
                                   foodclassficationView,
                                   etcclassficationView]
-                self?.selectclassfication(accommodationclassficationView, otherViews, accommodationclassficationView.tag)
+                self?.selectClassfication(accommodationclassficationView, otherViews, accommodationclassficationView.tag)
             })
             .disposed(by: disposeBag)
         
@@ -166,7 +161,7 @@ extension SpendingDetailsAddViewController {
                                   accommodationclassficationView,
                                   foodclassficationView,
                                   etcclassficationView]
-                self?.selectclassfication(tourismclassficationView, otherViews, tourismclassficationView.tag)
+                self?.selectClassfication(tourismclassficationView, otherViews, tourismclassficationView.tag)
             })
             .disposed(by: disposeBag)
         
@@ -184,7 +179,7 @@ extension SpendingDetailsAddViewController {
                                   accommodationclassficationView,
                                   tourismclassficationView,
                                   etcclassficationView]
-                self?.selectclassfication(foodclassficationView, otherViews, foodclassficationView.tag)
+                self?.selectClassfication(foodclassficationView, otherViews, foodclassficationView.tag)
             })
             .disposed(by: disposeBag)
         
@@ -202,7 +197,7 @@ extension SpendingDetailsAddViewController {
                                   accommodationclassficationView,
                                   tourismclassficationView,
                                   foodclassficationView]
-                self?.selectclassfication(etcclassficationView, otherViews, etcclassficationView.tag)
+                self?.selectClassfication(etcclassficationView, otherViews, etcclassficationView.tag)
             })
             .disposed(by: disposeBag)
     }
@@ -223,11 +218,8 @@ extension SpendingDetailsAddViewController {
                     self?.checkAlert(message: "지출 내역의 분류를 선택하세요!")
                     return
                 }
-                guard let remainderUser = self?.settleGroupViewModel.remainderUserID else {
-                    self?.checkAlert(message: "나머지 금액을 지불할 친구를 선택하세요!")
-                    return
-                }
-                self?.settleGroupViewModel.uploadExpenseInformation(expenseClassfication: expenseClassfication, expenseDetail: detailContent, expenseAmount: expense, expenseDate: date, remainderUserID: remainderUser)
+                
+                self?.settleGroupViewModel.uploadExpenseInformation(expenseClassfication: expenseClassfication, expenseDetail: detailContent, expenseAmount: expense, expenseDate: date)
             })
             .disposed(by: disposeBag)
     }
@@ -240,42 +232,5 @@ extension SpendingDetailsAddViewController {
                 self?.dismiss(animated: true)
             })
             .disposed(by: disposeBag)
-    }
-    
-    private func bindIsLoadedGroupMemberInfo() {
-        settleGroupViewModel.isLoadedGroupMemberInfo
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isLoadedGroupMemberInfo in
-                guard isLoadedGroupMemberInfo else { return }
-                self?.spendingDetailAddView.remainderAmountPayUserCollectionView.reloadData()
-            })
-            .disposed(by: disposeBag)
-    }
-}
-
-extension SpendingDetailsAddViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return settleGroupViewModel.groupMemberInformations?.count ?? 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: InvitedGroupCollectionViewCell.reuseIdentifier, for: indexPath) as? InvitedGroupCollectionViewCell else { return UICollectionViewCell() }
-        guard let groupMemberInformations = settleGroupViewModel.groupMemberInformations else { return cell }
-        cell.friendNicknameLabel.text = groupMemberInformations[indexPath.row].nickname
-        cell.selectedButton.isHidden = false
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let groupMemberInformations = settleGroupViewModel.groupMemberInformations else { return }
-        settleGroupViewModel.selectRemainderAmountUser(userID: groupMemberInformations[indexPath.row].userID)
-    }
-}
-
-extension SpendingDetailsAddViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = (UIScreen.main.bounds.width) - 100.0
-        let height = 50.0
-        return CGSize(width: width, height: height)
     }
 }

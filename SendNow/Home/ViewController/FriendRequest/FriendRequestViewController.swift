@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import RxSwift
 
-final class FriendRequestViewController: UIViewController {
+final class FriendRequestViewController: BaseUIViewController {
     private let friendRequestView = FriendRequestView()
     private let friendRequestViewModel: FriendRequestViewModel
     private let disposeBag = DisposeBag()
@@ -68,7 +68,6 @@ extension FriendRequestViewController {
             .subscribe(onNext: {[weak self] _ in
                 guard let friendNickname = self?.friendRequestView.friendNicknameTextField.text,
                       !friendNickname.isEmpty else { return }
-//                self?.friendRequestView.searchResultLabel.text = "검색 중..."
                 self?.friendRequestViewModel.searchFriendNickname(nickname: friendNickname)
             })
             .disposed(by: disposeBag)

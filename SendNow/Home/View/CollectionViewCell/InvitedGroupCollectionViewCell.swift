@@ -77,7 +77,7 @@ extension InvitedGroupCollectionViewCell {
         ])
     }
     
-    private func configureInvitedGroupCollectionViewCell( ) {
+    private func configureInvitedGroupCollectionViewCell() {
         contentView.layer.masksToBounds = false
         contentView.layer.cornerRadius = 12.0
         contentView.layer.borderColor = UIColor.systemGray5.cgColor

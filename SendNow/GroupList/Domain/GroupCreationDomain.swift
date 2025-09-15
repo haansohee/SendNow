@@ -11,10 +11,11 @@ struct GroupCreationDomain {
     let groupName: String
     let userIDList: [Int]
     let creatorID: Int
+    let remainderUserID: Int
 }
 
 extension GroupCreationDomain {
     func toRequestDTO() -> GroupCreationRequestDTO {
-        return .init(groupName: groupName, userIDList: userIDList, creatorID: creatorID)
+        return .init(groupName: groupName, userIDList: userIDList, creatorID: creatorID, remainderUserID: remainderUserID)
     }
 }

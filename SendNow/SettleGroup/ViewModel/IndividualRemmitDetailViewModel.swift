@@ -7,6 +7,14 @@
 
 import Foundation
 import RxSwift
+import UIKit
+
+enum TransactionRole {
+    case receiver
+    case sender
+    case zero
+    case error
+}
 
 final class IndividualRemmitDetailViewModel {
     let userID: Int
@@ -58,8 +66,26 @@ final class IndividualRemmitDetailViewModel {
     }
     
     func sendRemittanceNotification(settlementID: Int) {
-        notificationService.sendRemittanceNotification(with: settlementID) { isSendedNotification in
-            print("isSentNotification: \(isSendedNotification)")
+        notificationService.sendRemittanceNotification(with: settlementID) { _ in }
+    }
+    
+    func parseFormattednumberSimple(_ amount: String) -> Int {
+        let cleanNumber = amount.replacingOccurrences(of: ",", with: "")
+        guard let cleanNumberToInt = Int(cleanNumber) else { return 0 }
+        return Int(cleanNumberToInt)
+    }
+    
+    func comparedAmount(_ balanceInformation: SettlementBalanceDomain) -> TransactionRole {
+        guard let receiveAmount = balanceInformation.receiveAmount,
+              let sendAmount = balanceInformation.sendAmount else { return TransactionRole.error }
+        let receiveAmountInt = parseFormattednumberSimple(receiveAmount)
+        let sendAmountInt = parseFormattednumberSimple(sendAmount)
+        if receiveAmountInt > 0 {
+            return TransactionRole.receiver
+        } else if sendAmountInt < 0 {
+            return TransactionRole.sender
+        } else {
+            return TransactionRole.zero
         }
     }
 }

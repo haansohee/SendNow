@@ -33,9 +33,11 @@ final class SettleGroupView: UIView {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 30.0, weight: .light)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: "plus", withConfiguration: imageConfig), for: .normal)
-        button.tintColor = .white
-        button.backgroundColor = UIColor(named: "TitleColor")
+        button.tintColor = UIColor(named: "TitleColor")
+        button.backgroundColor = .systemBackground
         button.layer.cornerRadius = 25.0
+        button.layer.borderWidth = 1.0
+        button.layer.borderColor = UIColor(named: "TitleColor")?.cgColor
         return button
     }()
     
@@ -45,7 +47,7 @@ final class SettleGroupView: UIView {
         label.text = "내가 낸 비용"
         label.textAlignment = .left
         label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 12.0, weight: .light)
+        label.font = .systemFont(ofSize: 13.0, weight: .semibold)
         return label
     }()
     
@@ -55,7 +57,7 @@ final class SettleGroupView: UIView {
         label.text = "0원"
         label.textAlignment = .left
         label.textColor = .label
-        label.font = .systemFont(ofSize: 13.0, weight: .bold)
+        label.font = .systemFont(ofSize: 15.0, weight: .bold)
         return label
     }()
     
@@ -65,7 +67,7 @@ final class SettleGroupView: UIView {
         label.text = "우리 모임의 총 비용"
         label.textAlignment = .right
         label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 12.0, weight: .light)
+        label.font = .systemFont(ofSize: 13.0, weight: .semibold)
         return label
     }()
     
@@ -75,7 +77,7 @@ final class SettleGroupView: UIView {
         label.text = "0원"
         label.textAlignment = .right
         label.textColor = .label
-        label.font = .systemFont(ofSize: 13.0, weight: .bold)
+        label.font = .systemFont(ofSize: 15.0, weight: .bold)
         return label
     }()
     
@@ -83,6 +85,7 @@ final class SettleGroupView: UIView {
         super.init(frame: frame)
         addSubviews()
         setLayoutConstraints()
+        self.backgroundColor = UIColor(named: "SubTitleColor")
     }
     
     required init?(coder: NSCoder) {
@@ -135,4 +138,9 @@ extension SettleGroupView {
             spendingDetailCollectionView.bottomAnchor.constraint(equalTo: myTotalLabel.topAnchor)
         ])
     }
-}
+    
+    func configurePaymentLabel(group: String, personal: String) {
+        myTotalContentLabel.text = "\(personal) ₩"
+        groupTotalContentLabel.text = "\(group) ₩"
+    }
+ }

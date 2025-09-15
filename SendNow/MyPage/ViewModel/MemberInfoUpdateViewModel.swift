@@ -78,7 +78,7 @@ final class MemberInfoUpdateViewModel {
                     self?.cancelAccountService()
                 }, onError: {[weak self] error in
                     self?.isCanceledAccount.onNext(false)
-                    print("kakao unlink error : \(error)")
+                    print("kakao unlink error : \(error.localizedDescription)")
                     return
                 })
                 .disposed(by: disposeBag)

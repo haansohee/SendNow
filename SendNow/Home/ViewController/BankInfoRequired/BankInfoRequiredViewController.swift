@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import RxSwift
 
-final class BankInfoRequiredViewController: UIViewController {
+final class BankInfoRequiredViewController: BaseUIViewController {
     private let bankInfoRequiredView = BankInfoRequiredView()
     private let disposeBag = DisposeBag()
     private let bankInfoRequiredViewModel: BankInfoRequiredViewModel
@@ -36,7 +36,6 @@ final class BankInfoRequiredViewController: UIViewController {
 extension BankInfoRequiredViewController {
     
     // MARK: Configure
-    
     private func configureBankInfoRequiredView() {
         self.isModalInPresentation = true
         self.modalPresentationCapturesStatusBarAppearance = true

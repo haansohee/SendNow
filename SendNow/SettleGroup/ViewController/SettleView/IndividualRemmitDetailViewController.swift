@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import RxSwift
 
-final class IndividualRemmitDetailViewController: UIViewController {
+final class IndividualRemmitDetailViewController: BaseUIViewController {
     private let individualRemmitDetailView = IndividualRemmitDetailView()
     private let individualRemmitDetailViewModel: IndividualRemmitDetailViewModel
     private let disposeBag = DisposeBag()
@@ -53,7 +53,7 @@ extension IndividualRemmitDetailViewController {
             $0.delegate = self
             $0.dataSource = self
         }
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .secondarySystemBackground
     }
     
     private func addSubviews() {
@@ -135,7 +135,8 @@ extension IndividualRemmitDetailViewController: UICollectionViewDataSource {
             cell.rx.didTapKakaoPayUrlButton
                 .asDriver()
                 .drive(onNext: {[weak self] _ in
-                    guard let amount = self?.toHexValue(settlementInformations.settlementDetails[indexPath.row].amount),
+                    guard let strToIntAmount = self?.individualRemmitDetailViewModel.parseFormattednumberSimple(settlementInformations.settlementDetails[indexPath.row].amount),
+                          let amount = self?.toHexValue(strToIntAmount),
                           let url = URL(string: "\(String(describing: kakaoPayUrl))\(String(describing: amount))") else { return }
                     UIApplication.shared.open(url, options: [:])
                 })
@@ -155,7 +156,10 @@ extension IndividualRemmitDetailViewController: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AmountBalanceCollectionViewCell.reuseIdentifier, for: indexPath) as? AmountBalanceCollectionViewCell else { return UICollectionViewCell() }
             guard let balanceInformation = individualRemmitDetailViewModel.groupSettlementInformations?.settlementBalance else { return cell }
             individualRemmitDetailView.setAmountBalanceCollectionViewHeight(Double(balanceInformation.count))
-            cell.configureCell(balanceInformation[indexPath.row])
+            
+            let transactionRole = individualRemmitDetailViewModel.comparedAmount(balanceInformation[indexPath.row])
+            cell.configureCell(transactionRole, balanceInformation[indexPath.row])
+            
             if balanceInformation[indexPath.row].userID == individualRemmitDetailViewModel.userID {
                 cell.nicknameLabel.text = "\(balanceInformation[indexPath.row].nickname) (본인)"
             }

@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import RxSwift
 
-final class MemberInfoUpdateViewController: UIViewController {
+final class MemberInfoUpdateViewController: BaseUIViewController {
     private let memberInfoUpdateView = MemberInfoUpdateView()
     private let homeViewModel: HomeViewModel
     private let memberInfoUpdateViewModel: MemberInfoUpdateViewModel
