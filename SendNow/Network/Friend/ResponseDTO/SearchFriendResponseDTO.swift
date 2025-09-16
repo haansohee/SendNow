@@ -14,9 +14,3 @@ struct SearchFriendResponseDTO: Codable {
     let accountNumber: String?
     let kakaoPayUrl: String?
 }
-
-extension SearchFriendResponseDTO {
-    func toDomain() -> SearchFriendDomain {
-        return .init(userID: userID, nickname: nickname, bankName: bankName, accountNumber: accountNumber, kakaoPayUrl: kakaoPayUrl)
-    }
-}

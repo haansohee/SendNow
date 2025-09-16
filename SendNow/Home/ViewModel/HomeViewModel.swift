@@ -22,8 +22,6 @@ final class HomeViewModel {
     private(set) var remainderCandidateList: [MyFriendListDomain]?
     let isLoadedMemberInformation = PublishSubject<Void>()
     let isLoadedMyFriendList = PublishSubject<Void>()
-    let testIsUpdated1 = PublishSubject<Bool>()
-    let testIsUpdated2 = PublishSubject<Bool>()
     
     init(with friendService: FriendService = FriendService(),
          notificationService: NotificationService = NotificationService(),
@@ -40,13 +38,18 @@ final class HomeViewModel {
             if let error = error {
                 print("ERROR/Fail Load FCM Token : \(error.localizedDescription)")
                 return
-            } else if let fcmToken = token {
-                guard let userID = self?.userID else { return }
-                let updateFcmTokenInfoDomain = UpdateFcmTokenInformationDomain(userID: userID, fcmToken: fcmToken)
-                self?.memberService.updateMemberFcmToken(with: updateFcmTokenInfoDomain) { _ in }
-            } else {
-                return
             }
+            guard let fcmToken = token,
+                  let userID = self?.userID else { return }
+            let updateFcmTokenInfoDomain = UpdateFcmTokenInformationDomain(
+                userID: userID,
+                fcmToken: fcmToken
+            )
+            let updateFcmTokenInfoRequestDTO = UpdateFcmTokenInformationRequestDTO(
+                userID: updateFcmTokenInfoDomain.userID,
+                fcmToken: updateFcmTokenInfoDomain.fcmToken
+            )
+            self?.memberService.updateMemberFcmToken(with: updateFcmTokenInfoRequestDTO) { _ in }
         }
     }
     
@@ -130,8 +133,17 @@ final class HomeViewModel {
                                       accountNumber: UserDefaults.standard.string(forKey: MemberInfoField.accountNumber.rawValue),
                                       kakaoPayUrl: UserDefaults.standard.string(forKey: MemberInfoField.kakaoPayUrl.rawValue))
         friendService.getMyFriendList(with: userID) {[weak self] result in
-            self?.myFriendList = result
-            self?.remainderCandidateList = result
+            let myFriendListDomain: [MyFriendListDomain] = result.map {
+                MyFriendListDomain(
+                    userID: $0.userID,
+                    nickname: $0.nickname,
+                    bankName: $0.bankName,
+                    accountNumber: $0.accountNumber,
+                    kakaoPayUrl: $0.kakaoPayUrl
+                )
+            }
+            self?.myFriendList = myFriendListDomain
+            self?.remainderCandidateList = myFriendListDomain
             self?.remainderCandidateList?.append(contentsOf: [user])
             self?.isLoadedMyFriendList.onNext(Void())
         }

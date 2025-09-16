@@ -10,9 +10,3 @@ import Foundation
 struct CancelAccountDomain {
     let userID: Int
 }
-
-extension CancelAccountDomain {
-    func toRequestDTO() -> CancelAccountRequestDTO {
-        return .init(userID: userID)
-    }
-}

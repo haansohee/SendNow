@@ -33,8 +33,17 @@ final class FriendRequestViewModel {
     func sendFriendRequest(toUserID: Int) {
         guard let fromUserNickname = UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue) else {
             return }
-        let friendRequestSendInfo = FriendRequestSendDomain(fromUserID: userID, fromUserNickname: fromUserNickname, toUserID: toUserID)
-        friendService.setFriendRequest(with: friendRequestSendInfo) {[weak self] result in
+        let friendAddInfo = FriendAddDomain(
+            fromUserID: userID,
+            fromUserNickname: fromUserNickname,
+            toUserID: toUserID
+        )
+        let friendAddRequestDTO = FriendAddRequestDTO(
+            fromUserID: friendAddInfo.fromUserID,
+            fromUserNickname: friendAddInfo.fromUserNickname,
+            toUserID: friendAddInfo.toUserID
+        )
+        friendService.setFriendRequest(with: friendAddRequestDTO) {[weak self] result in
             if result {
                 self?.friendRequestReceivedUserID = toUserID
                 self?.sendFriendNotification()
@@ -46,7 +55,14 @@ final class FriendRequestViewModel {
     
     func searchFriendNickname(nickname: String) {
         friendService.getFriendInformation(with: nickname) {[weak self] result in
-            self?.searchFriendInformation = result
+            let searchFriendInfoDomain = SearchFriendDomain(
+                userID: result.userID,
+                nickname: result.nickname,
+                bankName: result.bankName,
+                accountNumber: result.accountNumber,
+                kakaoPayUrl: result.kakaoPayUrl
+            )
+            self?.searchFriendInformation = searchFriendInfoDomain
             self?.isEmptySearchFriend.onNext(!result.nickname.isEmpty)
         }
     }
@@ -57,21 +73,46 @@ final class FriendRequestViewModel {
                 self?.isLoadedFriendRequestListInfo.onNext(false)
                 return }
             self?.isLoadedFriendRequestListInfo.onNext(true)
-            self?.friendRequestSendListInfo = result.filter { $0.fromUserID == self?.userID }
-            self?.friendRequestReceiveListInfo = result.filter { $0.toUserID == self?.userID }
+            let friendAddListInfoDomain: [FriendRequestListDomain] = result.map {
+                FriendRequestListDomain(
+                    fromUserID: $0.fromUserID,
+                    fromUserNickname: $0.fromUserNickname,
+                    toUserID: $0.toUserID,
+                    toUserNickname: $0.toUserNickname,
+                    isFriended: $0.isFriended
+                )
+            }
+            self?.friendRequestSendListInfo = friendAddListInfoDomain.filter { $0.fromUserID == self?.userID }
+            self?.friendRequestReceiveListInfo = friendAddListInfoDomain.filter { $0.toUserID == self?.userID }
         }
     }
     
     func deleteFriendRequest(toUserID: Int, fromUserID: Int) {
-        let friendReuqestDeleteInfo = DeleteFriendRequestDomain(fromUserID: fromUserID, toUserID: toUserID)
-        friendService.deleteFriendRequestList(with: friendReuqestDeleteInfo) {[weak self] result in
+        let deleteFriendDomain = DeleteFriendDomain(
+            fromUserID: fromUserID,
+            toUserID: toUserID
+        )
+        let deleteFriendRequestDTO = DeleteFriendRequestDTO(
+            fromUserID: deleteFriendDomain.fromUserID,
+            toUserID: deleteFriendDomain.toUserID
+        )
+        friendService.deleteFriendRequestList(with: deleteFriendRequestDTO) {[weak self] result in
             self?.isDeletedFriendRequest.onNext(result)
         }
     }
     
     func updateFriendRequestState(toUserID: Int, fromUserID: Int) {
-        let friendRequestStateInfo = UpdateFriendStateDomain(fromUserID: fromUserID, toUserID: toUserID, isFriended: true)
-        friendService.updateFriendState(with: friendRequestStateInfo) {[weak self] result in
+        let updateFriendStateDomain = UpdateFriendStateDomain(
+            fromUserID: fromUserID,
+            toUserID: toUserID,
+            isFriended: true
+        )
+        let updateFriendStateRequestDTO = UpdateFriendStateRequestDTO(
+            fromUserID: updateFriendStateDomain.fromUserID,
+            toUserID: updateFriendStateDomain.toUserID,
+            isFriended: updateFriendStateDomain.isFriended
+        )
+        friendService.updateFriendState(with: updateFriendStateRequestDTO) {[weak self] result in
             if result {
                 NotificationCenter.default.post(name: NSNotification.Name(NotificationName.sendFriendRequest.rawValue), object: result)
             }
@@ -81,7 +122,14 @@ final class FriendRequestViewModel {
     
     func sendFriendNotification() {
         guard let receiverUserID = friendRequestReceivedUserID else { return }
-        let friendNotificationInfo = FriendNotificationDomain(senderUserID: userID, receiverUserID: receiverUserID)
-        notificationService.sendFriendNotification(with: friendNotificationInfo) { _ in }
+        let friendNotificationInfo = FriendNotificationDomain(
+            senderUserID: userID,
+            receiverUserID: receiverUserID
+        )
+        let friendNotificationRequestDTO = FriendNotificationRequestDTO(
+            senderUserID: friendNotificationInfo.senderUserID,
+            receiverUserID: friendNotificationInfo.receiverUserID
+        )
+        notificationService.sendFriendNotification(with: friendNotificationRequestDTO) { _ in }
     }
 }

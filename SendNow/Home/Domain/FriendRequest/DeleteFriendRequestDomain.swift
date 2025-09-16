@@ -7,13 +7,8 @@
 
 import Foundation
 
-struct DeleteFriendRequestDomain {
+struct DeleteFriendDomain {
     let fromUserID: Int
     let toUserID: Int
 }
 
-extension DeleteFriendRequestDomain {
-    func toRequestDTO() -> DeleteFriendRequestDTO {
-        return .init(fromUserID: fromUserID, toUserID: toUserID)
-    }
-}

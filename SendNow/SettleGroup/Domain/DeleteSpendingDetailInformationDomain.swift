@@ -11,9 +11,3 @@ struct DeleteSpendingDetailInformationDomain {
     let expenseID: Int
     let groupID: Int
 }
-
-extension DeleteSpendingDetailInformationDomain {
-    func toRequestDTO() -> DeleteSpendingDetailInformationRequestDTO {
-        return .init(expenseID: expenseID, groupID: groupID)
-    }
-}

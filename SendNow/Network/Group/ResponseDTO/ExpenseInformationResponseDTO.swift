@@ -23,15 +23,3 @@ struct ExpenseInformationsResponseDTO: Codable {
     let expenseAmount: String
     let expenseDate: String
 }
-
-extension ExpenseInformationResponseDTO {
-    func toDomain() -> ExpenseInformationDomain {
-        return .init(expenseInformations: expenseInformations.map {$0.toDomain()}, myExpenses: myExpenses, groupExpenses: groupExpenses)
-    }
-}
-
-extension ExpenseInformationsResponseDTO {
-    func toDomain() -> ExpenseInformations {
-        return .init(expenseID: expenseID, groupID: groupID, userID: userID, paidBy: paidBy, expenseClassfication: expenseClassfication, expenseDetails: expenseDetails, expenseAmount: expenseAmount, expenseDate: expenseDate)
-    }
-}

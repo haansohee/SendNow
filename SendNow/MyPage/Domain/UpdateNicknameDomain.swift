@@ -11,9 +11,3 @@ struct UpdateNicknameDomain {
     let userID: Int
     let nickname: String
 }
-
-extension UpdateNicknameDomain {
-    func toRequestDTO() -> UpdateNicknameRequestDTO {
-        return .init(userID: userID, nickname: nickname)
-    }
-}

@@ -39,7 +39,32 @@ final class IndividualRemmitDetailViewModel {
     func loadGroupSettlementInforamtion() {
         guard let groupID = groupID else { return }
         groupService.getGroupSettlementsInformations(with: groupID) {[weak self] result in
-            self?.groupSettlementInformations = result
+            let settlementDetailInfoDomain: [SettlementDetailsDomain] = result.settlementDetails.map {
+                SettlementDetailsDomain(
+                    settlementID: $0.settlementID,
+                    groupID: $0.groupID,
+                    fromUserID: $0.fromUserID,
+                    toUserID: $0.toUserID,
+                    fromNickname: $0.fromNickname,
+                    toNickname: $0.toNickname,
+                    amount: $0.amount,
+                    bankName: $0.bankName,
+                    accountNumber: $0.accountNumber,
+                    kakaoPayURL: $0.kakaoPayURL
+                )
+            }
+            let settlementBalanceDomain: [SettlementBalanceDomain] = result.settlementBalance.map {
+                SettlementBalanceDomain(
+                    userID: $0.userID,
+                    nickname: $0.nickname,
+                    sendAmount: $0.sendAmount,
+                    receiveAmount: $0.receiveAmount
+                )
+            }
+            let settlementListDomain = SettlementListDomain(
+                settlementDetails: settlementDetailInfoDomain,
+                settlementBalance: settlementBalanceDomain)
+            self?.groupSettlementInformations = settlementListDomain
             self?.isLoadedGroupSettlementInfo.onNext(Void())
         }
     }
@@ -47,13 +72,25 @@ final class IndividualRemmitDetailViewModel {
     func loadCompletionRemittanceInformation() {
         guard let groupID = groupID else { return }
         groupService.getCompletedRemittanceInformation(with: groupID, userID: userID) {[weak self] remittanceInfo in
-            self?.remittanceInformations = remittanceInfo
+            let completionRemittanceDomain: [CompletionRemittanceDomain] = remittanceInfo.map {
+                CompletionRemittanceDomain(
+                    settlementID: $0.settlementID,
+                    receiverNickname: $0.receiverNickname,
+                    amount: $0.amount,
+                    isCompletedRemittance: $0.isCompletedRemittance
+                )
+            }
+            self?.remittanceInformations = completionRemittanceDomain
             self?.isLoadedCompletionRemittanceInfo.onNext(Void())
         }
     }
     
     func setCompletedRemittance(_ remittanceInfo: RemittanceStatusDomain, completion: @escaping(Bool)->Void) {
-        groupService.setCompletedRemittance(with: remittanceInfo) {[weak self] isUpdatedRemittance in
+        let remittanceInfoRequestDTO = RemittanceStatusRequestDTO(
+            settlementID: remittanceInfo.settlementID,
+            isCompletedRemittance: remittanceInfo.isCompletedRemittance
+        )
+        groupService.setCompletedRemittance(with: remittanceInfoRequestDTO) {[weak self] isUpdatedRemittance in
             guard isUpdatedRemittance else { return }
             self?.loadCompletionRemittanceInformation()
             completion(isUpdatedRemittance)

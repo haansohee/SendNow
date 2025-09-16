@@ -180,23 +180,21 @@ extension SpendingDetailsViewController {
         updateButton.rx.tap
             .asDriver()
             .drive(onNext: {[weak self] _ in
-                [
-                    self?.saveButton,
-                    self?.deleteButton
-                ]
-                    .compactMap { $0 }
-                    .forEach {
-                        $0.isEnabled = true
-                        $0.isHidden = false
-                    }
-                self?.updateButton.tag = 1
-                self?.updateButton.isHidden = true
-                self?.updateButton.isEnabled = false
+                guard let self = self else { return }
+                self.saveButton.isEnabled = true
+                self.saveButton.isHidden = false
                 
-                self?.spendingDetailsView.contentTextField.isEnabled = true
-                self?.spendingDetailsView.paymentTextField.isEnabled = true
-                self?.spendingDetailsView.datePicker.isEnabled = true
-                self?.settleGroupViewModel.setCanSelectItems(true)
+                self.deleteButton.isEnabled = true
+                self.deleteButton.isHidden = false
+                
+                self.updateButton.tag = 1
+                self.updateButton.isHidden = true
+                self.updateButton.isEnabled = false
+                
+                self.spendingDetailsView.contentTextField.isEnabled = true
+                self.spendingDetailsView.paymentTextField.isEnabled = true
+                self.spendingDetailsView.datePicker.isEnabled = true
+                self.settleGroupViewModel.setCanSelectItems(true)
             })
             .disposed(by: disposeBag)
     }
@@ -205,16 +203,14 @@ extension SpendingDetailsViewController {
         spendingDetailsView.cancelButton.rx.tap
             .asDriver()
             .drive(onNext: {[weak self] _ in
-                [
-                    self?.saveButton,
-                    self?.deleteButton
-                ]
-                    .compactMap { $0 }
-                    .forEach {
-                        $0.isEnabled = false
-                        $0.isHidden = true
-                    }
-                self?.spendingDetailsView.datePicker.isEnabled = false
+                guard let self = self else { return }
+                self.saveButton.isEnabled = false
+                self.saveButton.isHidden = true
+                
+                self.deleteButton.isEnabled = false
+                self.deleteButton.isHidden = true
+                
+                self.spendingDetailsView.datePicker.isEnabled = false
             })
             .disposed(by: disposeBag)
     }
@@ -241,17 +237,15 @@ extension SpendingDetailsViewController {
             .when(.recognized)
             .asDriver { _ in .never() }
             .drive(onNext: {[weak self] _ in
-                guard self?.updateButton.tag == 1 else { return }
-                guard let trafficclassficationView = self?.spendingDetailsView.trafficclassficationView,
-                      let accommodationclassficationView = self?.spendingDetailsView.accommodationclassficationView,
-                      let tourismclassficationView = self?.spendingDetailsView.tourismclassficationView,
-                      let foodclassficationView = self?.spendingDetailsView.foodclassficationView,
-                      let etcclassficationView = self?.spendingDetailsView.etcclassficationView else { return }
-                let otherViews = [accommodationclassficationView,
-                                  tourismclassficationView,
-                                  foodclassficationView,
-                                  etcclassficationView]
-                self?.selectClassification(trafficclassficationView, otherViews, trafficclassficationView.tag)
+                guard self?.updateButton.tag == 1,
+                      let self = self else { return }
+                let otherViews = [self.spendingDetailsView.accommodationclassficationView,
+                                  self.spendingDetailsView.tourismclassficationView,
+                                  self.spendingDetailsView.foodclassficationView,
+                                  self.spendingDetailsView.etcclassficationView]
+                self.selectClassification(self.spendingDetailsView.trafficclassficationView,
+                                          otherViews,
+                                          self.spendingDetailsView.trafficclassficationView.tag)
             })
             .disposed(by: disposeBag)
         
@@ -260,17 +254,15 @@ extension SpendingDetailsViewController {
             .when(.recognized)
             .asDriver { _ in .never() }
             .drive(onNext: {[weak self] _ in
-                guard self?.updateButton.tag == 1 else { return }
-                guard let trafficclassficationView = self?.spendingDetailsView.trafficclassficationView,
-                      let accommodationclassficationView = self?.spendingDetailsView.accommodationclassficationView,
-                      let tourismclassficationView = self?.spendingDetailsView.tourismclassficationView,
-                      let foodclassficationView = self?.spendingDetailsView.foodclassficationView,
-                      let etcclassficationView = self?.spendingDetailsView.etcclassficationView else { return }
-                let otherViews = [trafficclassficationView,
-                                  tourismclassficationView,
-                                  foodclassficationView,
-                                  etcclassficationView]
-                self?.selectClassification(accommodationclassficationView, otherViews, accommodationclassficationView.tag)
+                guard self?.updateButton.tag == 1,
+                      let self = self else { return }
+                let otherViews = [self.spendingDetailsView.trafficclassficationView,
+                                  self.spendingDetailsView.tourismclassficationView,
+                                  self.spendingDetailsView.foodclassficationView,
+                                  self.spendingDetailsView.etcclassficationView]
+                self.selectClassification(self.spendingDetailsView.accommodationclassficationView,
+                                           otherViews,
+                                           self.spendingDetailsView.accommodationclassficationView.tag)
             })
             .disposed(by: disposeBag)
         
@@ -279,17 +271,15 @@ extension SpendingDetailsViewController {
             .when(.recognized)
             .asDriver { _ in .never() }
             .drive(onNext: {[weak self] _ in
-                guard self?.updateButton.tag == 1 else { return }
-                guard let trafficclassficationView = self?.spendingDetailsView.trafficclassficationView,
-                      let accommodationclassficationView = self?.spendingDetailsView.accommodationclassficationView,
-                      let tourismclassficationView = self?.spendingDetailsView.tourismclassficationView,
-                      let foodclassficationView = self?.spendingDetailsView.foodclassficationView,
-                      let etcclassficationView = self?.spendingDetailsView.etcclassficationView else { return }
-                let otherViews = [trafficclassficationView,
-                                  accommodationclassficationView,
-                                  foodclassficationView,
-                                  etcclassficationView]
-                self?.selectClassification(tourismclassficationView, otherViews, tourismclassficationView.tag)
+                guard self?.updateButton.tag == 1,
+                      let self = self else { return }
+                let otherViews = [self.spendingDetailsView.trafficclassficationView,
+                                  self.spendingDetailsView.accommodationclassficationView,
+                                  self.spendingDetailsView.foodclassficationView,
+                                  self.spendingDetailsView.etcclassficationView]
+                self.selectClassification(self.spendingDetailsView.tourismclassficationView,
+                                          otherViews,
+                                          self.spendingDetailsView.tourismclassficationView.tag)
             })
             .disposed(by: disposeBag)
         
@@ -298,17 +288,15 @@ extension SpendingDetailsViewController {
             .when(.recognized)
             .asDriver { _ in .never() }
             .drive(onNext: {[weak self] _ in
-                guard self?.updateButton.tag == 1 else { return }
-                guard let trafficclassficationView = self?.spendingDetailsView.trafficclassficationView,
-                      let accommodationclassficationView = self?.spendingDetailsView.accommodationclassficationView,
-                      let tourismclassficationView = self?.spendingDetailsView.tourismclassficationView,
-                      let foodclassficationView = self?.spendingDetailsView.foodclassficationView,
-                      let etcclassficationView = self?.spendingDetailsView.etcclassficationView else { return }
-                let otherViews = [trafficclassficationView,
-                                  accommodationclassficationView,
-                                  tourismclassficationView,
-                                  etcclassficationView]
-                self?.selectClassification(foodclassficationView, otherViews, foodclassficationView.tag)
+                guard self?.updateButton.tag == 1,
+                      let self = self else { return }
+                let otherViews = [self.spendingDetailsView.trafficclassficationView,
+                                  self.spendingDetailsView.accommodationclassficationView,
+                                  self.spendingDetailsView.tourismclassficationView,
+                                  self.spendingDetailsView.etcclassficationView]
+                self.selectClassification(self.spendingDetailsView.foodclassficationView,
+                                          otherViews,
+                                          self.spendingDetailsView.foodclassficationView.tag)
             })
             .disposed(by: disposeBag)
         
@@ -317,17 +305,15 @@ extension SpendingDetailsViewController {
             .when(.recognized)
             .asDriver { _ in .never() }
             .drive(onNext: {[weak self] _ in
-                guard self?.updateButton.tag == 1 else { return }
-                guard let trafficclassficationView = self?.spendingDetailsView.trafficclassficationView,
-                      let accommodationclassficationView = self?.spendingDetailsView.accommodationclassficationView,
-                      let tourismclassficationView = self?.spendingDetailsView.tourismclassficationView,
-                      let foodclassficationView = self?.spendingDetailsView.foodclassficationView,
-                      let etcclassficationView = self?.spendingDetailsView.etcclassficationView else { return }
-                let otherViews = [trafficclassficationView,
-                                  accommodationclassficationView,
-                                  tourismclassficationView,
-                                  foodclassficationView]
-                self?.selectClassification(etcclassficationView, otherViews, etcclassficationView.tag)
+                guard self?.updateButton.tag == 1,
+                      let self = self else { return }
+                let otherViews = [self.spendingDetailsView.trafficclassficationView,
+                                  self.spendingDetailsView.accommodationclassficationView,
+                                  self.spendingDetailsView.tourismclassficationView,
+                                  self.spendingDetailsView.foodclassficationView]
+                self.selectClassification(self.spendingDetailsView.etcclassficationView,
+                                          otherViews,
+                                          self.spendingDetailsView.etcclassficationView.tag)
             })
             .disposed(by: disposeBag)
     }

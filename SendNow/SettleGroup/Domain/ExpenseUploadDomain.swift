@@ -15,9 +15,3 @@ struct ExpenseUploadDomain {
     let expenseAmount: Int
     let expenseDate: String
 }
-
-extension ExpenseUploadDomain {
-    func toRequestDTO() -> ExpenseUploadRequestDTO {
-        return .init(groupID: groupID, userID: userID, expenseClassfication: expenseClassfication, expenseDetail: expenseDetail, expenseAmount: expenseAmount, expenseDate: expenseDate)
-    }
-}

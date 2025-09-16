@@ -31,22 +31,3 @@ struct SettlementBalanlceResponseDTO: Codable {
     let sendAmount: String?
     let receiveAmount: String?
 }
-
-extension SettlementBalanlceResponseDTO {
-    func toDomain() -> SettlementBalanceDomain {
-        return .init(userID: userID, nickname: nickname, sendAmount: sendAmount, receiveAmount: receiveAmount)
-    }
-}
-
-extension SettlementDetailsResponseDTO {
-    func toDomain() -> SettlementDetailsDomain {
-        return .init(settlementID: settlementID, groupID: groupID
-                     , fromUserID: fromUserID, toUserID: toUserID, fromNickname: fromNickname, toNickname: toNickname, amount: amount, bankName: bankName, accountNumber: accountNumber, kakaoPayURL: kakaoPayURL)
-    }
-}
-
-extension SettlementListReponseDTO {
-    func toDomain() -> SettlementListDomain {
-        return .init(settlementDetails: settlementDetails.map{$0.toDomain()}, settlementBalance: settlementBalance.map{$0.toDomain()})
-    }
-}

@@ -16,9 +16,3 @@ struct AppleMemberResponseDTO: Codable {
     let accountNumber: String?
     let kakaoPayUrl: String?
 }
-
-extension AppleMemberResponseDTO {
-    func toDomain() -> AppleMemberDomain {
-        return .init(userID: userID, nickname: nickname, email: email, appleToken: appleToken, bankName: bankName, accountNumber: accountNumber, kakaoPayUrl: kakaoPayUrl)
-    }
-}

@@ -21,16 +21,14 @@ enum NotificationAPIPath: String {
 final class NotificationService {
     private let networkSessionManager = NetworkSessionManager()
     
-    func sendGroupNotification(with notificationDomain: GroupNotificationDomain, completion: @escaping(Bool)->Void) {
+    func sendGroupNotification(with notificationRequestDTO: GroupNotificationRequestDTO, completion: @escaping(Bool)->Void) {
         let path = NotificationAPIPath.sendGroupNotification.rawValue
-        let notificationInfo = notificationDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: notificationInfo, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: notificationRequestDTO, completion: completion)
     }
     
-    func sendFriendNotification(with notificationDomain: FriendNotificationDomain, completion: @escaping(Bool)->Void) {
+    func sendFriendNotification(with notificationRequestDTO: FriendNotificationRequestDTO, completion: @escaping(Bool)->Void) {
         let path = NotificationAPIPath.sendFriendNotification.rawValue
-        let notificationInfo = notificationDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: notificationInfo, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: notificationRequestDTO, completion: completion)
     }
     
     func sendRemittanceNotification(with settlementID: Int, completion: @escaping(Bool)->Void) {
@@ -38,13 +36,12 @@ final class NotificationService {
         networkSessionManager.urlPostMethod(path: path, encodeValue: settlementID, completion: completion)
     }
     
-    func getNotificationList(with userID: Int, completion: @escaping([NotificationListDomain])->Void) {
+    func getNotificationList(with userID: Int, completion: @escaping([NotificationListResponseDTO])->Void) {
         let path = "\(NotificationAPIPath.getNotificationList.rawValue)?userID=\(userID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: [NotificationListResponseDTO].self) { notificationListInfo in
             switch notificationListInfo {
             case .success(let responseDTO):
-                let notificationList = responseDTO.map { $0.toDomain() }
-                completion(notificationList)
+                completion(responseDTO)
             case .failure(let error):
                 print("get Notification List Error: \(error)")
             }
@@ -57,10 +54,9 @@ final class NotificationService {
         networkSessionManager.urlPostMethod(path: path, encodeValue: notificationRequestDTO, completion: completion)
     }
     
-    func updateNotificationState(with notificationStateDomain: NotificationStateDomain, completion: @escaping(Bool)->Void) {
+    func updateNotificationState(with notificationStateRequestDTO: UpdateNotificationStateRequestDTO, completion: @escaping(Bool)->Void) {
         let path = NotificationAPIPath.updateNotificationState.rawValue
-        let notificationRequestDTO = notificationStateDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: notificationRequestDTO, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: notificationStateRequestDTO, completion: completion)
     }
     
     func deleteNotification(with userID: Int, completion: @escaping(Bool)->Void) {

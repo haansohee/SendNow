@@ -34,15 +34,29 @@ final class MemberInfoUpdateViewModel {
     }
     
     func isDuplicatedNickname(_ inputNickname: String) {
-        let updateNicknameInfo = UpdateNicknameDomain(userID: userID, nickname: inputNickname)
-        memberService.isDuplicatedNickname(with: updateNicknameInfo) {[weak self] isDuplicated in
+        let updateNicknameInfo = UpdateNicknameDomain(
+            userID: userID,
+            nickname: inputNickname
+        )
+        let updateNicknameInfoRequestDTO = UpdateNicknameRequestDTO(
+            userID: updateNicknameInfo.userID,
+            nickname: updateNicknameInfo.nickname
+        )
+        memberService.isDuplicatedNickname(with: updateNicknameInfoRequestDTO) {[weak self] isDuplicated in
             self?.isDuplicatedNickname.onNext(isDuplicated)
         }
     }
     
     func updateNickname(updateNickname: String) {
-        let updateNicknameDomain = UpdateNicknameDomain(userID: userID, nickname: updateNickname)
-        memberService.updateNickname(with: updateNicknameDomain) {[weak self] result in
+        let updateNicknameInfo = UpdateNicknameDomain(
+            userID: userID,
+            nickname: updateNickname
+        )
+        let updateNicknameInfoRequestDTO = UpdateNicknameRequestDTO(
+            userID: updateNicknameInfo.userID,
+            nickname: updateNicknameInfo.nickname
+        )
+        memberService.updateNickname(with: updateNicknameInfoRequestDTO) {[weak self] result in
             self?.isUpdatedNickname.onNext(result)
             guard result else { return }
             UserDefaults.standard.set(updateNickname, forKey: MemberInfoField.nickname.rawValue)
@@ -50,8 +64,17 @@ final class MemberInfoUpdateViewModel {
     }
     
     func updateAccountNumber(bankName: String, accountNumber: String) {
-        let updateAccountNumberDomain = UpdateAccountNumberDomain(userID: userID, bankName: bankName, accountNumber: accountNumber)
-        memberService.updateAccountNumber(with: updateAccountNumberDomain) {[weak self] result in
+        let updateAccountNumberDomain = UpdateAccountNumberDomain(
+            userID: userID,
+            bankName: bankName,
+            accountNumber: accountNumber
+        )
+        let updateAccountNumberRequestDTO = UpdateAccountNumberRequestDTO(
+            userID: updateAccountNumberDomain.userID,
+            bankName: updateAccountNumberDomain.bankName,
+            accountNumber: updateAccountNumberDomain.accountNumber
+        )
+        memberService.updateAccountNumber(with: updateAccountNumberRequestDTO) {[weak self] result in
             self?.isUpdatedAccountNumber.onNext(result)
             guard result else { return }
             UserDefaults.standard.set(bankName, forKey: MemberInfoField.bankName.rawValue)
@@ -60,8 +83,15 @@ final class MemberInfoUpdateViewModel {
     }
     
     func updateKakaoPayUrl(kakaoPayUrl: String) {
-        let updateKakaoPayUrlDomain = UpdateKakaoPayUrlDomain(userID: userID, kakaoPayUrl: kakaoPayUrl)
-        memberService.updateKakaoPayUrl(with: updateKakaoPayUrlDomain) {[weak self] result in
+        let updateKakaoPayUrlDomain = UpdateKakaoPayUrlDomain(
+            userID: userID,
+            kakaoPayUrl: kakaoPayUrl
+        )
+        let upateKakaoPayUrlRequestDTO = UpdateKakaoPayUrlRequestDTO(
+            userID: updateKakaoPayUrlDomain.userID,
+            kakaoPayUrl: updateKakaoPayUrlDomain.kakaoPayUrl
+        )
+        memberService.updateKakaoPayUrl(with: upateKakaoPayUrlRequestDTO) {[weak self] result in
             self?.isUpdatedKakaoPayUrl.onNext(result)
             guard result else { return }
             UserDefaults.standard.set(kakaoPayUrl, forKey: MemberInfoField.kakaoPayUrl.rawValue)
@@ -83,7 +113,9 @@ final class MemberInfoUpdateViewModel {
                 })
                 .disposed(by: disposeBag)
         case .apple:
-            memberService.revokeAppleToken(with: CancelAccountDomain(userID: userID)) {[weak self] isRevoked in
+            let cancelAccountDomain = CancelAccountDomain(userID: userID)
+            let cancelAccountRequestDTO = CancelAccountRequestDTO(userID: cancelAccountDomain.userID)
+            memberService.revokeAppleToken(with: cancelAccountRequestDTO) {[weak self] isRevoked in
                 guard isRevoked else {
                     self?.isCanceledAccount.onNext(false)
                     return }
@@ -96,7 +128,9 @@ final class MemberInfoUpdateViewModel {
     }
     
     private func cancelAccountService() {
-        memberService.cancelAccount(with: CancelAccountDomain(userID: userID)) {[weak self] isCanceledAccount in
+        let cancelAccountDomain = CancelAccountDomain(userID: userID)
+        let cancelAccountRequestDTO = CancelAccountRequestDTO(userID: cancelAccountDomain.userID)
+        memberService.cancelAccount(with: cancelAccountRequestDTO) {[weak self] isCanceledAccount in
             self?.isCanceledAccount.onNext(isCanceledAccount)
             guard isCanceledAccount else { return }
             self?.removeUserDefatulsData()

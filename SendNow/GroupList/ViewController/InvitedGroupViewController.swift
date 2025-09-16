@@ -126,6 +126,19 @@ extension InvitedGroupViewController {
             })
             .disposed(by: disposeBag)
     }
+    
+    // MARK: cellForRowAt Method
+    private func configureInvitedGroupCollectionView(_ cell: InvitedGroupCollectionViewCell, _ indexPath: IndexPath) {
+        guard let myFriendList = homeViewModel.myFriendList else { return }
+        cell.friendNicknameLabel.text = myFriendList.isEmpty  ? "초대할 수 있는 친구가 없어요." : myFriendList[indexPath.row].nickname
+        cell.selectedButton.isHidden = myFriendList.isEmpty
+    }
+    
+    private func configureRemainderUserCollectionView(_ cell: InvitedGroupCollectionViewCell, _ indexPath: IndexPath) {
+        guard let remainderCandiateList = homeViewModel.remainderCandidateList else { return }
+        cell.friendNicknameLabel.text = remainderCandiateList.isEmpty ? "초대할 수 있는 친구가 없어요." : remainderCandiateList[indexPath.row].nickname
+        cell.selectedButton.isHidden = remainderCandiateList.isEmpty
+    }
 
 }
 
@@ -150,24 +163,12 @@ extension InvitedGroupViewController: UICollectionViewDataSource {
         switch collectionView {
         case self.invitedGroupView.invitedGroupCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: InvitedGroupCollectionViewCell.reuseIdentifier, for: indexPath) as? InvitedGroupCollectionViewCell else { return UICollectionViewCell() }
-            guard let myFriendList = homeViewModel.myFriendList,
-                  !myFriendList.isEmpty else {
-                cell.selectedButton.isHidden = true
-                cell.friendNicknameLabel.text = "초대할 수 있는 친구가 없어요. 🥲"
-                return cell }
-            cell.friendNicknameLabel.text = myFriendList[indexPath.row].nickname
-            cell.selectedButton.isHidden = false
+            configureInvitedGroupCollectionView(cell, indexPath)
             return cell
             
         case self.invitedGroupView.remainderUserCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: InvitedGroupCollectionViewCell.reuseIdentifier, for: indexPath) as? InvitedGroupCollectionViewCell else { return UICollectionViewCell() }
-            guard let remainderCandidateList = homeViewModel.remainderCandidateList,
-                  !remainderCandidateList.isEmpty else {
-                cell.selectedButton.isHidden = true
-                cell.friendNicknameLabel.text = "초대할 수 있는 친구가 없어요. 🥲"
-                return cell }
-            cell.friendNicknameLabel.text = remainderCandidateList[indexPath.row].nickname
-            cell.selectedButton.isHidden = false
+            configureRemainderUserCollectionView(cell, indexPath)
             return cell
             
         default: return UICollectionViewCell()
@@ -176,6 +177,7 @@ extension InvitedGroupViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? InvitedGroupCollectionViewCell else { return }
+        
         switch collectionView {
         case self.invitedGroupView.invitedGroupCollectionView:
             guard let myFriendList = homeViewModel.myFriendList,

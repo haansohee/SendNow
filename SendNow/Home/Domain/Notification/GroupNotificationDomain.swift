@@ -12,9 +12,3 @@ struct GroupNotificationDomain {
     let receiverUserID: [Int]
     let groupName: String
 }
-
-extension GroupNotificationDomain {
-    func toRequestDTO() -> GroupNotificationRequestDTO {
-        return .init(senderUserID: senderUserID, receiverUserID: receiverUserID, groupName: groupName)
-    }
-}

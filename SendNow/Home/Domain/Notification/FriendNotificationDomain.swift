@@ -11,9 +11,3 @@ struct FriendNotificationDomain {
     let senderUserID: Int
     let receiverUserID: Int
 }
-
-extension FriendNotificationDomain {
-    func toRequestDTO() -> FriendNotificationRequestDTO {
-        return .init(senderUserID: senderUserID, receiverUserID: receiverUserID)
-    }
-}

@@ -15,9 +15,3 @@ struct UpdateSpendingDetailInformationDomain {
     let expenseAmount: Int
     let expenseDate: String
 }
-
-extension UpdateSpendingDetailInformationDomain {
-    func toReqeustDTO() -> UpdateSpendingDetailInformationRequestDTO {
-        return .init(groupID: groupID, expenseID: expenseID, expenseClassfication: expenseClassfication, expenseDetails: expenseDetails, expenseAmount: expenseAmount, expenseDate: expenseDate)
-    }
-}

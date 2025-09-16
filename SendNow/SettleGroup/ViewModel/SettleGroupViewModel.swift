@@ -105,8 +105,17 @@ final class SettleGroupViewModel {
             expenseClassfication: expenseClassfication,
             expenseDetail: expenseDetail,
             expenseAmount: amount,
-            expenseDate: date)
-        groupService.setExpensesUpload(with: expenseUploadDomain) {[weak self] result in
+            expenseDate: date
+        )
+        let expenseUploadRequestDTO = ExpenseUploadRequestDTO(
+            groupID: expenseUploadDomain.groupID,
+            userID: expenseUploadDomain.userID,
+            expenseClassfication: expenseUploadDomain.expenseClassfication,
+            expenseDetail: expenseUploadDomain.expenseDetail,
+            expenseAmount: expenseUploadDomain.expenseAmount,
+            expenseDate: expenseUploadDomain.expenseDate
+        )
+        groupService.setExpensesUpload(with: expenseUploadRequestDTO) {[weak self] result in
             if result {
                 NotificationCenter.default.post(name: NSNotification.Name(NotificationName.uploadExpense.rawValue), object: result)
             }
@@ -117,7 +126,14 @@ final class SettleGroupViewModel {
     func loadGroupMemberInformation() {
         guard let groupID = groupID else { return }
         groupService.getGroupMemberList(with: groupID) {[weak self] result in
-            self?.groupMemberInformations = result
+            let groupMemberInfoDomain: [GroupMemberListDomain] = result.map {
+                GroupMemberListDomain(
+                    groupID: $0.groupID,
+                    userID: $0.userID,
+                    nickname: $0.nickname
+                )
+            }
+            self?.groupMemberInformations = groupMemberInfoDomain
             self?.isLoadedGroupMemberInfo.onNext(!result.isEmpty)
         }
     }
@@ -125,7 +141,24 @@ final class SettleGroupViewModel {
     func loadGroupExpenseInformation() {
         guard let groupID = groupID else { return }
         groupService.getGroupExpenseInformations(with: userID, groupID: groupID) {[weak self] result in
-            self?.groupExpenseInformations = result
+            let expenseInformationsDomain: [ExpenseInformations] = result.expenseInformations.map {
+                ExpenseInformations(
+                    expenseID: $0.expenseID,
+                    groupID: $0.groupID,
+                    userID: $0.userID,
+                    paidBy: $0.paidBy,
+                    expenseClassfication: $0.expenseClassfication,
+                    expenseDetails: $0.expenseDetails,
+                    expenseAmount: $0.expenseAmount,
+                    expenseDate: $0.expenseDate
+                )
+            }
+            let groupExpensesDomain = ExpenseInformationDomain(
+                expenseInformations: expenseInformationsDomain,
+                myExpenses: result.myExpenses,
+                groupExpenses: result.groupExpenses
+            )
+            self?.groupExpenseInformations = groupExpensesDomain
             guard let groupExpenses = result.groupExpenses,
                   let myExpenses = result.myExpenses else {
                 self?.groupExpenseInfoSubject.onNext(("0", "0"))
@@ -136,7 +169,16 @@ final class SettleGroupViewModel {
     
     func loadExpenseDetailInformation(_ expenseID: Int) {
         groupService.getGroupExpenseDetailInformation(with: expenseID) {[weak self] detailInformation in
-            self?.expenseDetailInformation = detailInformation
+            let expenseDetailInfoDomain = ExpenseDetailInformationDomain(
+                expenseID: detailInformation.expenseID,
+                groupID: detailInformation.groupID,
+                paidBy: detailInformation.paidBy,
+                expenseClassfication: detailInformation.expenseClassfication,
+                expenseDetails: detailInformation.expenseDetails,
+                expenseAmount: detailInformation.expenseAmount,
+                expenseDate: detailInformation.expenseDate
+            )
+            self?.expenseDetailInformation = expenseDetailInfoDomain
             self?.loadedGroupExpenseDetailInfoSubject.onNext(Void())
         }
     }
@@ -156,8 +198,15 @@ final class SettleGroupViewModel {
     }
     
     func deleteSpendingDetailInformation(expenseID: Int, groupID: Int) {
-        let spendingDetailInfo = DeleteSpendingDetailInformationDomain(expenseID: expenseID, groupID: groupID)
-        groupService.deleteSpendingDetailInformation(with: spendingDetailInfo) {[weak self] isDeleted in
+        let spendingDetailInfo = DeleteSpendingDetailInformationDomain(
+            expenseID: expenseID,
+            groupID: groupID
+        )
+        let spedingDetailInfoRequestDTO = DeleteSpendingDetailInformationRequestDTO(
+            expenseID: spendingDetailInfo.expenseID,
+            groupID: spendingDetailInfo.groupID
+        )
+        groupService.deleteSpendingDetailInformation(with: spedingDetailInfoRequestDTO) {[weak self] isDeleted in
             self?.isDeletedSpendingDetailInfoSubject.onNext(isDeleted)
         }
     }
@@ -173,8 +222,23 @@ final class SettleGroupViewModel {
         guard let groupID = self.groupID,
               let expenseID = self.expenseID else {
             return }
-        let spendingDetailInformation = UpdateSpendingDetailInformationDomain(groupID: groupID, expenseID: expenseID, expenseClassfication: expensClassfication, expenseDetails: expenseDetails, expenseAmount: expenseAmontText, expenseDate: expenseDateText)
-        groupService.updateSpendingDetailInformation(with: spendingDetailInformation) {[weak self] isUpdated in
+        let spendingDetailInformation = UpdateSpendingDetailInformationDomain(
+            groupID: groupID,
+            expenseID: expenseID,
+            expenseClassfication: expensClassfication,
+            expenseDetails: expenseDetails,
+            expenseAmount: expenseAmontText,
+            expenseDate: expenseDateText
+        )
+        let spedingDetailInfoRequestDTO = UpdateSpendingDetailInformationRequestDTO(
+            groupID: spendingDetailInformation.groupID,
+            expenseID: spendingDetailInformation.expenseID,
+            expenseClassfication: spendingDetailInformation.expenseClassfication,
+            expenseDetails: spendingDetailInformation.expenseDetails,
+            expenseAmount: spendingDetailInformation.expenseAmount,
+            expenseDate: spendingDetailInformation.expenseDate
+        )
+        groupService.updateSpendingDetailInformation(with: spedingDetailInfoRequestDTO) {[weak self] isUpdated in
             self?.isUpdatedSpendingDetailInfoSubject.onNext(isUpdated)
         }
     }

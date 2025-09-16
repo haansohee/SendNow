@@ -15,9 +15,4 @@ struct SigninWithAppleDomain {
     let fcmToken: String
 }
 
-extension SigninWithAppleDomain {
-    func toRequestDTO() -> SigninWithAppleRequestDTO {
-        return .init(nickname: nickname, appleToken: appleToken, authorizationCode: authorizationCode, isSetNoti: isSetNoti, fcmToken: fcmToken)
-    }
-}
 

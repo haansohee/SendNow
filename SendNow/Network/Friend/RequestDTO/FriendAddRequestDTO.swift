@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FriendRequestSendDTO: Codable {
+struct FriendAddRequestDTO: Codable {
     let fromUserID: Int
     let fromUserNickname: String
     let toUserID: Int

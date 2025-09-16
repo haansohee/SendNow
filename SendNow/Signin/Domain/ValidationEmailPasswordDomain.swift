@@ -12,8 +12,3 @@ struct ValidationEmailPasswordDomain {
     let password: String
 }
 
-extension ValidationEmailPasswordDomain {
-    func toRequestDTO() -> ValidationEmailPasswordRequestDTO {
-        return .init(email: email, password: password)
-    }
-}

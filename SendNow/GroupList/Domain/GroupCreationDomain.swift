@@ -14,8 +14,3 @@ struct GroupCreationDomain {
     let remainderUserID: Int
 }
 
-extension GroupCreationDomain {
-    func toRequestDTO() -> GroupCreationRequestDTO {
-        return .init(groupName: groupName, userIDList: userIDList, creatorID: creatorID, remainderUserID: remainderUserID)
-    }
-}

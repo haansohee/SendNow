@@ -11,9 +11,3 @@ struct UpdateFcmTokenInformationDomain {
     let userID: Int
     let fcmToken: String
 }
-
-extension UpdateFcmTokenInformationDomain {
-    func toRequestDTO() -> UpdateFcmTokenInformationRequestDTO {
-        return .init(userID: userID, fcmToken: fcmToken)
-    }
-}

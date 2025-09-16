@@ -29,7 +29,16 @@ final class GroupListViewModel {
     
     func loadMyGroup() {
         groupService.getGroupList(with: userID) {[weak self] result in
-            self?.myGroupList = result
+            let groupListResponseDTO: [GroupListDomain] = result.map {
+                GroupListDomain(
+                    groupID: $0.groupID,
+                    groupName: $0.groupName,
+                    createdDate: $0.createdDate,
+                    groupFriends: $0.groupFriends,
+                    isActive: $0.isActive
+                )
+            }
+            self?.myGroupList = groupListResponseDTO
             self?.isLoadedMyGroupList.onNext(Void())
         }
     }
@@ -60,8 +69,19 @@ final class GroupListViewModel {
         self.groupName = groupName
         guard !self.invitedFriendList.isEmpty else { return }
         guard let remainderUserID = self.remainderUserID else { return }
-        let groupCreationDomain = GroupCreationDomain(groupName: groupName, userIDList: self.invitedFriendList, creatorID: userID, remainderUserID: remainderUserID)
-        groupService.setGroupList(with: groupCreationDomain) {[weak self] result in
+        let groupCreationDomain = GroupCreationDomain(
+            groupName: groupName,
+            userIDList: self.invitedFriendList,
+            creatorID: userID,
+            remainderUserID: remainderUserID
+        )
+        let groupCreationRequestDTO = GroupCreationRequestDTO(
+            groupName: groupCreationDomain.groupName,
+            userIDList: groupCreationDomain.userIDList,
+            creatorID: groupCreationDomain.creatorID,
+            remainderUserID: groupCreationDomain.remainderUserID
+        )
+        groupService.setGroupList(with: groupCreationRequestDTO) {[weak self] result in
             if result {
                 NotificationCenter.default.post(name: NSNotification.Name(NotificationName.invitedFriend.rawValue), object: result)
                 self?.sendNotification()
@@ -72,8 +92,17 @@ final class GroupListViewModel {
     
     func sendNotification() {
         guard let groupName = groupName else { return }
-        let notificationDomain = GroupNotificationDomain(senderUserID: userID, receiverUserID: self.invitedFriendList, groupName: groupName)
-        notificationService.sendGroupNotification(with: notificationDomain) {[weak self] result in
+        let notificationDomain = GroupNotificationDomain(
+            senderUserID: userID,
+            receiverUserID: self.invitedFriendList,
+            groupName: groupName
+        )
+        let notificationRequestDTO = GroupNotificationRequestDTO(
+            senderUserID: notificationDomain.senderUserID,
+            receiverUserID: notificationDomain.receiverUserID,
+            groupName: notificationDomain.groupName
+        )
+        notificationService.sendGroupNotification(with: notificationRequestDTO) {[weak self] result in
             if result { self?.invitedFriendList = [] }
         }
     }

@@ -116,16 +116,14 @@ extension SpendingDetailsAddViewController {
             .when(.recognized)
             .asDriver { _ in .never() }
             .drive(onNext: {[weak self] _ in
-                guard let trafficclassficationView = self?.spendingDetailAddView.trafficclassficationView,
-                      let accommodationclassficationView = self?.spendingDetailAddView.accommodationclassficationView,
-                      let tourismclassficationView = self?.spendingDetailAddView.tourismclassficationView,
-                      let foodclassficationView = self?.spendingDetailAddView.foodclassficationView,
-                      let etcclassficationView = self?.spendingDetailAddView.etcclassficationView else { return }
-                let otherViews = [accommodationclassficationView,
-                                  tourismclassficationView,
-                                  foodclassficationView,
-                                  etcclassficationView]
-                self?.selectClassfication(trafficclassficationView, otherViews, trafficclassficationView.tag)
+                guard let self = self else { return }
+                let otherViews = [self.spendingDetailAddView.accommodationclassficationView,
+                                  self.spendingDetailAddView.tourismclassficationView,
+                                  self.spendingDetailAddView.foodclassficationView,
+                                  self.spendingDetailAddView.etcclassficationView]
+                self.selectClassfication(self.spendingDetailAddView.trafficclassficationView,
+                                         otherViews,
+                                         self.spendingDetailAddView.trafficclassficationView.tag)
             })
             .disposed(by: disposeBag)
         
@@ -134,16 +132,14 @@ extension SpendingDetailsAddViewController {
             .when(.recognized)
             .asDriver { _ in .never() }
             .drive(onNext: {[weak self] _ in
-                guard let trafficclassficationView = self?.spendingDetailAddView.trafficclassficationView,
-                      let accommodationclassficationView = self?.spendingDetailAddView.accommodationclassficationView,
-                      let tourismclassficationView = self?.spendingDetailAddView.tourismclassficationView,
-                      let foodclassficationView = self?.spendingDetailAddView.foodclassficationView,
-                      let etcclassficationView = self?.spendingDetailAddView.etcclassficationView else { return }
-                let otherViews = [trafficclassficationView,
-                                  tourismclassficationView,
-                                  foodclassficationView,
-                                  etcclassficationView]
-                self?.selectClassfication(accommodationclassficationView, otherViews, accommodationclassficationView.tag)
+                guard let self = self else { return }
+                let otherViews = [self.spendingDetailAddView.trafficclassficationView,
+                                  self.spendingDetailAddView.tourismclassficationView,
+                                  self.spendingDetailAddView.foodclassficationView,
+                                  self.spendingDetailAddView.etcclassficationView]
+                self.selectClassfication(self.spendingDetailAddView.accommodationclassficationView,
+                                         otherViews,
+                                         self.spendingDetailAddView.accommodationclassficationView.tag)
             })
             .disposed(by: disposeBag)
         
@@ -152,16 +148,14 @@ extension SpendingDetailsAddViewController {
             .when(.recognized)
             .asDriver { _ in .never() }
             .drive(onNext: {[weak self] _ in
-                guard let trafficclassficationView = self?.spendingDetailAddView.trafficclassficationView,
-                      let accommodationclassficationView = self?.spendingDetailAddView.accommodationclassficationView,
-                      let tourismclassficationView = self?.spendingDetailAddView.tourismclassficationView,
-                      let foodclassficationView = self?.spendingDetailAddView.foodclassficationView,
-                      let etcclassficationView = self?.spendingDetailAddView.etcclassficationView else { return }
-                let otherViews = [trafficclassficationView,
-                                  accommodationclassficationView,
-                                  foodclassficationView,
-                                  etcclassficationView]
-                self?.selectClassfication(tourismclassficationView, otherViews, tourismclassficationView.tag)
+                guard let self = self else { return }
+                let otherViews = [self.spendingDetailAddView.trafficclassficationView,
+                                  self.spendingDetailAddView.accommodationclassficationView,
+                                  self.spendingDetailAddView.foodclassficationView,
+                                  self.spendingDetailAddView.etcclassficationView]
+                self.selectClassfication(self.spendingDetailAddView.tourismclassficationView,
+                                         otherViews,
+                                         self.spendingDetailAddView.tourismclassficationView.tag)
             })
             .disposed(by: disposeBag)
         
@@ -170,16 +164,14 @@ extension SpendingDetailsAddViewController {
             .when(.recognized)
             .asDriver { _ in .never() }
             .drive(onNext: {[weak self] _ in
-                guard let trafficclassficationView = self?.spendingDetailAddView.trafficclassficationView,
-                      let accommodationclassficationView = self?.spendingDetailAddView.accommodationclassficationView,
-                      let tourismclassficationView = self?.spendingDetailAddView.tourismclassficationView,
-                      let foodclassficationView = self?.spendingDetailAddView.foodclassficationView,
-                      let etcclassficationView = self?.spendingDetailAddView.etcclassficationView else { return }
-                let otherViews = [trafficclassficationView,
-                                  accommodationclassficationView,
-                                  tourismclassficationView,
-                                  etcclassficationView]
-                self?.selectClassfication(foodclassficationView, otherViews, foodclassficationView.tag)
+                guard let self = self else { return }
+                let otherViews = [self.spendingDetailAddView.trafficclassficationView,
+                                  self.spendingDetailAddView.accommodationclassficationView,
+                                  self.spendingDetailAddView.tourismclassficationView,
+                                  self.spendingDetailAddView.etcclassficationView]
+                self.selectClassfication(self.spendingDetailAddView.foodclassficationView,
+                                         otherViews,
+                                         self.spendingDetailAddView.foodclassficationView.tag)
             })
             .disposed(by: disposeBag)
         
@@ -188,16 +180,14 @@ extension SpendingDetailsAddViewController {
             .when(.recognized)
             .asDriver { _ in .never() }
             .drive(onNext: {[weak self] _ in
-                guard let trafficclassficationView = self?.spendingDetailAddView.trafficclassficationView,
-                      let accommodationclassficationView = self?.spendingDetailAddView.accommodationclassficationView,
-                      let tourismclassficationView = self?.spendingDetailAddView.tourismclassficationView,
-                      let foodclassficationView = self?.spendingDetailAddView.foodclassficationView,
-                      let etcclassficationView = self?.spendingDetailAddView.etcclassficationView else { return }
-                let otherViews = [trafficclassficationView,
-                                  accommodationclassficationView,
-                                  tourismclassficationView,
-                                  foodclassficationView]
-                self?.selectClassfication(etcclassficationView, otherViews, etcclassficationView.tag)
+                guard let self = self else { return }
+                let otherViews = [self.spendingDetailAddView.trafficclassficationView,
+                                  self.spendingDetailAddView.accommodationclassficationView,
+                                  self.spendingDetailAddView.tourismclassficationView,
+                                  self.spendingDetailAddView.foodclassficationView]
+                self.selectClassfication(self.spendingDetailAddView.etcclassficationView,
+                                          otherViews,
+                                          self.spendingDetailAddView.etcclassficationView.tag)
             })
             .disposed(by: disposeBag)
     }

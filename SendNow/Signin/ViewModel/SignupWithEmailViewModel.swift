@@ -32,21 +32,36 @@ final class SignupWithEmailViewModel {
     }
     
     func isDuplicatedNickname(nickname: String) {
-        let nicknameDuplicateInfo = UpdateNicknameDomain(userID: 0, nickname: nickname)
-        memberService.isDuplicatedNickname(with: nicknameDuplicateInfo) {[weak self] result in
+        let nicknameDuplicateInfo = UpdateNicknameDomain(
+            userID: 0,
+            nickname: nickname
+        )
+        let nicknameDuplicateInfoRequestDTO = UpdateNicknameRequestDTO(
+            userID: nicknameDuplicateInfo.userID,
+            nickname: nicknameDuplicateInfo.nickname
+        )
+        memberService.isDuplicatedNickname(with: nicknameDuplicateInfoRequestDTO) {[weak self] result in
             self?.isDuplicatedNickname.onNext(result)
         }
     }
     
     func sendEmailAuthCode(email: String) {
         memberService.getEmailAuthCode(with: email) {[weak self] emailAuthCode in
-            self?.emailAuthCodeInfo = emailAuthCode
+            let emailAuthCodeDomain = EmailAuthCodeDomain(isDuplicated: emailAuthCode.isDuplicated, authCode: emailAuthCode.authCode)
+            self?.emailAuthCodeInfo = emailAuthCodeDomain
             self?.isDuplicatedEmail.onNext(emailAuthCode.isDuplicated)
         }
     }
     
     func signupWithEmail(_ signinWithEmailInfo: SigninWithEmailDomain) {
-        memberService.setEmailMemberInfo(with: signinWithEmailInfo) {[weak self] result in
+        let signinWithEmailInfoRequestDTO = SigninWithEmailRequestDTO(
+            nickname: signinWithEmailInfo.nickname,
+            email: signinWithEmailInfo.email,
+            password: signinWithEmailInfo.password,
+            isSetNoti: signinWithEmailInfo.isSetNoti,
+            fcmToken: signinWithEmailInfo.fcmToken
+        )
+        memberService.setEmailMemberInfo(with: signinWithEmailInfoRequestDTO) {[weak self] result in
             self?.isCompletedSignup.onNext(result)
         }
     }
