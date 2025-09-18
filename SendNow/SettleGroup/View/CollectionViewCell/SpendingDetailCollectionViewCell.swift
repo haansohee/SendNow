@@ -131,7 +131,7 @@ extension SpendingDetailCollectionViewCell {
         contentView.backgroundColor = .systemBackground
     }
     
-    func setSpendingDetailCollectionViewCellLabel(groupExpenseInfo: ExpenseInformations) {
+    func setSpendingDetailCollectionViewCellLabel(groupExpenseInfo: ExpenseInformationListDomain) {
         spendingclassficationNameLabel.text = groupExpenseInfo.expenseClassfication
         detailContentLabel.text = groupExpenseInfo.expenseDetails
         paidNameLabel.text = groupExpenseInfo.paidBy

@@ -8,12 +8,12 @@
 import Foundation
 
 struct ExpenseInformationDomain {
-    let expenseInformations: [ExpenseInformations]?
+    let expenseInformations: [ExpenseInformationListDomain]?
     let myExpenses: String?
     let groupExpenses: String?
 }
 
-struct ExpenseInformations {
+struct ExpenseInformationListDomain {
     let expenseID: Int
     let groupID: Int
     let userID: Int

@@ -47,22 +47,39 @@ final class SigninViewModel {
     }
     
     func checkRegisteredKakaoMember(_ kakaoToken: String) {
-        memberService.getKakaoMemberInfo(with: kakaoToken) { [weak self] kakaoMemberInfo in
-            guard let kakaoToken = kakaoMemberInfo.kakaoToken,
-                  let email = kakaoMemberInfo.email,
-                  let userID = kakaoMemberInfo.userID,
-                  let kakaoID = kakaoMemberInfo.kakaoID,
-                  !kakaoToken.isEmpty,
-                  !email.isEmpty else {
-                self?.signupWithKakao()
-                return
-            }
-            
-            guard let nickname = kakaoMemberInfo.nickname,
-                  !(nickname.isEmpty) else {
+        memberService.getKakaoMemberInfo(with: kakaoToken) { [weak self] getKakaoMemberInfoResult in
+            switch getKakaoMemberInfoResult {
+            case .success(let kakaoMemberInfo):
+                guard let kakaoToken = kakaoMemberInfo.kakaoToken,
+                      let email = kakaoMemberInfo.email,
+                      let userID = kakaoMemberInfo.userID,
+                      let kakaoID = kakaoMemberInfo.kakaoID,
+                      !kakaoToken.isEmpty,
+                      !email.isEmpty else {
+                    self?.signupWithKakao()
+                    return
+                }
+                
+                guard let nickname = kakaoMemberInfo.nickname,
+                      !(nickname.isEmpty) else {
+                    let kakaoMemberInformation = KakaoMemberDomain(
+                        userID: userID,
+                        nickname: "",
+                        email: email,
+                        kakaoToken: kakaoToken,
+                        kakaoID: kakaoID,
+                        bankName: kakaoMemberInfo.bankName ?? "",
+                        accountNumber: kakaoMemberInfo.accountNumber ?? "",
+                        kakaoPayUrl: kakaoMemberInfo.kakaoPayUrl ?? ""
+                    )
+                    self?.setUserDefaultsKakaoMember(kakaoMemberInformation)
+                    self?.isSuccessSignin.onNext(false)
+                    return
+                }
+
                 let kakaoMemberInformation = KakaoMemberDomain(
                     userID: userID,
-                    nickname: "",
+                    nickname: nickname,
                     email: email,
                     kakaoToken: kakaoToken,
                     kakaoID: kakaoID,
@@ -71,22 +88,10 @@ final class SigninViewModel {
                     kakaoPayUrl: kakaoMemberInfo.kakaoPayUrl ?? ""
                 )
                 self?.setUserDefaultsKakaoMember(kakaoMemberInformation)
-                self?.isSuccessSignin.onNext(false)
-                return
+                self?.isSuccessSignin.onNext(true)
+            case .failure(let error):
+                print("에러 수정 필요")
             }
-
-            let kakaoMemberInformation = KakaoMemberDomain(
-                userID: userID,
-                nickname: nickname,
-                email: email,
-                kakaoToken: kakaoToken,
-                kakaoID: kakaoID,
-                bankName: kakaoMemberInfo.bankName ?? "",
-                accountNumber: kakaoMemberInfo.accountNumber ?? "",
-                kakaoPayUrl: kakaoMemberInfo.kakaoPayUrl ?? ""
-            )
-            self?.setUserDefaultsKakaoMember(kakaoMemberInformation)
-            self?.isSuccessSignin.onNext(true)
         }
     }
     
@@ -121,27 +126,43 @@ final class SigninViewModel {
     }
     
     func signinWithApple(_ appleToken: String, _ authorizationCode: String) {
-        memberService.getAppleMemberInfo(with: appleToken) {[weak self] appleMemberInfo in
-            guard let appleToken = appleMemberInfo.appleToken,
-                  let email = appleMemberInfo.email,
-                  let userID = appleMemberInfo.userID,
-                  !(appleToken.isEmpty),
-                  !(email.isEmpty) else {
-                let signupWithAppleInfo = SigninWithAppleDomain(
-                    nickname: "",
-                    appleToken: appleToken,
-                    authorizationCode: authorizationCode,
-                    isSetNoti: self?.isSetNoti ?? false,
-                    fcmToken: self?.fcmToken ?? ""
-                )
-                self?.signupWithApple(signupWithAppleInfo)
-                return }
-            
-            guard let nickname = appleMemberInfo.nickname,
-                  !(nickname.isEmpty) else {
+        memberService.getAppleMemberInfo(with: appleToken) {[weak self] getAppleMemberInfoResult in
+            switch getAppleMemberInfoResult {
+            case .success(let appleMemberInfo):
+                guard let appleToken = appleMemberInfo.appleToken,
+                      let email = appleMemberInfo.email,
+                      let userID = appleMemberInfo.userID,
+                      !(appleToken.isEmpty),
+                      !(email.isEmpty) else {
+                    let signupWithAppleInfo = SigninWithAppleDomain(
+                        nickname: "",
+                        appleToken: appleToken,
+                        authorizationCode: authorizationCode,
+                        isSetNoti: self?.isSetNoti ?? false,
+                        fcmToken: self?.fcmToken ?? ""
+                    )
+                    self?.signupWithApple(signupWithAppleInfo)
+                    return }
+                
+                guard let nickname = appleMemberInfo.nickname,
+                      !(nickname.isEmpty) else {
+                    let appleMemberInformation = AppleMemberDomain(
+                        userID: userID,
+                        nickname: "",
+                        email: email,
+                        appleToken: appleToken,
+                        bankName: appleMemberInfo.bankName ?? "",
+                        accountNumber: appleMemberInfo.accountNumber ?? "",
+                        kakaoPayUrl: appleMemberInfo.kakaoPayUrl ?? ""
+                    )
+                    self?.setUserDefaultsAppleMember(appleMemberInformation: appleMemberInformation)
+                    self?.isSuccessSignin.onNext(false)
+                    return
+                }
+                
                 let appleMemberInformation = AppleMemberDomain(
                     userID: userID,
-                    nickname: "",
+                    nickname: nickname,
                     email: email,
                     appleToken: appleToken,
                     bankName: appleMemberInfo.bankName ?? "",
@@ -149,21 +170,10 @@ final class SigninViewModel {
                     kakaoPayUrl: appleMemberInfo.kakaoPayUrl ?? ""
                 )
                 self?.setUserDefaultsAppleMember(appleMemberInformation: appleMemberInformation)
-                self?.isSuccessSignin.onNext(false)
-                return
+                self?.isSuccessSignin.onNext(true)
+            case .failure(let error):
+                print("에러 수정 필요")
             }
-            
-            let appleMemberInformation = AppleMemberDomain(
-                userID: userID,
-                nickname: nickname,
-                email: email,
-                appleToken: appleToken,
-                bankName: appleMemberInfo.bankName ?? "",
-                accountNumber: appleMemberInfo.accountNumber ?? "",
-                kakaoPayUrl: appleMemberInfo.kakaoPayUrl ?? ""
-            )
-            self?.setUserDefaultsAppleMember(appleMemberInformation: appleMemberInformation)
-            self?.isSuccessSignin.onNext(true)
         }
     }
     
@@ -217,15 +227,20 @@ final class SigninViewModel {
     }
     
     func signinWithEmail(_ email: String) {
-        memberService.getEmailMemberInfo(with: email) {[weak self] emailMemberInfo in
-            guard let userID = emailMemberInfo.userID,
-                  let nickname = emailMemberInfo.nickname,
-                  let password = emailMemberInfo.password,
-                  !(nickname.isEmpty),
-                  !(password.isEmpty) else { return }
-            let emailMemberInformation = EmailMemberDomain(userID: userID, nickname: nickname, email: email, password: password, bankName: emailMemberInfo.bankName ?? "", accountNumber: emailMemberInfo.accountNumber ?? "", kakaoPayUrl: emailMemberInfo.kakaoPayUrl ?? "")
-            self?.setUserDefaultsEmailMember(emailMemberInformation)
-            self?.isSuccessSignin.onNext(true)
+        memberService.getEmailMemberInfo(with: email) {[weak self] getEmailMemberInfoResult in
+            switch getEmailMemberInfoResult {
+            case .success(let emailMemberInfo):
+                guard let userID = emailMemberInfo.userID,
+                      let nickname = emailMemberInfo.nickname,
+                      let password = emailMemberInfo.password,
+                      !(nickname.isEmpty),
+                      !(password.isEmpty) else { return }
+                let emailMemberInformation = EmailMemberDomain(userID: userID, nickname: nickname, email: email, password: password, bankName: emailMemberInfo.bankName ?? "", accountNumber: emailMemberInfo.accountNumber ?? "", kakaoPayUrl: emailMemberInfo.kakaoPayUrl ?? "")
+                self?.setUserDefaultsEmailMember(emailMemberInformation)
+                self?.isSuccessSignin.onNext(true)
+            case .failure(let error):
+                print("에러 수정 필요")
+            }
         }
     }
     

@@ -8,12 +8,12 @@
 import Foundation
 
 struct ExpenseInformationResponseDTO: Codable {
-    let expenseInformations: [ExpenseInformationsResponseDTO]
+    let expenseInformations: [ExpenseInformationListResponseDTO]
     let myExpenses: String?
     let groupExpenses: String?
 }
 
-struct ExpenseInformationsResponseDTO: Codable {
+struct ExpenseInformationListResponseDTO: Codable {
     let expenseID: Int
     let groupID: Int
     let userID: Int
@@ -22,4 +22,29 @@ struct ExpenseInformationsResponseDTO: Codable {
     let expenseDetails: String
     let expenseAmount: String
     let expenseDate: String
+}
+
+extension ExpenseInformationListResponseDTO {
+    func toDomain() -> ExpenseInformationListDomain {
+        return .init(
+            expenseID: expenseID,
+            groupID: groupID,
+            userID: userID,
+            paidBy: paidBy,
+            expenseClassfication: expenseClassfication,
+            expenseDetails: expenseDetails,
+            expenseAmount: expenseAmount,
+            expenseDate: expenseDate
+        )
+    }
+}
+
+extension ExpenseInformationResponseDTO {
+    func toDomain() -> ExpenseInformationDomain {
+        return .init(
+            expenseInformations: expenseInformations.map { $0.toDomain()},
+            myExpenses: myExpenses,
+            groupExpenses: groupExpenses
+        )
+    }
 }

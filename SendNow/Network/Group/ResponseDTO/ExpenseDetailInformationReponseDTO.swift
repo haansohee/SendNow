@@ -16,3 +16,17 @@ struct ExpenseDetailInformationReponseDTO: Codable {
     let expenseAmount: String
     let expenseDate: String
 }
+
+extension ExpenseDetailInformationReponseDTO {
+    func toDomain() -> ExpenseDetailInformationDomain {
+        return .init(
+            expenseID: expenseID,
+            groupID: groupID,
+            paidBy: paidBy,
+            expenseClassfication: expenseClassfication,
+            expenseDetails: expenseDetails,
+            expenseAmount: expenseAmount,
+            expenseDate: expenseDate
+        )
+    }
+}

@@ -14,3 +14,15 @@ struct GroupListResponseDTO: Codable {
     let groupFriends: [String]
     let isActive: Bool
 }
+
+extension GroupListResponseDTO {
+    func toDomain() -> GroupListDomain {
+        return .init(
+            groupID: groupID,
+            groupName: groupName,
+            createdDate: createdDate,
+            groupFriends: groupFriends,
+            isActive: isActive
+        )
+    }
+}

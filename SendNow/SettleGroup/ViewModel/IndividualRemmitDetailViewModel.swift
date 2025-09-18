@@ -38,50 +38,27 @@ final class IndividualRemmitDetailViewModel {
     
     func loadGroupSettlementInforamtion() {
         guard let groupID = groupID else { return }
-        groupService.getGroupSettlementsInformations(with: groupID) {[weak self] result in
-            let settlementDetailInfoDomain: [SettlementDetailsDomain] = result.settlementDetails.map {
-                SettlementDetailsDomain(
-                    settlementID: $0.settlementID,
-                    groupID: $0.groupID,
-                    fromUserID: $0.fromUserID,
-                    toUserID: $0.toUserID,
-                    fromNickname: $0.fromNickname,
-                    toNickname: $0.toNickname,
-                    amount: $0.amount,
-                    bankName: $0.bankName,
-                    accountNumber: $0.accountNumber,
-                    kakaoPayURL: $0.kakaoPayURL
-                )
+        groupService.getGroupSettlementsInformations(with: groupID) {[weak self] getGroupSettlementsInfoResult in
+            switch getGroupSettlementsInfoResult {
+            case .success(let groupSettlementsInfoDomain):
+                self?.groupSettlementInformations = groupSettlementsInfoDomain
+                self?.isLoadedGroupSettlementInfo.onNext(Void())
+            case .failure(let error):
+                print("에러 수정 필요")
             }
-            let settlementBalanceDomain: [SettlementBalanceDomain] = result.settlementBalance.map {
-                SettlementBalanceDomain(
-                    userID: $0.userID,
-                    nickname: $0.nickname,
-                    sendAmount: $0.sendAmount,
-                    receiveAmount: $0.receiveAmount
-                )
-            }
-            let settlementListDomain = SettlementListDomain(
-                settlementDetails: settlementDetailInfoDomain,
-                settlementBalance: settlementBalanceDomain)
-            self?.groupSettlementInformations = settlementListDomain
-            self?.isLoadedGroupSettlementInfo.onNext(Void())
         }
     }
     
     func loadCompletionRemittanceInformation() {
         guard let groupID = groupID else { return }
-        groupService.getCompletedRemittanceInformation(with: groupID, userID: userID) {[weak self] remittanceInfo in
-            let completionRemittanceDomain: [CompletionRemittanceDomain] = remittanceInfo.map {
-                CompletionRemittanceDomain(
-                    settlementID: $0.settlementID,
-                    receiverNickname: $0.receiverNickname,
-                    amount: $0.amount,
-                    isCompletedRemittance: $0.isCompletedRemittance
-                )
+        groupService.getCompletedRemittanceInformation(with: groupID, userID: userID) {[weak self] getCompletedRemittanceInfoResult in
+            switch getCompletedRemittanceInfoResult {
+            case .success(let completedRemittanceInfoDomain):
+                self?.remittanceInformations = completedRemittanceInfoDomain
+                self?.isLoadedCompletionRemittanceInfo.onNext(Void())
+            case .failure(let error):
+                print("에러 수정 필요")
             }
-            self?.remittanceInformations = completionRemittanceDomain
-            self?.isLoadedCompletionRemittanceInfo.onNext(Void())
         }
     }
     

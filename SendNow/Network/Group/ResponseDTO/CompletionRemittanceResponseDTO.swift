@@ -13,3 +13,14 @@ struct CompletionRemittanceResponseDTO: Codable {
     let amount: Int
     let isCompletedRemittance: Bool
 }
+
+extension CompletionRemittanceResponseDTO {
+    func toDomain() -> CompletionRemittanceDomain {
+        return .init(
+            settlementID: settlementID,
+            receiverNickname: receiverNickname,
+            amount: amount,
+            isCompletedRemittance: isCompletedRemittance
+        )
+    }
+}

@@ -36,14 +36,16 @@ final class NotificationService {
         networkSessionManager.urlPostMethod(path: path, encodeValue: settlementID, completion: completion)
     }
     
-    func getNotificationList(with userID: Int, completion: @escaping([NotificationListResponseDTO])->Void) {
+    func getNotificationList(with userID: Int, completion: @escaping(Result<[NotificationListDomain], Error>)->Void) {
         let path = "\(NotificationAPIPath.getNotificationList.rawValue)?userID=\(userID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: [NotificationListResponseDTO].self) { notificationListInfo in
             switch notificationListInfo {
             case .success(let responseDTO):
-                completion(responseDTO)
+                let notificationListDomain = responseDTO.map { $0.toDomain() }
+                completion(.success(notificationListDomain))
             case .failure(let error):
                 print("get Notification List Error: \(error)")
+                completion(.failure(error))
             }
         }
     }

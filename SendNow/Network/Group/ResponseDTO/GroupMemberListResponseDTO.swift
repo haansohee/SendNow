@@ -12,3 +12,13 @@ struct GroupMemberListResponseDTO: Codable {
     let userID: Int
     let nickname: String
 }
+
+extension GroupMemberListResponseDTO {
+    func toDomain() -> GroupMemberListDomain {
+        return .init(
+            groupID: groupID,
+            userID: userID,
+            nickname: nickname
+        )
+    }
+}

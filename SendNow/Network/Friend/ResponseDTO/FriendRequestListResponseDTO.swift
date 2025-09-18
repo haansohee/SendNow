@@ -14,3 +14,15 @@ struct FriendRequestListResponseDTO: Codable {
     let toUserNickname: String
     let isFriended: Bool
 }
+
+extension FriendRequestListResponseDTO {
+    func toDomain() -> FriendRequestListDomain {
+        return .init(
+            fromUserID: fromUserID,
+            fromUserNickname: fromUserNickname,
+            toUserID: toUserID,
+            toUserNickname: toUserNickname,
+            isFriended: isFriended
+        )
+    }
+}

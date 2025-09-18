@@ -82,16 +82,26 @@ final class SettleGroupViewModel {
     
     func loadGroupCreatorID() {
         guard let groupID = self.groupID else { return }
-        groupService.getGroupCreatorUserID(with: groupID, userID: userID) {[weak self] isEqual in
-            self?.isEqualGroupCreatorSubject.onNext(isEqual)
+        groupService.getGroupCreatorUserID(with: groupID, userID: userID) {[weak self] getGroupCreatorUserIdResult in
+            switch getGroupCreatorUserIdResult {
+            case .success(let isEqualGroupCreatorUser):
+                self?.isEqualGroupCreatorSubject.onNext(isEqualGroupCreatorUser)
+            case .failure(let error):
+                print("에러 수정 필요")
+            }
         }
     }
     
     func loadSettlementCreatorID() {
         guard let groupID = self.groupID,
               let expenseID = self.expenseID else { return }
-        groupService.getSettlementCreatorID(with: expenseID, groupID: groupID, userID: userID) {[weak self] isEqual in
-            self?.isEqualSettlementCreatorSubject.onNext(isEqual)
+        groupService.getSettlementCreatorID(with: expenseID, groupID: groupID, userID: userID) {[weak self] getSettlementCreatorUserIdresult in
+            switch getSettlementCreatorUserIdresult {
+            case .success(let isEqualSettlementCreatorUser):
+                self?.isEqualSettlementCreatorSubject.onNext(isEqualSettlementCreatorUser)
+            case .failure(let error):
+                print("에러 수정 필요")
+            }
         }
     }
     
@@ -125,61 +135,42 @@ final class SettleGroupViewModel {
     
     func loadGroupMemberInformation() {
         guard let groupID = groupID else { return }
-        groupService.getGroupMemberList(with: groupID) {[weak self] result in
-            let groupMemberInfoDomain: [GroupMemberListDomain] = result.map {
-                GroupMemberListDomain(
-                    groupID: $0.groupID,
-                    userID: $0.userID,
-                    nickname: $0.nickname
-                )
+        groupService.getGroupMemberList(with: groupID) {[weak self] getGroupMemberListResult in
+            switch getGroupMemberListResult {
+            case .success(let groupMemberListDomain):
+                self?.groupMemberInformations = groupMemberListDomain
+                self?.isLoadedGroupMemberInfo.onNext(!groupMemberListDomain.isEmpty)
+            case .failure(let error):
+                print("에러 수정 필요")
             }
-            self?.groupMemberInformations = groupMemberInfoDomain
-            self?.isLoadedGroupMemberInfo.onNext(!result.isEmpty)
         }
     }
     
     func loadGroupExpenseInformation() {
         guard let groupID = groupID else { return }
-        groupService.getGroupExpenseInformations(with: userID, groupID: groupID) {[weak self] result in
-            let expenseInformationsDomain: [ExpenseInformations] = result.expenseInformations.map {
-                ExpenseInformations(
-                    expenseID: $0.expenseID,
-                    groupID: $0.groupID,
-                    userID: $0.userID,
-                    paidBy: $0.paidBy,
-                    expenseClassfication: $0.expenseClassfication,
-                    expenseDetails: $0.expenseDetails,
-                    expenseAmount: $0.expenseAmount,
-                    expenseDate: $0.expenseDate
-                )
+        groupService.getGroupExpenseInformations(with: userID, groupID: groupID) {[weak self] getGroupExpenseInformationsInfoResult in
+            switch getGroupExpenseInformationsInfoResult {
+            case .success(let groupExpenseInfosDomain):
+                guard let groupExpenses = groupExpenseInfosDomain.groupExpenses,
+                      let myExpenses = groupExpenseInfosDomain.myExpenses else {
+                    self?.groupExpenseInfoSubject.onNext(("0", "0"))
+                    return }
+                self?.groupExpenseInfoSubject.onNext((groupExpenses, myExpenses))
+            case .failure(let error):
+                print("에러 수정 필요")
             }
-            let groupExpensesDomain = ExpenseInformationDomain(
-                expenseInformations: expenseInformationsDomain,
-                myExpenses: result.myExpenses,
-                groupExpenses: result.groupExpenses
-            )
-            self?.groupExpenseInformations = groupExpensesDomain
-            guard let groupExpenses = result.groupExpenses,
-                  let myExpenses = result.myExpenses else {
-                self?.groupExpenseInfoSubject.onNext(("0", "0"))
-                return }
-            self?.groupExpenseInfoSubject.onNext((groupExpenses, myExpenses))
         }
     }
     
     func loadExpenseDetailInformation(_ expenseID: Int) {
-        groupService.getGroupExpenseDetailInformation(with: expenseID) {[weak self] detailInformation in
-            let expenseDetailInfoDomain = ExpenseDetailInformationDomain(
-                expenseID: detailInformation.expenseID,
-                groupID: detailInformation.groupID,
-                paidBy: detailInformation.paidBy,
-                expenseClassfication: detailInformation.expenseClassfication,
-                expenseDetails: detailInformation.expenseDetails,
-                expenseAmount: detailInformation.expenseAmount,
-                expenseDate: detailInformation.expenseDate
-            )
-            self?.expenseDetailInformation = expenseDetailInfoDomain
-            self?.loadedGroupExpenseDetailInfoSubject.onNext(Void())
+        groupService.getGroupExpenseDetailInformation(with: expenseID) {[weak self] getGroupExpenseDetailInfoResult in
+            switch getGroupExpenseDetailInfoResult {
+            case .success(let groupExpenseDetailInfoDomain):
+                self?.expenseDetailInformation = groupExpenseDetailInfoDomain
+                self?.loadedGroupExpenseDetailInfoSubject.onNext(Void())
+            case .failure(let error):
+                print("에러 수정 필요")
+            }
         }
     }
     

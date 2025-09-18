@@ -11,3 +11,9 @@ struct EmailAuthCodeResponseDTO: Codable {
     let isDuplicated: Bool
     let authCode: Int?
 }
+
+extension EmailAuthCodeResponseDTO {
+    func toDomain() -> EmailAuthCodeResponseDTO {
+        return .init(isDuplicated: isDuplicated, authCode: authCode)
+    }
+}

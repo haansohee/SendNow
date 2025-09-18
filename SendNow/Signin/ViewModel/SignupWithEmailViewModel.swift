@@ -46,10 +46,15 @@ final class SignupWithEmailViewModel {
     }
     
     func sendEmailAuthCode(email: String) {
-        memberService.getEmailAuthCode(with: email) {[weak self] emailAuthCode in
-            let emailAuthCodeDomain = EmailAuthCodeDomain(isDuplicated: emailAuthCode.isDuplicated, authCode: emailAuthCode.authCode)
-            self?.emailAuthCodeInfo = emailAuthCodeDomain
-            self?.isDuplicatedEmail.onNext(emailAuthCode.isDuplicated)
+        memberService.getEmailAuthCode(with: email) {[weak self] getEmailAuthCodeResult in
+            switch getEmailAuthCodeResult {
+            case .success(let emailAuthCode):
+                let emailAuthCodeDomain = EmailAuthCodeDomain(isDuplicated: emailAuthCode.isDuplicated, authCode: emailAuthCode.authCode)
+                self?.emailAuthCodeInfo = emailAuthCodeDomain
+                self?.isDuplicatedEmail.onNext(emailAuthCode.isDuplicated)
+            case .failure(let error):
+                print("에러 수정 필요")
+            }
         }
     }
     

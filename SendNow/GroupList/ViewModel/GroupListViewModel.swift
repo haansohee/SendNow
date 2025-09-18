@@ -28,18 +28,14 @@ final class GroupListViewModel {
     }
     
     func loadMyGroup() {
-        groupService.getGroupList(with: userID) {[weak self] result in
-            let groupListResponseDTO: [GroupListDomain] = result.map {
-                GroupListDomain(
-                    groupID: $0.groupID,
-                    groupName: $0.groupName,
-                    createdDate: $0.createdDate,
-                    groupFriends: $0.groupFriends,
-                    isActive: $0.isActive
-                )
+        groupService.getGroupList(with: userID) {[weak self] getGroupListResult in
+            switch getGroupListResult {
+            case .success(let groupListDomain):
+                self?.myGroupList = groupListDomain
+                self?.isLoadedMyGroupList.onNext(Void())
+            case .failure(let error):
+                print("에러 수정 필요")
             }
-            self?.myGroupList = groupListResponseDTO
-            self?.isLoadedMyGroupList.onNext(Void())
         }
     }
     

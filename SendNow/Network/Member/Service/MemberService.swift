@@ -81,40 +81,46 @@ final class MemberService {
         networkSessionManager.urlDeleteMethod(path: path, encodeValue: cancelAccount, completion: completion)
     }
     
-    func getKakaoMemberInfo(with kakaoToken: String, completion: @escaping(KakaoMemberReponseDTO)->Void) {
+    func getKakaoMemberInfo(with kakaoToken: String, completion: @escaping(Result<KakaoMemberDomain, Error>)->Void) {
         let path = "\(MemberAPIPath.getKakaoMemberInfo.rawValue)?kakaoToken=(\(kakaoToken)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: KakaoMemberReponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
-                completion(responseDTO)
+                let kakaoMemberInfoDomain = responseDTO.toDomain()
+                completion(.success(kakaoMemberInfoDomain))
             case .failure(let error):
                 print("getKakaoMemberInfo ERROR: \(error)")
+                completion(.failure(error))
             }
         }
     }
     
-    func getAppleMemberInfo(with appleToken: String, completion: @escaping(AppleMemberResponseDTO)->Void) {
+    func getAppleMemberInfo(with appleToken: String, completion: @escaping(Result<AppleMemberDomain, Error>)->Void) {
         let path = "\(MemberAPIPath.getAppleMemberInfo.rawValue)?appleToken=\(appleToken)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: AppleMemberResponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
-                completion(responseDTO)
+                let appleMemberInfoDomain = responseDTO.toDomain()
+                completion(.success(appleMemberInfoDomain))
                 
             case .failure(let error):
                 print("getAppleMemberInfo ERROR: \(error)")
+                completion(.failure(error))
             }
         }
     }
     
-    func getEmailMemberInfo(with email: String, completion: @escaping(EmailMemberResponseDTO)->Void) {
+    func getEmailMemberInfo(with email: String, completion: @escaping(Result<EmailMemberDomain, Error>)->Void) {
         let path = "\(MemberAPIPath.getEmailMemberInfo.rawValue)?email=\(email)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: EmailMemberResponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
-                completion(responseDTO)
+                let emailMemberInfoDomain = responseDTO.toDomain()
+                completion(.success(emailMemberInfoDomain))
                 
             case .failure(let error):
                 print("getEmailMemberInfo ERROR: \(error)")
+                completion(.failure(error))
             }
         }
     }
@@ -129,15 +135,17 @@ final class MemberService {
         networkSessionManager.urlPostMethod(path: path, encodeValue: nickname   , completion: completion)
     }
     
-    func getEmailAuthCode(with email: String, completion: @escaping(EmailAuthCodeResponseDTO)->Void) {
+    func getEmailAuthCode(with email: String, completion: @escaping(Result<EmailAuthCodeResponseDTO, Error>)->Void) {
         let path = "\(MemberAPIPath.getEmailAuthCode.rawValue)?email=\(email)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: EmailAuthCodeResponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
-                completion(responseDTO)
+                let emailAuthCodeDomain = responseDTO.toDomain()
+                completion(.success(emailAuthCodeDomain))
                 
             case .failure(let error):
                 print("getEmailAuthCode ERROR: \(error)")
+                completion(.failure(error))
             }
         }
     }

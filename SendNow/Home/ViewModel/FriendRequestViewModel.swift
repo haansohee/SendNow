@@ -54,36 +54,30 @@ final class FriendRequestViewModel {
     }
     
     func searchFriendNickname(nickname: String) {
-        friendService.getFriendInformation(with: nickname) {[weak self] result in
-            let searchFriendInfoDomain = SearchFriendDomain(
-                userID: result.userID,
-                nickname: result.nickname,
-                bankName: result.bankName,
-                accountNumber: result.accountNumber,
-                kakaoPayUrl: result.kakaoPayUrl
-            )
-            self?.searchFriendInformation = searchFriendInfoDomain
-            self?.isEmptySearchFriend.onNext(!result.nickname.isEmpty)
+        friendService.getFriendInformation(with: nickname) {[weak self] getFriendInfoResult in
+            switch getFriendInfoResult {
+            case .success(let searchFriendInfo):
+                self?.searchFriendInformation = searchFriendInfo
+                self?.isEmptySearchFriend.onNext(!searchFriendInfo.nickname.isEmpty)
+            case .failure(let error):
+                print("에러 수정 필요")
+            }
         }
     }
     
     func getFriendRequestList() {
-        friendService.getFriendRequestListInformation(with: userID) {[weak self] result in
-            guard !result.isEmpty else {
-                self?.isLoadedFriendRequestListInfo.onNext(false)
-                return }
-            self?.isLoadedFriendRequestListInfo.onNext(true)
-            let friendAddListInfoDomain: [FriendRequestListDomain] = result.map {
-                FriendRequestListDomain(
-                    fromUserID: $0.fromUserID,
-                    fromUserNickname: $0.fromUserNickname,
-                    toUserID: $0.toUserID,
-                    toUserNickname: $0.toUserNickname,
-                    isFriended: $0.isFriended
-                )
+        friendService.getFriendRequestListInformation(with: userID) {[weak self] getFriendRequestListInfoResult in
+            switch getFriendRequestListInfoResult {
+            case .success(let friendRequestListInfo):
+                guard !friendRequestListInfo.isEmpty else {
+                    self?.isLoadedFriendRequestListInfo.onNext(false)
+                    return }
+                self?.isLoadedFriendRequestListInfo.onNext(true)
+                self?.friendRequestSendListInfo = friendRequestListInfo.filter { $0.fromUserID == self?.userID }
+                self?.friendRequestReceiveListInfo = friendRequestListInfo.filter { $0.toUserID == self?.userID }
+            case .failure(let error):
+                print("에러 수정 필요")
             }
-            self?.friendRequestSendListInfo = friendAddListInfoDomain.filter { $0.fromUserID == self?.userID }
-            self?.friendRequestReceiveListInfo = friendAddListInfoDomain.filter { $0.toUserID == self?.userID }
         }
     }
     

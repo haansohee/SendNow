@@ -28,20 +28,15 @@ final class NotificationViewModel {
     }
     
     func getNotificationList() {
-        notificationService.getNotificationList(with: userID) {[weak self] notificationList in
-            let notificationListDomain: [NotificationListDomain] = notificationList.map {
-                NotificationListDomain(
-                    notificationID: $0.notificationID,
-                    senderUserID: $0.senderUserID,
-                    receiverUserID: $0.receiverUserID,
-                    notificationBody: $0.notificationBody,
-                    isRead: $0.isRead,
-                    subject: NotificationSubject(rawValue: $0.subject) ?? .default
-                )
+        notificationService.getNotificationList(with: userID) {[weak self] getNotificationListResult in
+            switch getNotificationListResult {
+            case .success(let notificationListDomain):
+                self?.readNotificationList = notificationListDomain.filter { $0.isRead == true}
+                self?.unreadNotificationList = notificationListDomain.filter { $0.isRead == false }
+                self?.isLoadedNotificationInfo.onNext(Void())
+            case .failure(let error):
+                print("에러 수정 필요")
             }
-            self?.readNotificationList = notificationListDomain.filter { $0.isRead == true}
-            self?.unreadNotificationList = notificationListDomain.filter { $0.isRead == false }
-            self?.isLoadedNotificationInfo.onNext(Void())
         }
     }
     

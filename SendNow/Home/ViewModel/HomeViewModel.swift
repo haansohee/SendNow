@@ -127,25 +127,23 @@ final class HomeViewModel {
     
     
     func loadMyFriend() {
-        let user = MyFriendListDomain(userID: userID,
-                                      nickname: "\(UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue) ?? "") (본인)",
-                                      bankName: UserDefaults.standard.string(forKey: MemberInfoField.bankName.rawValue),
-                                      accountNumber: UserDefaults.standard.string(forKey: MemberInfoField.accountNumber.rawValue),
-                                      kakaoPayUrl: UserDefaults.standard.string(forKey: MemberInfoField.kakaoPayUrl.rawValue))
-        friendService.getMyFriendList(with: userID) {[weak self] result in
-            let myFriendListDomain: [MyFriendListDomain] = result.map {
-                MyFriendListDomain(
-                    userID: $0.userID,
-                    nickname: $0.nickname,
-                    bankName: $0.bankName,
-                    accountNumber: $0.accountNumber,
-                    kakaoPayUrl: $0.kakaoPayUrl
-                )
+        let user = MyFriendListDomain(
+            userID: userID,
+            nickname: "\(UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue) ?? "") (본인)",
+            bankName: UserDefaults.standard.string(forKey: MemberInfoField.bankName.rawValue),
+            accountNumber: UserDefaults.standard.string(forKey: MemberInfoField.accountNumber.rawValue),
+            kakaoPayUrl: UserDefaults.standard.string(forKey: MemberInfoField.kakaoPayUrl.rawValue)
+        )
+        friendService.getMyFriendList(with: userID) {[weak self] getMyFriendListResult in
+            switch getMyFriendListResult {
+            case .success(let myFriendListInfo):
+                self?.myFriendList = myFriendListInfo
+                self?.remainderCandidateList = myFriendListInfo
+                self?.remainderCandidateList?.append(contentsOf: [user])
+                self?.isLoadedMyFriendList.onNext(Void())
+            case .failure(let error):
+                print("에러 수정 필요 ")
             }
-            self?.myFriendList = myFriendListDomain
-            self?.remainderCandidateList = myFriendListDomain
-            self?.remainderCandidateList?.append(contentsOf: [user])
-            self?.isLoadedMyFriendList.onNext(Void())
         }
     }
 }
