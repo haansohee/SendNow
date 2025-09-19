@@ -14,8 +14,3 @@ struct UpdateBankInformationDomain {
     let accountNumber: String
 }
 
-extension UpdateBankInformationDomain {
-    func toRequestDTO() -> UpdateBankInformationRequestDTO {
-        return .init(userID: userID, kakaoPayURL: kakaoPayURL, bankName: bankName, accountNumber: accountNumber)
-    }
-}

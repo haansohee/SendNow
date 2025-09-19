@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UpdateFriendStateDTO: Codable {
+struct UpdateFriendStateRequestDTO: Codable {
     let fromUserID: Int
     let toUserID: Int
     let isFriended: Bool

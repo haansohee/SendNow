@@ -11,7 +11,7 @@ import UserNotifications
 
 final class NotificationViewModel {
     private let notificationService: NotificationService
-    let isLoadedNotificationInfo = PublishSubject<Void>()
+    let isLoadedNotificationInfo = PublishSubject<Result<Void, Error>>()
     let notificationStatusSubject = BehaviorSubject(value: (isSetNoti: false, notificationAuth: false))
     let isUpdatedNotification = PublishSubject<Bool>()
     let isUpdatedNotificationAll = PublishSubject<Bool>()
@@ -28,10 +28,15 @@ final class NotificationViewModel {
     }
     
     func getNotificationList() {
-        notificationService.getNotificationList(with: userID) {[weak self] notificationList in
-            self?.readNotificationList = notificationList.filter { $0.isRead == true}
-            self?.unreadNotificationList = notificationList.filter { $0.isRead == false }
-            self?.isLoadedNotificationInfo.onNext(Void())
+        notificationService.getNotificationList(with: userID) {[weak self] getNotificationListResult in
+            switch getNotificationListResult {
+            case .success(let notificationListDomain):
+                self?.readNotificationList = notificationListDomain.filter { $0.isRead == true}
+                self?.unreadNotificationList = notificationListDomain.filter { $0.isRead == false }
+                self?.isLoadedNotificationInfo.onNext(.success(Void()))
+            case .failure(let error):
+                self?.isLoadedNotificationInfo.onNext(.failure(error))
+            }
         }
     }
     
@@ -69,29 +74,56 @@ final class NotificationViewModel {
         let state = !(UserDefaults.standard.bool(forKey: MemberInfoField.isSetNoti.rawValue))
         UNUserNotificationCenter.current().getNotificationSettings {[weak self] settings in
             guard let userID = self?.userID else { return }
-            if settings.authorizationStatus == .authorized {
-                let notificationStateDomain = NotificationStateDomain(userID: userID, state: state)
-                self?.notificationService.updateNotificationState(with: notificationStateDomain) { isUpdated in
-                    if isUpdated {
-                        UserDefaults.standard.set(state, forKey: MemberInfoField.isSetNoti.rawValue)
-                    }
-                    self?.isUpdatedNotificationState.onNext(isUpdated)
+            let notificationStateDomain = NotificationStateDomain(
+                userID: userID,
+                state: settings.authorizationStatus == .authorized ? state : false
+            )
+//            if settings.authorizationStatus == .authorized {
+//                let notificationStateDomain = NotificationStateDomain(
+//                    userID: userID,
+//                    state: state
+//                )
+//                let notificationStateRequestDTO = UpdateNotificationStateRequestDTO(
+//                    userID: notificationStateDomain.userID,
+//                    state: notificationStateDomain.state
+//                )
+//                self?.notificationService.updateNotificationState(with: notificationStateRequestDTO) { isUpdated in
+//                    if isUpdated {
+//                        UserDefaults.standard.set(state, forKey: MemberInfoField.isSetNoti.rawValue)
+//                    }
+//                    self?.isUpdatedNotificationState.onNext(isUpdated)
+//                }
+//            } else {
+//                let notificationStateDomain = NotificationStateDomain(
+//                    userID: userID,
+//                    state: false
+//                )
+//                let notificationStateRequestDTO = UpdateNotificationStateRequestDTO(
+//                    userID: notificationStateDomain.userID,
+//                    state: notificationStateDomain.state
+//                )
+//                self?.notificationService.updateNotificationState(with: notificationStateRequestDTO) { isUpdated in
+//                    if isUpdated {
+//                        UserDefaults.standard.set(state, forKey: MemberInfoField.isSetNoti.rawValue)
+//                    }
+//                    self?.isUpdatedNotificationState.onNext(isUpdated)
+//                }
+//            }
+            let notificationStateRequestDTO = UpdateNotificationStateRequestDTO(
+                userID: notificationStateDomain.userID,
+                state: notificationStateDomain.state
+            )
+            self?.notificationService.updateNotificationState(with: notificationStateRequestDTO) { isUpdated in
+                if isUpdated {
+                    UserDefaults.standard.set(state, forKey: MemberInfoField.isSetNoti.rawValue)
                 }
-            } else {
-                let notificationStateDomain = NotificationStateDomain(userID: userID, state: false)
-                self?.notificationService.updateNotificationState(with: notificationStateDomain) { isUpdated in
-                    if isUpdated {
-                        UserDefaults.standard.set(state, forKey: MemberInfoField.isSetNoti.rawValue)
-                    }
-                    self?.isUpdatedNotificationState.onNext(isUpdated)
-                }
+                self?.isUpdatedNotificationState.onNext(isUpdated)
             }
         }
     }
     
     func deleteNotificationAll() {
         notificationService.deleteNotification(with: userID) {[weak self] isDeleted in
-            print("isDeleted: \(isDeleted)")
             self?.isDeletedNotification.onNext(isDeleted)
         }
     }

@@ -43,7 +43,7 @@ extension UIViewController {
     }
     
     func serverErrorAlert() {
-        let alertController = UIAlertController(title: "바로 보내", message: "서비스가 일시적으로 이용 불가능합니다. 잠시후 다시 시도해 주세요.", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "바로 보내", message: "⚠️ 서비스가 일시적으로 이용 불가능합니다. 잠시후 다시 시도해 주세요.", preferredStyle: .alert)
         let doneAction = UIAlertAction(title: "확인", style: .cancel)
         alertController.addAction(doneAction)
         self.present(alertController, animated: true)

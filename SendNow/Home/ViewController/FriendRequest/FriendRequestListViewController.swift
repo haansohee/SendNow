@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import RxSwift
 
-final class FriendRequestListViewController: UIViewController {
+final class FriendRequestListViewController: BaseUIViewController {
     private let friendReuqestListCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 10.0
@@ -98,10 +98,15 @@ extension FriendRequestListViewController {
     
     private func bindIsLoadedFriendRequestListInfo() {
         friendRequestViewModel.isLoadedFriendRequestListInfo
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isLoadedFriendRequestListInfo in
-                guard isLoadedFriendRequestListInfo else { return }
-                self?.friendReuqestListCollectionView.reloadData()
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isLoadedFriendRequestListInfoResult in
+                switch isLoadedFriendRequestListInfoResult {
+                case .success(let isLoadedFriendRequestListInfo):
+                    guard isLoadedFriendRequestListInfo else { return }
+                    self?.friendReuqestListCollectionView.reloadData()
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }

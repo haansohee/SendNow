@@ -15,9 +15,3 @@ struct SigninWithKakaoDomain {
     let isSetNoti: Bool
     let fcmToken: String
 }
-
-extension SigninWithKakaoDomain {
-    func toRequestDTO() -> SigninWithKakaoRequestDTO {
-        return .init(nickname: nickname, email: email, kakaoToken: kakaoToken, kakaoID: kakaoID, isSetNoti: isSetNoti, fcmToken: fcmToken)
-    }
-}

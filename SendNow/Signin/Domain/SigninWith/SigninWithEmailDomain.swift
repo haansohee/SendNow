@@ -14,9 +14,3 @@ struct SigninWithEmailDomain {
     let isSetNoti: Bool
     let fcmToken: String
 }
-
-extension SigninWithEmailDomain {
-    func toRequestDTO() -> SigninWithEmailRequestDTO {
-        return .init(nickname: nickname, email: email, password: password, isSetNoti: isSetNoti, fcmToken: fcmToken)
-    }
-}

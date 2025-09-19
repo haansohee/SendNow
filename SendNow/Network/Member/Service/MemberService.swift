@@ -14,6 +14,7 @@ enum MemberAPIPath: String {
     case setEmailMemberInfo = "/SendNow/setEmailMemberInfo/"
     case isValidEmailPassword = "/SendNow/isValidEmailPassword/"
     case isDuplicatedNickname = "/SendNow/isDuplicatedNickname"
+    case updateFcmToken = "/SendNow/UpdateMemerFcmToken/"
     case updateNickname = "/SendNow/updateNickname/"
     case updateMemberNickname = "/SendNow/UpdateMemberNickname/"
     case updateKakaoPayUrl = "/SendNow/UpdateMemberKakaoPayUrl/"
@@ -30,120 +31,121 @@ enum MemberAPIPath: String {
 final class MemberService {
     private let networkSessionManager = NetworkSessionManager()
     
-    func setKakaoMemberInfo(with signinWithKakaoDomain: SigninWithKakaoDomain, completion: @escaping((Bool)) -> Void) {
+    func setKakaoMemberInfo(with signinWithKakaoRequestDTO: SigninWithKakaoRequestDTO, completion: @escaping((Bool)) -> Void) {
         let path = MemberAPIPath.setKakaoMemberInfo.rawValue
-        let member = signinWithKakaoDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: member, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: signinWithKakaoRequestDTO, completion: completion)
     }
     
-    func setAppleMemberInfo(with signinWithAppleDomain: SigninWithAppleDomain, completion: @escaping(Bool)->Void) {
+    func setAppleMemberInfo(with signinWithAppleRequestDTO: SigninWithAppleRequestDTO, completion: @escaping(Bool)->Void) {
         let path = MemberAPIPath.setAppleMemberInfo.rawValue
-        let member = signinWithAppleDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: member, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: signinWithAppleRequestDTO, completion: completion)
     }
     
-    func setEmailMemberInfo(with signinWithEmailDomain: SigninWithEmailDomain, completion: @escaping(Bool)->Void) {
+    func setEmailMemberInfo(with signinWithEmailRequestDTO: SigninWithEmailRequestDTO, completion: @escaping(Bool)->Void) {
         let path = MemberAPIPath.setEmailMemberInfo.rawValue
-        let member = signinWithEmailDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: member, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: signinWithEmailRequestDTO, completion: completion)
     }
     
-    func updateNickname(with updateNicknameDomain: UpdateNicknameDomain, completion: @escaping(Bool)->Void) {
+    func updateMemberFcmToken(with udpateFcmTokenInformationRequestDTO: UpdateFcmTokenInformationRequestDTO, completion: @escaping(Bool)->Void) {
+        let path = MemberAPIPath.updateFcmToken.rawValue
+        networkSessionManager.urlPostMethod(path: path, encodeValue: udpateFcmTokenInformationRequestDTO, completion: completion)
+    }
+    
+    func updateNickname(with updateNicknameRequestDTO: UpdateNicknameRequestDTO, completion: @escaping(Bool)->Void) {
         let path = MemberAPIPath.updateMemberNickname.rawValue
-        let updateNickname = updateNicknameDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: updateNickname, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: updateNicknameRequestDTO, completion: completion)
     }
     
-    func updateKakaoPayUrl(with updateKakaoPayUrlDomain: UpdateKakaoPayUrlDomain, completion: @escaping(Bool)->Void) {
+    func updateKakaoPayUrl(with updateKakaoPayUrlRequestDTO: UpdateKakaoPayUrlRequestDTO, completion: @escaping(Bool)->Void) {
         let path = MemberAPIPath.updateKakaoPayUrl.rawValue
-        let updateKakaoPayUrl = updateKakaoPayUrlDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: updateKakaoPayUrl, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: updateKakaoPayUrlRequestDTO, completion: completion)
     }
     
-    func updateAccountNumber(with updateAccountNumberDomain: UpdateAccountNumberDomain, completion: @escaping(Bool)->Void) {
+    func updateAccountNumber(with updateAccountNumberRequestDTO: UpdateAccountNumberRequestDTO, completion: @escaping(Bool)->Void) {
         let path = MemberAPIPath.updateMemberAccountNumber.rawValue
-        let updateAccountNumber = updateAccountNumberDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: updateAccountNumber, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: updateAccountNumberRequestDTO, completion: completion)
     }
     
-    func updateMemberBankInfo(with updateBankInformationDomain: UpdateBankInformationDomain, completion: @escaping(Bool)->Void) {
+    func updateMemberBankInfo(with updateBankInformationRequestDTO: UpdateBankInformationRequestDTO, completion: @escaping(Bool)->Void) {
         let path = MemberAPIPath.updateMemberBankInfo.rawValue
-        let updateMemberBankInfo = updateBankInformationDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: updateMemberBankInfo, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: updateBankInformationRequestDTO, completion: completion)
     }
     
-    func revokeAppleToken(with cancelAccount: CancelAccountDomain, completion: @escaping(Bool)->Void) {
+    func revokeAppleToken(with cancelAccount: CancelAccountRequestDTO, completion: @escaping(Bool)->Void) {
         let path = MemberAPIPath.revokeAppleToken.rawValue
-        let cancelAccountRequestDTO = cancelAccount.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: cancelAccountRequestDTO, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: cancelAccount, completion: completion)
     }
     
-    func cancelAccount(with cancelAccount: CancelAccountDomain, completion: @escaping(Bool)->Void) {
+    func cancelAccount(with cancelAccount: CancelAccountRequestDTO, completion: @escaping(Bool)->Void) {
         let path = MemberAPIPath.cancelAccount.rawValue
-        let cancelAccountRequestDTO = cancelAccount.toRequestDTO()
-        networkSessionManager.urlDeleteMethod(path: path, encodeValue: cancelAccountRequestDTO, completion: completion)
+        networkSessionManager.urlDeleteMethod(path: path, encodeValue: cancelAccount, completion: completion)
     }
     
-    func getKakaoMemberInfo(with kakaoToken: String, completion: @escaping(KakaoMemberDomain)->Void) {
+    func getKakaoMemberInfo(with kakaoToken: String, completion: @escaping(Result<KakaoMemberDomain, Error>)->Void) {
         let path = "\(MemberAPIPath.getKakaoMemberInfo.rawValue)?kakaoToken=(\(kakaoToken)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: KakaoMemberReponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
-                completion(responseDTO.toDomain())
-                
+                let kakaoMemberInfoDomain = responseDTO.toDomain()
+                completion(.success(kakaoMemberInfoDomain))
             case .failure(let error):
                 print("getKakaoMemberInfo ERROR: \(error)")
+                completion(.failure(error))
             }
         }
     }
     
-    func getAppleMemberInfo(with appleToken: String, completion: @escaping(AppleMemberDomain)->Void) {
+    func getAppleMemberInfo(with appleToken: String, completion: @escaping(Result<AppleMemberDomain, Error>)->Void) {
         let path = "\(MemberAPIPath.getAppleMemberInfo.rawValue)?appleToken=\(appleToken)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: AppleMemberResponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
-                completion(responseDTO.toDomain())
+                let appleMemberInfoDomain = responseDTO.toDomain()
+                completion(.success(appleMemberInfoDomain))
                 
             case .failure(let error):
                 print("getAppleMemberInfo ERROR: \(error)")
+                completion(.failure(error))
             }
         }
     }
     
-    func getEmailMemberInfo(with email: String, completion: @escaping(EmailMemberDomain)->Void) {
+    func getEmailMemberInfo(with email: String, completion: @escaping(Result<EmailMemberDomain, Error>)->Void) {
         let path = "\(MemberAPIPath.getEmailMemberInfo.rawValue)?email=\(email)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: EmailMemberResponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
-                completion(responseDTO.toDomain())
+                let emailMemberInfoDomain = responseDTO.toDomain()
+                completion(.success(emailMemberInfoDomain))
                 
             case .failure(let error):
                 print("getEmailMemberInfo ERROR: \(error)")
+                completion(.failure(error))
             }
         }
     }
     
-    func isValidEmailPassword(with validationInfo: ValidationEmailPasswordDomain, completion: @escaping(Bool)->Void) {
+    func isValidEmailPassword(with validationInfo: ValidationEmailPasswordRequestDTO, completion: @escaping(Bool)->Void) {
         let path = MemberAPIPath.isValidEmailPassword.rawValue
-        let validationInfo = validationInfo.toRequestDTO()
         networkSessionManager.urlPostMethod(path: path, encodeValue: validationInfo, completion: completion)
     }
     
-    func isDuplicatedNickname(with nickname: UpdateNicknameDomain, completion: @escaping(Bool)->Void) {
+    func isDuplicatedNickname(with nickname: UpdateNicknameRequestDTO, completion: @escaping(Bool)->Void) {
         let path = MemberAPIPath.isDuplicatedNickname.rawValue
-        let nicknameInfo = nickname.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: nicknameInfo   , completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: nickname   , completion: completion)
     }
     
-    func getEmailAuthCode(with email: String, completion: @escaping(EmailAuthCodeDomain)->Void) {
+    func getEmailAuthCode(with email: String, completion: @escaping(Result<EmailAuthCodeResponseDTO, Error>)->Void) {
         let path = "\(MemberAPIPath.getEmailAuthCode.rawValue)?email=\(email)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: EmailAuthCodeResponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
-                completion(responseDTO.toDomain())
+                let emailAuthCodeDomain = responseDTO.toDomain()
+                completion(.success(emailAuthCodeDomain))
                 
             case .failure(let error):
                 print("getEmailAuthCode ERROR: \(error)")
+                completion(.failure(error))
             }
         }
     }

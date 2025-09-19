@@ -34,11 +34,19 @@ final class BankInfoRequiredViewModel {
            !accountNumber.isEmpty {
             if let kakaoPayURL = kakaoPayURL,
                       !kakaoPayURL.isEmpty {
-                let updateBankInformationDomain = UpdateBankInformationDomain(userID: userID,
-                                                                              kakaoPayURL: kakaoPayURL,
-                                                                              bankName: bankName,
-                                                                              accountNumber: accountNumber)
-                memberService.updateMemberBankInfo(with: updateBankInformationDomain) {[weak self] isUpdated in
+                let updateBankInformationDomain = UpdateBankInformationDomain(
+                    userID: userID,
+                    kakaoPayURL: kakaoPayURL,
+                    bankName: bankName,
+                    accountNumber: accountNumber
+                )
+                let updateBankInformationRequestDTO = UpdateBankInformationRequestDTO(
+                    userID: updateBankInformationDomain.userID,
+                    kakaoPayURL: updateBankInformationDomain.kakaoPayURL,
+                    bankName: updateBankInformationDomain.bankName,
+                    accountNumber: updateBankInformationDomain.accountNumber
+                )
+                memberService.updateMemberBankInfo(with: updateBankInformationRequestDTO) {[weak self] isUpdated in
                     if isUpdated {
                         UserDefaults.standard.set(bankName, forKey: MemberInfoField.bankName.rawValue)
                         UserDefaults.standard.set(accountNumber, forKey: MemberInfoField.accountNumber.rawValue)
@@ -48,8 +56,17 @@ final class BankInfoRequiredViewModel {
                     
                 }
             }
-            let updateAccountNumberDomain = UpdateAccountNumberDomain(userID: userID, bankName: bankName, accountNumber: accountNumber)
-            memberService.updateAccountNumber(with: updateAccountNumberDomain) {[weak self] isUpdated in
+            let updateAccountNumberDomain = UpdateAccountNumberDomain(
+                userID: userID,
+                bankName: bankName,
+                accountNumber: accountNumber
+            )
+            let updateAccountNumberRequestDTO = UpdateAccountNumberRequestDTO(
+                userID: updateAccountNumberDomain.userID,
+                bankName: updateAccountNumberDomain.bankName,
+                accountNumber: updateAccountNumberDomain.accountNumber
+            )
+            memberService.updateAccountNumber(with: updateAccountNumberRequestDTO) {[weak self] isUpdated in
                 if isUpdated {
                     UserDefaults.standard.set(bankName, forKey: MemberInfoField.bankName.rawValue)
                     UserDefaults.standard.set(accountNumber, forKey: MemberInfoField.accountNumber.rawValue)
@@ -58,8 +75,15 @@ final class BankInfoRequiredViewModel {
             }
         } else if let kakaoPayURL = kakaoPayURL,
                   !kakaoPayURL.isEmpty {
-            let updateKakaoPayUrlDomain = UpdateKakaoPayUrlDomain(userID: userID, kakaoPayUrl: kakaoPayURL)
-            memberService.updateKakaoPayUrl(with: updateKakaoPayUrlDomain) {[weak self] isUpdated in
+            let updateKakaoPayUrlDomain = UpdateKakaoPayUrlDomain(
+                userID: userID,
+                kakaoPayUrl: kakaoPayURL
+            )
+            let updateKakaoPayUrlRequestDTO = UpdateKakaoPayUrlRequestDTO(
+                userID: updateKakaoPayUrlDomain.userID,
+                kakaoPayUrl: updateKakaoPayUrlDomain.kakaoPayUrl
+            )
+            memberService.updateKakaoPayUrl(with: updateKakaoPayUrlRequestDTO) {[weak self] isUpdated in
                 if isUpdated {
                     UserDefaults.standard.set(kakaoPayURL, forKey: MemberInfoField.kakaoPayUrl.rawValue)
                 }

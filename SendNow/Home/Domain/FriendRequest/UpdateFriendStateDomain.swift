@@ -12,9 +12,3 @@ struct UpdateFriendStateDomain {
     let toUserID: Int
     let isFriended: Bool
 }
-
-extension UpdateFriendStateDomain {
-    func toRequestDTO() -> UpdateFriendStateDTO {
-        return .init(fromUserID: fromUserID, toUserID: toUserID, isFriended: isFriended)
-    }
-}

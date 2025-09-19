@@ -1,5 +1,5 @@
 //
-//  SpendingDetailsClassficationView.swift
+//  SpendingDetailsclassficationView.swift
 //  SendNow
 //
 //  Created by 한소희 on 5/14/24.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SpendingDetailsClassficationView: UIView {
+final class SpendingDetailsclassficationView: UIView {
     let switchTag: Int = 0
     
     let classficationImage: UIImageView = {
@@ -38,7 +38,7 @@ final class SpendingDetailsClassficationView: UIView {
     }
 }
 
-extension SpendingDetailsClassficationView {
+extension SpendingDetailsclassficationView {
     private func addSubviews() {
         [
             classficationImage,

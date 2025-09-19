@@ -17,6 +17,12 @@ struct MyFriendListResponseDTO: Codable {
 
 extension MyFriendListResponseDTO {
     func toDomain() -> MyFriendListDomain {
-        return .init(userID: userID, nickname: nickname, bankName: bankName, accountNumber: accountNumber, kakaoPayUrl: kakaoPayUrl)
+        return .init(
+            userID: userID,
+            nickname: nickname,
+            bankName: bankName,
+            accountNumber: accountNumber,
+            kakaoPayUrl: kakaoPayUrl
+        )
     }
 }

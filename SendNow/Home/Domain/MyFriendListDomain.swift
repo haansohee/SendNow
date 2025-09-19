@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MyFriendListDomain: Equatable {
+struct MyFriendListDomain: Equatable, Error {
     let userID: Int
     let nickname: String
     let bankName: String?

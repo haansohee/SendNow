@@ -7,14 +7,9 @@
 
 import Foundation
 
-struct FriendRequestSendDomain {
+struct FriendAddDomain {
     let fromUserID: Int
     let fromUserNickname: String
     let toUserID: Int
 }
 
-extension FriendRequestSendDomain {
-    func toRequestDTO() -> FriendRequestSendDTO {
-        return .init(fromUserID: fromUserID, fromUserNickname: fromUserNickname, toUserID: toUserID)
-    }
-}

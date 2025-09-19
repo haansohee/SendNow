@@ -13,4 +13,5 @@ enum NotificationName: String {
     case invitedFriend
     case uploadExpense
     case deleteGroup
+    case fetchApnsToken
 }

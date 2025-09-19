@@ -11,4 +11,5 @@ struct GroupCreationRequestDTO: Codable {
     let groupName: String
     let userIDList: [Int]
     let creatorID: Int
+    let remainderUserID: Int
 }

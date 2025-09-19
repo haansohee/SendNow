@@ -20,6 +20,15 @@ struct KakaoMemberReponseDTO: Codable {
 
 extension KakaoMemberReponseDTO {
     func toDomain() -> KakaoMemberDomain {
-        return .init(userID: userID, nickname: nickname, email: email, kakaoToken: kakaoToken, kakaoID: kakaoID, bankName: bankName, accountNumber: accountNumber, kakaoPayUrl: kakaoPayUrl)
+        return .init(
+            userID: userID,
+            nickname: nickname,
+            email: email,
+            kakaoToken: kakaoToken,
+            kakaoID: kakaoID,
+            bankName: bankName,
+            accountNumber: accountNumber,
+            kakaoPayUrl: kakaoPayUrl
+        )
     }
 }

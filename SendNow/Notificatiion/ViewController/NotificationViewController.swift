@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import RxSwift
 
-final class NotificationViewController: UIViewController {
+final class NotificationViewController: BaseUIViewController {
     private let notificationStateButton: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -193,16 +193,21 @@ extension NotificationViewController {
     
     private func bindIsLoadedNotificationList() {
         notificationViewModel.isLoadedNotificationInfo
-            .asDriver(onErrorJustReturn: Void())
-            .drive(onNext: {[weak self] in
-                self?.notificationListCollectionView.reloadData()
-                guard let tabItems = self?.tabBarController?.tabBar.items else {return }
-                guard self?.notificationViewModel.unreadNotificationList?.count != 0 else {
-                    tabItems[2].badgeValue = nil
-                    return }
-                tabItems[2].badgeColor = .clear
-                tabItems[2].setBadgeTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemRed], for: .normal)
-                tabItems[2].badgeValue = "●"
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isLoadedNotificationInfoResult in
+                switch isLoadedNotificationInfoResult {
+                case .success():
+                    self?.notificationListCollectionView.reloadData()
+                    guard let tabItems = self?.tabBarController?.tabBar.items else {return }
+                    guard self?.notificationViewModel.unreadNotificationList?.count != 0 else {
+                        tabItems[2].badgeValue = nil
+                        return }
+                    tabItems[2].badgeColor = .clear
+                    tabItems[2].setBadgeTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemRed], for: .normal)
+                    tabItems[2].badgeValue = "●"
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }

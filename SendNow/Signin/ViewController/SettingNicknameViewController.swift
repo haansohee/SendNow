@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-final class SettingNicknameViewController: UIViewController {
+final class SettingNicknameViewController: BaseUIViewController {
     private let settingNicknameView = SettingNicknameView()
     private let signupWithEmailViewModel: SignupWithEmailViewModel
     private let signinViewModel = SigninViewModel()

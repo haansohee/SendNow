@@ -11,9 +11,3 @@ struct RemittanceStatusDomain {
     let settlementID: Int
     let isCompletedRemittance: Bool
 }
-
-extension RemittanceStatusDomain {
-    func toRequestDTO() -> RemittanceStatusRequestDTO {
-        .init(settlementID: settlementID, isCompletedRemittance: isCompletedRemittance)
-    }
-}

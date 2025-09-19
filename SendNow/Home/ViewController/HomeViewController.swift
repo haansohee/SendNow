@@ -9,8 +9,9 @@ import Foundation
 import UIKit
 import RxSwift
 import RxGesture
+import FirebaseMessaging
 
-final class HomeViewController: UIViewController {
+final class HomeViewController: BaseUIViewController {
     private let homeView = HomeView()
     private let homeViewModel: HomeViewModel
     private let notificationViewModel: NotificationViewModel
@@ -37,6 +38,7 @@ final class HomeViewController: UIViewController {
         configureHomeView()
         addSubviews()
         setLayoutConstraintsHomeView()
+        registerForFCMTokenNotification()
         bindAll()
     }
     
@@ -72,6 +74,15 @@ extension HomeViewController {
     private func configureHomeViewNicknameLabel() {
         guard let nickname = homeViewModel.loginMemberInformation?.nickname else { return }
         homeView.memberNicknameLabel.text = nickname
+    }
+    
+    // MARK: NotificationCenter
+    private func registerForFCMTokenNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(updateFcmToken), name: NSNotification.Name(NotificationName.fetchApnsToken.rawValue), object: nil)
+    }
+    
+    @objc func updateFcmToken() {
+        homeViewModel.updateFCMToken()
     }
     
     //MARK: Bind
@@ -124,24 +135,34 @@ extension HomeViewController {
     
     private func bindIsLoadedMyFriendList() {
         homeViewModel.isLoadedMyFriendList
-            .asDriver(onErrorJustReturn: Void())
-            .drive(onNext: {[weak self] _ in
-                self?.homeView.friendListCollectionView.reloadData()
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isLoadedMyFriendListResult in
+                switch isLoadedMyFriendListResult {
+                case .success():
+                    self?.homeView.friendListCollectionView.reloadData()
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }
     
     private func bindIsLoadedNotificationInfo() {
         notificationViewModel.isLoadedNotificationInfo
-            .asDriver(onErrorJustReturn: Void())
-            .drive(onNext: {[weak self] in
-                guard let tabItems = self?.tabBarController?.tabBar.items else {return }
-                guard self?.notificationViewModel.unreadNotificationList?.count != 0 else {
-                    tabItems[2].badgeValue = nil
-                    return }
-                tabItems[2].badgeColor = .clear
-                tabItems[2].setBadgeTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemRed], for: .normal)
-                tabItems[2].badgeValue = "●"
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isLoadedNotificationInfoResult in
+                switch isLoadedNotificationInfoResult {
+                case .success():
+                    guard let tabItems = self?.tabBarController?.tabBar.items else {return }
+                    guard self?.notificationViewModel.unreadNotificationList?.count != 0 else {
+                        tabItems[2].badgeValue = nil
+                        return }
+                    tabItems[2].badgeColor = .clear
+                    tabItems[2].setBadgeTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemRed], for: .normal)
+                    tabItems[2].badgeValue = "●"
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }

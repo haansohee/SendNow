@@ -27,7 +27,6 @@ final class SettleTabViewController: TabmanViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.dataSource = self
-        view.backgroundColor = .systemBackground
         
         let bar = TMBar.TabBar()
         navigationItem.title = tabTitle
@@ -42,10 +41,10 @@ final class SettleTabViewController: TabmanViewController {
             button.tintColor = .label
             button.selectedTintColor = UIColor(named: "TitleColor")
             button.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+            button.backgroundColor = .secondarySystemBackground
         }
         
         addBar(bar, dataSource: self, at: .top)
-        navigationController?.navigationBar.tintColor = UIColor(named: "TitleColor")
     }
 }
 
@@ -65,9 +64,15 @@ extension SettleTabViewController: PageboyViewControllerDataSource, TMBarDataSou
     }
 
     func barItem(for bar: TMBar, at index: Int) -> TMBarItemable {
-        guard index == 0 else {
-            return TMBarItem(title: "정산 내역")
+        guard index == 1 else {
+            let item = TMBarItem(title: "")
+            item.title = "정산 내역"
+            item.image = UIImage(systemName: "note.text")
+            return item
         }
-        return TMBarItem(title: "모임 총 비용")
+        let item = TMBarItem(title: "")
+        item.title = "모임 총 비용"
+        item.image = UIImage(systemName: "wonsign.circle")
+        return item
     }
 }

@@ -13,7 +13,7 @@ struct EmailAuthCodeResponseDTO: Codable {
 }
 
 extension EmailAuthCodeResponseDTO {
-    func toDomain() -> EmailAuthCodeDomain {
+    func toDomain() -> EmailAuthCodeResponseDTO {
         return .init(isDuplicated: isDuplicated, authCode: authCode)
     }
 }

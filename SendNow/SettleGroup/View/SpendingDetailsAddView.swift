@@ -7,6 +7,14 @@
 
 import UIKit
 
+enum classficationType: String {
+    case traffic = "교통"
+    case accommodation = "숙박"
+    case tourism = "관광"
+    case food = "식비"
+    case etc = "기타"
+}
+
 final class SpendingDetailsAddView: UIView {
     private let stackViewCornerRadius: CGFloat = 12.0
     
@@ -86,36 +94,36 @@ final class SpendingDetailsAddView: UIView {
         return label
     }()
     
-    let trafficClassficationView: SpendingDetailsClassficationView = {
-        let categoryView = SpendingDetailsClassficationView()
+    let trafficclassficationView: SpendingDetailsclassficationView = {
+        let categoryView = SpendingDetailsclassficationView()
         categoryView.classficationImage.image = UIImage(systemName: "bus")
         categoryView.classficationLabel.text = "교통"
         return categoryView
     }()
     
-    let accommodationClassficationView: SpendingDetailsClassficationView = {
-        let categoryView = SpendingDetailsClassficationView()
+    let accommodationclassficationView: SpendingDetailsclassficationView = {
+        let categoryView = SpendingDetailsclassficationView()
         categoryView.classficationImage.image = UIImage(systemName: "bed.double")
         categoryView.classficationLabel.text = "숙박"
         return categoryView
     }()
     
-    let tourismClassficationView: SpendingDetailsClassficationView = {
-        let categoryView = SpendingDetailsClassficationView()
+    let tourismclassficationView: SpendingDetailsclassficationView = {
+        let categoryView = SpendingDetailsclassficationView()
         categoryView.classficationImage.image = UIImage(systemName: "mountain.2")
         categoryView.classficationLabel.text = "관광"
         return categoryView
     }()
     
-    let foodClassficationView: SpendingDetailsClassficationView = {
-        let categoryView = SpendingDetailsClassficationView()
+    let foodclassficationView: SpendingDetailsclassficationView = {
+        let categoryView = SpendingDetailsclassficationView()
         categoryView.classficationImage.image = UIImage(systemName: "fork.knife")
         categoryView.classficationLabel.text = "식비"
         return categoryView
     }()
     
-    let etcClassficationView: SpendingDetailsClassficationView = {
-        let categoryView = SpendingDetailsClassficationView()
+    let etcclassficationView: SpendingDetailsclassficationView = {
+        let categoryView = SpendingDetailsclassficationView()
         categoryView.classficationImage.image = UIImage(systemName: "ellipsis.circle")
         categoryView.classficationLabel.text = "기타"
         return categoryView
@@ -186,41 +194,6 @@ final class SpendingDetailsAddView: UIView {
         return textField
     }()
     
-    private let remainderAmountStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.distribution = .fill
-        stackView.alignment = .fill
-        stackView.spacing = 10.0
-        stackView.backgroundColor = .red.withAlphaComponent(0.1)
-        return stackView
-    }()
-    
-    private let remainderAmountDescriptionLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "정산 금액이 나누어 떨어지지 않을 경우, \n 나머지 금액을 더 지불할 친구를 선택해 주세요. \n 지불할 친구는 나중에도 변경이 가능해요."
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 13.0, weight: .bold)
-        return label
-    }()
-    
-    let remainderAmountPayUserCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 8.0
-        
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(InvitedGroupCollectionViewCell.self, forCellWithReuseIdentifier: InvitedGroupCollectionViewCell.reuseIdentifier)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.contentInset = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
-        collectionView.backgroundColor = .systemBackground
-        collectionView.contentInset = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
-        return collectionView
-    }()
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureStackView()
@@ -240,8 +213,7 @@ extension SpendingDetailsAddView {
             dateStackView,
             classficationStackView,
             contentStackView,
-            paymentStackView,
-            remainderAmountStackView
+            paymentStackView
         ].forEach { addSubview($0) }
         
         [
@@ -255,11 +227,11 @@ extension SpendingDetailsAddView {
         ].forEach { classficationStackView.addArrangedSubview($0) }
         
         [
-            trafficClassficationView,
-            accommodationClassficationView,
-            tourismClassficationView,
-            foodClassficationView,
-            etcClassficationView
+            trafficclassficationView,
+            accommodationclassficationView,
+            tourismclassficationView,
+            foodclassficationView,
+            etcclassficationView
         ].forEach { classficationImageStackView.addArrangedSubview($0) }
         
         [
@@ -271,11 +243,6 @@ extension SpendingDetailsAddView {
             paymentLabel,
             paymentTextField
         ].forEach { paymentStackView.addArrangedSubview($0) }
-        
-        [
-            remainderAmountDescriptionLabel,
-            remainderAmountPayUserCollectionView
-        ].forEach { remainderAmountStackView.addArrangedSubview($0) }
     }
     
     private func setLayoutConstraints() {
@@ -306,14 +273,8 @@ extension SpendingDetailsAddView {
             
             paymentLabel.heightAnchor.constraint(equalToConstant: 30.0),
             paymentLabel.widthAnchor.constraint(equalToConstant: 60.0),
+            
             paymentTextField.heightAnchor.constraint(equalToConstant: 30.0),
-            
-            remainderAmountStackView.topAnchor.constraint(equalTo: paymentStackView.bottomAnchor, constant: 24.0),
-            remainderAmountStackView.leadingAnchor.constraint(equalTo: dateStackView.leadingAnchor),
-            remainderAmountStackView.trailingAnchor.constraint(equalTo: dateStackView.trailingAnchor),
-            remainderAmountStackView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -12.0),
-            
-            remainderAmountPayUserCollectionView.heightAnchor.constraint(equalToConstant: 250.0)
         ])
     }
     
@@ -323,14 +284,48 @@ extension SpendingDetailsAddView {
             classficationStackView,
             classficationImageStackView,
             contentStackView,
-            paymentStackView,
-            remainderAmountStackView
+            paymentStackView
         ].forEach {
             $0.layer.masksToBounds = false
             $0.layer.cornerRadius = stackViewCornerRadius
             $0.isLayoutMarginsRelativeArrangement = true
             $0.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 12.0, bottom: 0, trailing: 12.0)
             $0.backgroundColor = .systemBackground
+        }
+    }
+    
+    func configureSpendingDetailView(_ detailsInfo: ExpenseDetailInformationDomain) {
+        datePicker.date = detailsInfo.expenseDate.stringToDate() ?? Date()
+        contentTextField.text = detailsInfo.expenseDetails
+        paymentTextField.text = String(detailsInfo.expenseAmount)
+        switch detailsInfo.expenseClassfication {
+        case classficationType.traffic.rawValue:
+            trafficclassficationView.tag = 1
+            trafficclassficationView.classficationImage.tintColor = UIColor(named: "TitleColor")
+            trafficclassficationView.classficationLabel.textColor = UIColor(named: "TitleColor")
+            
+        case classficationType.accommodation.rawValue:
+            accommodationclassficationView.tag = 1
+            accommodationclassficationView.classficationImage.tintColor = UIColor(named: "TitleColor")
+            accommodationclassficationView.classficationLabel.textColor = UIColor(named: "TitleColor")
+            
+        case classficationType.tourism.rawValue:
+            tourismclassficationView.tag = 1
+            tourismclassficationView.classficationImage.tintColor = UIColor(named: "TitleColor")
+            tourismclassficationView.classficationLabel.textColor = UIColor(named: "TitleColor")
+            
+        case classficationType.food.rawValue:
+            foodclassficationView.tag = 1
+            foodclassficationView.classficationImage.tintColor = UIColor(named: "TitleColor")
+            foodclassficationView.classficationLabel.textColor = UIColor(named: "TitleColor")
+            
+        case classficationType.etc.rawValue:
+            etcclassficationView.tag = 1
+            etcclassficationView.classficationImage.tintColor = UIColor(named: "TitleColor")
+            etcclassficationView.classficationLabel.textColor = UIColor(named: "TitleColor")
+
+        default:
+            return
         }
     }
 }

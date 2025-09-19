@@ -7,6 +7,14 @@
 
 import Foundation
 import RxSwift
+import UIKit
+
+enum TransactionRole {
+    case receiver
+    case sender
+    case zero
+    case error
+}
 
 final class IndividualRemmitDetailViewModel {
     let userID: Int
@@ -15,8 +23,8 @@ final class IndividualRemmitDetailViewModel {
     private(set) var groupID: Int?
     private(set) var groupSettlementInformations: SettlementListDomain?
     private(set) var remittanceInformations: [CompletionRemittanceDomain]?
-    let isLoadedGroupSettlementInfo = PublishSubject<Void>()
-    let isLoadedCompletionRemittanceInfo = PublishSubject<Void>()
+    let isLoadedGroupSettlementInfo = PublishSubject<Result<Void, Error>>()
+    let isLoadedCompletionRemittanceInfo = PublishSubject<Result<Void, Error>>()
     
     init(with groupService: GroupService = GroupService(), userID: Int) {
         self.groupService = groupService
@@ -30,22 +38,36 @@ final class IndividualRemmitDetailViewModel {
     
     func loadGroupSettlementInforamtion() {
         guard let groupID = groupID else { return }
-        groupService.getGroupSettlementsInformations(with: groupID) {[weak self] result in
-            self?.groupSettlementInformations = result
-            self?.isLoadedGroupSettlementInfo.onNext(Void())
+        groupService.getGroupSettlementsInformations(with: groupID) {[weak self] getGroupSettlementsInfoResult in
+            switch getGroupSettlementsInfoResult {
+            case .success(let groupSettlementsInfoDomain):
+                self?.groupSettlementInformations = groupSettlementsInfoDomain
+                self?.isLoadedGroupSettlementInfo.onNext(.success(Void()))
+            case .failure(let error):
+                self?.isLoadedGroupSettlementInfo.onNext(.failure(error))
+            }
         }
     }
     
     func loadCompletionRemittanceInformation() {
         guard let groupID = groupID else { return }
-        groupService.getCompletedRemittanceInformation(with: groupID, userID: userID) {[weak self] remittanceInfo in
-            self?.remittanceInformations = remittanceInfo
-            self?.isLoadedCompletionRemittanceInfo.onNext(Void())
+        groupService.getCompletedRemittanceInformation(with: groupID, userID: userID) {[weak self] getCompletedRemittanceInfoResult in
+            switch getCompletedRemittanceInfoResult {
+            case .success(let completedRemittanceInfoDomain):
+                self?.remittanceInformations = completedRemittanceInfoDomain
+                self?.isLoadedCompletionRemittanceInfo.onNext(.success(Void()))
+            case .failure(let error):
+                self?.isLoadedCompletionRemittanceInfo.onNext(.failure(error))
+            }
         }
     }
     
     func setCompletedRemittance(_ remittanceInfo: RemittanceStatusDomain, completion: @escaping(Bool)->Void) {
-        groupService.setCompletedRemittance(with: remittanceInfo) {[weak self] isUpdatedRemittance in
+        let remittanceInfoRequestDTO = RemittanceStatusRequestDTO(
+            settlementID: remittanceInfo.settlementID,
+            isCompletedRemittance: remittanceInfo.isCompletedRemittance
+        )
+        groupService.setCompletedRemittance(with: remittanceInfoRequestDTO) {[weak self] isUpdatedRemittance in
             guard isUpdatedRemittance else { return }
             self?.loadCompletionRemittanceInformation()
             completion(isUpdatedRemittance)
@@ -58,8 +80,26 @@ final class IndividualRemmitDetailViewModel {
     }
     
     func sendRemittanceNotification(settlementID: Int) {
-        notificationService.sendRemittanceNotification(with: settlementID) { isSendedNotification in
-            print("isSentNotification: \(isSendedNotification)")
+        notificationService.sendRemittanceNotification(with: settlementID) { _ in }
+    }
+    
+    func parseFormattednumberSimple(_ amount: String) -> Int {
+        let cleanNumber = amount.replacingOccurrences(of: ",", with: "")
+        guard let cleanNumberToInt = Int(cleanNumber) else { return 0 }
+        return Int(cleanNumberToInt)
+    }
+    
+    func comparedAmount(_ balanceInformation: SettlementBalanceDomain) -> TransactionRole {
+        guard let receiveAmount = balanceInformation.receiveAmount,
+              let sendAmount = balanceInformation.sendAmount else { return TransactionRole.error }
+        let receiveAmountInt = parseFormattednumberSimple(receiveAmount)
+        let sendAmountInt = parseFormattednumberSimple(sendAmount)
+        if receiveAmountInt > 0 {
+            return TransactionRole.receiver
+        } else if sendAmountInt < 0 {
+            return TransactionRole.sender
+        } else {
+            return TransactionRole.zero
         }
     }
 }

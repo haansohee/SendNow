@@ -11,34 +11,35 @@ enum GroupAPIPath: String {
     case setGroupList = "/SendNow/setGroupList/"
     case setExpensesUpload = "/SendNow/setExpenseUpload/"
     case setCompletedRemittace = "/SendNow/setCompletedRemittance/"
+    case updateSpendingDetailInfo = "/SendNow/updateSpendingDetailInformations/"
     case deleteGroup = "/SendNow/deleteGroup"
+    case deleteSpendingDetailInformation = "/SendNow/DeleteSpendingDetailInformation/"
     case getGroupList = "/SendNow/getGroupList"
     case getGroupMemberList = "/SendNow/getGroupMemberList"
     case getGroupExpenseInformations = "/SendNow/getGroupExpenseInformations"
+    case getGroupExpenseDetailInformation = "/SendNow/getGroupExpenseDetailInformation"
     case getGroupSettlementsInformations = "/SendNow/getGroupSettlementsInformations"
     case getGroupCreatorUserID = "/SendNow/getGroupCreatorUserID"
+    case getSettlementCreatorUserID = "/SendNow/getSettlementCreatorUserID"
     case getCompletedRemittanceInformation = "/SendNow/getCompletedRemittanceInformation"
 }
 
 final class GroupService {
     private let networkSessionManager = NetworkSessionManager()
     
-    func setGroupList(with groupCreationDomain: GroupCreationDomain, completion: @escaping(Bool)->Void) {
+    func setGroupList(with groupCreationRequestDTO: GroupCreationRequestDTO, completion: @escaping(Bool)->Void) {
         let path = GroupAPIPath.setGroupList.rawValue
-        let groupInfo = groupCreationDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: groupInfo, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: groupCreationRequestDTO, completion: completion)
     }
     
-    func setExpensesUpload(with expenseUploadDomain: ExpenseUploadDomain, completion: @escaping(Bool)->Void) {
+    func setExpensesUpload(with expenseUploadRequestDTO: ExpenseUploadRequestDTO, completion: @escaping(Bool)->Void) {
         let path = GroupAPIPath.setExpensesUpload.rawValue
-        let expensesUploadInfo = expenseUploadDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: expensesUploadInfo, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: expenseUploadRequestDTO, completion: completion)
     }
     
-    func setCompletedRemittance(with remittanceStatus: RemittanceStatusDomain, completion: @escaping(Bool)->Void) {
+    func setCompletedRemittance(with remittanceStatusRequestDTO: RemittanceStatusRequestDTO, completion: @escaping(Bool)->Void) {
         let path = GroupAPIPath.setCompletedRemittace.rawValue
-        let remittanceInfo = remittanceStatus.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: remittanceInfo, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: remittanceStatusRequestDTO, completion: completion)
     }
     
     func deleteGroup(with groupID: Int, completion: @escaping(Bool)->Void) {
@@ -46,80 +47,124 @@ final class GroupService {
         networkSessionManager.urlDeleteMethod(path: path, encodeValue: groupID, completion: completion)
     }
     
-    func getGroupList(with userID: Int, completion: @escaping([GroupListDomain])->Void) {
+    func deleteSpendingDetailInformation(with deleteSpendingDetailInformationRequestDTO: DeleteSpendingDetailInformationRequestDTO, completion: @escaping(Bool)->Void) {
+        let path = GroupAPIPath.deleteSpendingDetailInformation.rawValue
+        networkSessionManager.urlDeleteMethod(path: path, encodeValue: deleteSpendingDetailInformationRequestDTO, completion: completion)
+    }
+    
+    func getGroupList(with userID: Int, completion: @escaping(Result<[GroupListDomain], Error>)->Void) {
         let path = "\(GroupAPIPath.getGroupList.rawValue)?userID=\(userID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: [GroupListResponseDTO].self) { result in
             switch result {
             case .success(let responseDTO):
-                let groupList = responseDTO.map { $0.toDomain() }
-                completion(groupList)
+                let groupListDomain = responseDTO.map { $0.toDomain() }
+                completion(.success(groupListDomain))
             case .failure(let error):
                 print("get Group List Info Error : \(error)")
+                completion(.failure(error))
             }
         }
     }
     
-    func getGroupMemberList(with groupID: Int, completion: @escaping([GroupMemberListDomain])->Void) {
+    func getGroupMemberList(with groupID: Int, completion: @escaping(Result<[GroupMemberListDomain], Error>)->Void) {
         let path = "\(GroupAPIPath.getGroupMemberList.rawValue)?groupID=\(groupID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: [GroupMemberListResponseDTO].self) { result in
             switch result {
             case .success(let responseDTO):
-                let groupMemberList = responseDTO.map { $0.toDomain() }
-                completion(groupMemberList)
+                let groupMemberListDomain = responseDTO.map { $0.toDomain() }
+                completion(.success(groupMemberListDomain))
             case .failure(let error):
                 print("get Group List Info Error : \(error)")
+                completion(.failure(error))
             }
         }
     }
     
-    func getGroupExpenseInformations(with userID: Int, groupID: Int, completion: @escaping(ExpenseInformationDomain)->Void) {
+    func getGroupExpenseInformations(with userID: Int, groupID: Int, completion: @escaping(Result<ExpenseInformationDomain, Error>)->Void) {
         let path = "\(GroupAPIPath.getGroupExpenseInformations.rawValue)?userID=\(userID)&groupID=\(groupID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: ExpenseInformationResponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
-                completion(responseDTO.toDomain())
+                let expenseInfoDomain = responseDTO.toDomain()
+                completion(.success(expenseInfoDomain))
             case .failure(let error):
                 print("get Group Expense Information Error : \(error)")
+                completion(.failure(error))
             }
         }
     }
     
-    func getGroupSettlementsInformations(with groupID: Int, completion: @escaping(SettlementListDomain)->Void) {
+    func getGroupExpenseDetailInformation(with expenseID: Int, completion: @escaping(Result<ExpenseDetailInformationDomain, Error>)->Void) {
+        let path = "\(GroupAPIPath.getGroupExpenseDetailInformation.rawValue)?expenseID=\(expenseID)"
+        networkSessionManager.urlGetMethod(path: path, requestDTO: ExpenseDetailInformationReponseDTO.self) { result in
+            switch result {
+            case .success(let reponseDTO):
+                let expenseDetailInfoDomain = reponseDTO.toDomain()
+                completion(.success(expenseDetailInfoDomain))
+            case .failure(let error):
+                print("get Group Expense Detail Information Error: \(error)")
+                completion(.failure(error))
+            }
+        }
+        
+    }
+    
+    func getGroupSettlementsInformations(with groupID: Int, completion: @escaping(Result<SettlementListDomain, Error>)->Void) {
         let path = "\(GroupAPIPath.getGroupSettlementsInformations.rawValue)?groupID=\(groupID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: SettlementListReponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
-                completion(responseDTO.toDomain())
+                let settlementListDomain = responseDTO.toDomain()
+                completion(.success(settlementListDomain))
             case .failure(let error):
                 print("get Group Settlements Informations Error : \(error)")
+                completion(.failure(error))
             }
         }
     }
     
-    func getGroupCreatorUserID(with groupID: Int, userID: Int, completion: @escaping(Bool)->Void) {
+    func getGroupCreatorUserID(with groupID: Int, userID: Int, completion: @escaping(Result<Bool, Error>)->Void) {
         let path = "\(GroupAPIPath.getGroupCreatorUserID.rawValue)?groupID=\(groupID)&userID=\(userID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: Bool.self) { result in
             switch result {
             case .success(let responseDTO):
-                completion(responseDTO)
+                completion(.success(responseDTO))
             case .failure(let error):
                 print("get Group Settlements Informations Error : \(error)")
-                completion(false)
+                completion(.failure(error))
             }
         }
     }
     
-    func getCompletedRemittanceInformation(with groupID: Int, userID: Int, completion: @escaping([CompletionRemittanceDomain])->Void) {
-        let path = "\(GroupAPIPath.getCompletedRemittanceInformation.rawValue)?groupID=\(groupID)&userID=\(userID)"
-        networkSessionManager.urlGetMethod(path: path, requestDTO: [CompletionRemittanceResponseDTO].self) { completionRemittanceInfo in
-            switch completionRemittanceInfo {
-            case .success(let completionRemittanceInformation):
-                let result = completionRemittanceInformation.map { $0.toDomain() }
-                completion(result)
+    func getSettlementCreatorID(with expenseID: Int, groupID: Int, userID: Int, completion: @escaping(Result<Bool, Error>)->Void) {
+        let path = "\(GroupAPIPath.getSettlementCreatorUserID.rawValue)?expenseID=\(expenseID)&groupID=\(groupID)&userID=\(userID)"
+        networkSessionManager.urlGetMethod(path: path, requestDTO: Bool.self) { result in
+            switch result {
+            case .success(let responseDTO):
+                completion(.success(responseDTO))
             case .failure(let error):
-                print("get Completed Remittance Information Error : \(error)")
-                completion([])
+                print("get settlements creator userID Error: \(error)")
+                completion(.failure(error))
             }
         }
+    }
+    
+    func getCompletedRemittanceInformation(with groupID: Int, userID: Int, completion: @escaping(Result<[CompletionRemittanceDomain], Error>)->Void) {
+        let path = "\(GroupAPIPath.getCompletedRemittanceInformation.rawValue)?groupID=\(groupID)&userID=\(userID)"
+        networkSessionManager.urlGetMethod(path: path, requestDTO: [CompletionRemittanceResponseDTO].self) { result in
+            switch result {
+            case .success(let responseDTO):
+                let completionRemittanceDomain = responseDTO.map { $0.toDomain() }
+                completion(.success(completionRemittanceDomain))
+            case .failure(let error):
+                print("get Completed Remittance Information Error : \(error)")
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func updateSpendingDetailInformation(with expenseDetailInformationRequestDTO: UpdateSpendingDetailInformationRequestDTO, completion: @escaping(Bool)->Void) {
+        let path = GroupAPIPath.updateSpendingDetailInfo.rawValue
+        networkSessionManager.urlPostMethod(path: path, encodeValue: expenseDetailInformationRequestDTO, completion: completion)
     }
 }

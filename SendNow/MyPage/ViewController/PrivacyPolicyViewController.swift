@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class PrivacyPolicyViewController: UIViewController {
+final class PrivacyPolicyViewController: BaseUIViewController {
     
     private let scrollView = UIScrollView()
     private let contentView = UIView()
@@ -17,6 +17,7 @@ final class PrivacyPolicyViewController: UIViewController {
         label.text = "바로보내 개인정보처리방침"
         label.font = .boldSystemFont(ofSize: 20)
         label.textAlignment = .center
+        label.textColor = .label
         return label
     }()
     
@@ -59,6 +60,7 @@ final class PrivacyPolicyViewController: UIViewController {
         """
         label.font = .systemFont(ofSize: 14)
         label.numberOfLines = 0
+        label.textColor = .label
         return label
     }()
     
@@ -68,7 +70,7 @@ final class PrivacyPolicyViewController: UIViewController {
     }
     
     private func setupPrivacyPolicyView() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         navigationController?.navigationBar.tintColor = UIColor(named: "TitleColor")
         navigationItem.title = "개인정보처리방침"
         

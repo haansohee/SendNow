@@ -19,6 +19,14 @@ struct EmailMemberResponseDTO: Codable {
 
 extension EmailMemberResponseDTO {
     func toDomain() -> EmailMemberDomain {
-        return .init(userID: userID, nickname: nickname, email: email, password: password, bankName: bankName, accountNumber: accountNumber, kakaoPayUrl: kakaoPayUrl)
+        return .init(
+            userID: userID,
+            nickname: nickname,
+            email: email,
+            password: password,
+            bankName: bankName,
+            accountNumber: accountNumber,
+            kakaoPayUrl: kakaoPayUrl
+        )
     }
 }

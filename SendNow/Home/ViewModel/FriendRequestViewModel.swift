@@ -16,9 +16,9 @@ final class FriendRequestViewModel {
     private(set) var friendRequestSendListInfo: [FriendRequestListDomain]?
     private(set) var friendRequestReceiveListInfo: [FriendRequestListDomain]?
     private(set) var friendRequestReceivedUserID: Int?
-    let isEmptySearchFriend = PublishSubject<Bool>()
+    let isEmptySearchFriend = PublishSubject<Result<Bool, Error>>()
     let isSendedFriendRequest = PublishSubject<Bool>()
-    let isLoadedFriendRequestListInfo = PublishSubject<Bool>()
+    let isLoadedFriendRequestListInfo = PublishSubject<Result<Bool, Error>>()
     let isDeletedFriendRequest = PublishSubject<Bool>()
     let isUpdatedFriendRequestState = PublishSubject<Bool>()
     
@@ -33,8 +33,17 @@ final class FriendRequestViewModel {
     func sendFriendRequest(toUserID: Int) {
         guard let fromUserNickname = UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue) else {
             return }
-        let friendRequestSendInfo = FriendRequestSendDomain(fromUserID: userID, fromUserNickname: fromUserNickname, toUserID: toUserID)
-        friendService.setFriendRequest(with: friendRequestSendInfo) {[weak self] result in
+        let friendAddInfo = FriendAddDomain(
+            fromUserID: userID,
+            fromUserNickname: fromUserNickname,
+            toUserID: toUserID
+        )
+        let friendAddRequestDTO = FriendAddRequestDTO(
+            fromUserID: friendAddInfo.fromUserID,
+            fromUserNickname: friendAddInfo.fromUserNickname,
+            toUserID: friendAddInfo.toUserID
+        )
+        friendService.setFriendRequest(with: friendAddRequestDTO) {[weak self] result in
             if result {
                 self?.friendRequestReceivedUserID = toUserID
                 self?.sendFriendNotification()
@@ -45,33 +54,59 @@ final class FriendRequestViewModel {
     }
     
     func searchFriendNickname(nickname: String) {
-        friendService.getFriendInformation(with: nickname) {[weak self] result in
-            self?.searchFriendInformation = result
-            self?.isEmptySearchFriend.onNext(!result.nickname.isEmpty)
+        friendService.getFriendInformation(with: nickname) {[weak self] getFriendInfoResult in
+            switch getFriendInfoResult {
+            case .success(let searchFriendInfo):
+                self?.searchFriendInformation = searchFriendInfo
+                self?.isEmptySearchFriend.onNext(.success(!searchFriendInfo.nickname.isEmpty))
+            case .failure(let error):
+                self?.isEmptySearchFriend.onNext(.failure(error))
+            }
         }
     }
     
     func getFriendRequestList() {
-        friendService.getFriendRequestListInformation(with: userID) {[weak self] result in
-            guard !result.isEmpty else {
-                self?.isLoadedFriendRequestListInfo.onNext(false)
-                return }
-            self?.isLoadedFriendRequestListInfo.onNext(true)
-            self?.friendRequestSendListInfo = result.filter { $0.fromUserID == self?.userID }
-            self?.friendRequestReceiveListInfo = result.filter { $0.toUserID == self?.userID }
+        friendService.getFriendRequestListInformation(with: userID) {[weak self] getFriendRequestListInfoResult in
+            switch getFriendRequestListInfoResult {
+            case .success(let friendRequestListInfo):
+                guard !friendRequestListInfo.isEmpty else {
+                    self?.isLoadedFriendRequestListInfo.onNext(.success(false))
+                    return }
+                self?.friendRequestSendListInfo = friendRequestListInfo.filter { $0.fromUserID == self?.userID }
+                self?.friendRequestReceiveListInfo = friendRequestListInfo.filter { $0.toUserID == self?.userID }
+                self?.isLoadedFriendRequestListInfo.onNext(.success(true))
+            case .failure(let error):
+                self?.isLoadedFriendRequestListInfo.onNext(.failure(error))
+            }
         }
     }
     
     func deleteFriendRequest(toUserID: Int, fromUserID: Int) {
-        let friendReuqestDeleteInfo = DeleteFriendRequestDomain(fromUserID: fromUserID, toUserID: toUserID)
-        friendService.deleteFriendRequestList(with: friendReuqestDeleteInfo) {[weak self] result in
+        let deleteFriendDomain = DeleteFriendDomain(
+            fromUserID: fromUserID,
+            toUserID: toUserID
+        )
+        let deleteFriendRequestDTO = DeleteFriendRequestDTO(
+            fromUserID: deleteFriendDomain.fromUserID,
+            toUserID: deleteFriendDomain.toUserID
+        )
+        friendService.deleteFriendRequestList(with: deleteFriendRequestDTO) {[weak self] result in
             self?.isDeletedFriendRequest.onNext(result)
         }
     }
     
     func updateFriendRequestState(toUserID: Int, fromUserID: Int) {
-        let friendRequestStateInfo = UpdateFriendStateDomain(fromUserID: fromUserID, toUserID: toUserID, isFriended: true)
-        friendService.updateFriendState(with: friendRequestStateInfo) {[weak self] result in
+        let updateFriendStateDomain = UpdateFriendStateDomain(
+            fromUserID: fromUserID,
+            toUserID: toUserID,
+            isFriended: true
+        )
+        let updateFriendStateRequestDTO = UpdateFriendStateRequestDTO(
+            fromUserID: updateFriendStateDomain.fromUserID,
+            toUserID: updateFriendStateDomain.toUserID,
+            isFriended: updateFriendStateDomain.isFriended
+        )
+        friendService.updateFriendState(with: updateFriendStateRequestDTO) {[weak self] result in
             if result {
                 NotificationCenter.default.post(name: NSNotification.Name(NotificationName.sendFriendRequest.rawValue), object: result)
             }
@@ -81,9 +116,14 @@ final class FriendRequestViewModel {
     
     func sendFriendNotification() {
         guard let receiverUserID = friendRequestReceivedUserID else { return }
-        let friendNotificationInfo = FriendNotificationDomain(senderUserID: userID, receiverUserID: receiverUserID)
-        notificationService.sendFriendNotification(with: friendNotificationInfo) { result in
-            print("🚨 sendFriendNotification Result : \(result)")
-        }
+        let friendNotificationInfo = FriendNotificationDomain(
+            senderUserID: userID,
+            receiverUserID: receiverUserID
+        )
+        let friendNotificationRequestDTO = FriendNotificationRequestDTO(
+            senderUserID: friendNotificationInfo.senderUserID,
+            receiverUserID: friendNotificationInfo.receiverUserID
+        )
+        notificationService.sendFriendNotification(with: friendNotificationRequestDTO) { _ in }
     }
 }

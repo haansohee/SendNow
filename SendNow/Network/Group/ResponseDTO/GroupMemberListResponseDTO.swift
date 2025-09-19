@@ -15,6 +15,10 @@ struct GroupMemberListResponseDTO: Codable {
 
 extension GroupMemberListResponseDTO {
     func toDomain() -> GroupMemberListDomain {
-        return .init(groupID: groupID, userID: userID, nickname: nickname)
+        return .init(
+            groupID: groupID,
+            userID: userID,
+            nickname: nickname
+        )
     }
 }

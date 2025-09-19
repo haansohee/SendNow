@@ -12,4 +12,5 @@ struct GroupListDomain {
     let groupName: String
     let createdDate: String
     let groupFriends: [String]
+    let isActive: Bool
 }

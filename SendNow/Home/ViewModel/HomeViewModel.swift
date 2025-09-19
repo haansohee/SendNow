@@ -8,24 +8,49 @@
 import Foundation
 import RxSwift
 import NotificationCenter
+import FirebaseMessaging
+import Firebase
 
 final class HomeViewModel {
     private let friendService: FriendService
     private let notificationService: NotificationService
-    private let InvitedFriendList = "InvitedFriendList"
+    private let memberService: MemberService
     private let userID: Int
     private var groupName: String?
     private(set) var loginMemberInformation: LoginMemberInformation?
     private(set) var myFriendList: [MyFriendListDomain]?
+    private(set) var remainderCandidateList: [MyFriendListDomain]?
     let isLoadedMemberInformation = PublishSubject<Void>()
-    let isLoadedMyFriendList = PublishSubject<Void>()
+    let isLoadedMyFriendList = PublishSubject<Result<Void, Error>>()
     
     init(with friendService: FriendService = FriendService(),
          notificationService: NotificationService = NotificationService(),
+         memberService: MemberService = MemberService(),
          userID: Int) {
         self.friendService = friendService
         self.notificationService = notificationService
+        self.memberService = memberService
         self.userID = userID
+    }
+    
+    func updateFCMToken() {
+        Messaging.messaging().token {[weak self] token, error in
+            if let error = error {
+                print("ERROR/Fail Load FCM Token : \(error.localizedDescription)")
+                return
+            }
+            guard let fcmToken = token,
+                  let userID = self?.userID else { return }
+            let updateFcmTokenInfoDomain = UpdateFcmTokenInformationDomain(
+                userID: userID,
+                fcmToken: fcmToken
+            )
+            let updateFcmTokenInfoRequestDTO = UpdateFcmTokenInformationRequestDTO(
+                userID: updateFcmTokenInfoDomain.userID,
+                fcmToken: updateFcmTokenInfoDomain.fcmToken
+            )
+            self?.memberService.updateMemberFcmToken(with: updateFcmTokenInfoRequestDTO) { _ in }
+        }
     }
     
     func loadMemberInformation() {
@@ -102,9 +127,23 @@ final class HomeViewModel {
     
     
     func loadMyFriend() {
-        friendService.getMyFriendList(with: userID) {[weak self] result in
-            self?.myFriendList = result
-            self?.isLoadedMyFriendList.onNext(Void())
+        let user = MyFriendListDomain(
+            userID: userID,
+            nickname: "\(UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue) ?? "") (본인)",
+            bankName: UserDefaults.standard.string(forKey: MemberInfoField.bankName.rawValue),
+            accountNumber: UserDefaults.standard.string(forKey: MemberInfoField.accountNumber.rawValue),
+            kakaoPayUrl: UserDefaults.standard.string(forKey: MemberInfoField.kakaoPayUrl.rawValue)
+        )
+        friendService.getMyFriendList(with: userID) {[weak self] getMyFriendListResult in
+            switch getMyFriendListResult {
+            case .success(let myFriendListInfo):
+                self?.myFriendList = myFriendListInfo
+                self?.remainderCandidateList = myFriendListInfo
+                self?.remainderCandidateList?.append(contentsOf: [user])
+                self?.isLoadedMyFriendList.onNext(.success(Void()))
+            case .failure(let error):
+                self?.isLoadedMyFriendList.onNext(.failure(error))
+            }
         }
     }
 }

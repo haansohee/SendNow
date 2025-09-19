@@ -18,11 +18,12 @@ struct NotificationListResponseDTO: Codable {
 
 extension NotificationListResponseDTO {
     func toDomain() -> NotificationListDomain {
-        return .init(notificationID: notificationID,
-                     senderUserID: senderUserID,
-                     receiverUserID: receiverUserID,
-                     notificationBody: notificationBody,
-                     isRead: isRead,
-                     subject: NotificationSubject(rawValue: subject) ?? .default)
+        return .init(
+            notificationID: notificationID,
+            senderUserID: senderUserID,
+            receiverUserID: receiverUserID,
+            notificationBody: notificationBody,
+            isRead: isRead,
+            subject: NotificationSubject(rawValue: subject) ?? .default)
     }
 }

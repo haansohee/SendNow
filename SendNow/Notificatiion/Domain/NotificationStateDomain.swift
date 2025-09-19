@@ -11,9 +11,3 @@ struct NotificationStateDomain {
     let userID: Int
     let state: Bool
 }
-
-extension NotificationStateDomain {
-    func toRequestDTO() -> UpdateNotificationStateRequestDTO {
-        return .init(userID: userID, state: state)
-    }
-}

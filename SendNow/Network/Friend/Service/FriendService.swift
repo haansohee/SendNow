@@ -20,61 +20,61 @@ enum FriendAPIPath: String {
 final class FriendService {
     private let networkSessionManager = NetworkSessionManager()
     
-    func setFriendRequest(with friendRequestSendDomain: FriendRequestSendDomain, completion: @escaping(Bool)->Void) {
+    func setFriendRequest(with friendAddRequestDTO: FriendAddRequestDTO, completion: @escaping(Bool)->Void) {
         let path = FriendAPIPath.setFriendRequestList.rawValue
-        let friendRequestSend = friendRequestSendDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: friendRequestSend, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: friendAddRequestDTO, completion: completion)
     }
     
-    func updateFriendState(with updateFriendStateDomain: UpdateFriendStateDomain, completion: @escaping(Bool)->Void) {
+    func updateFriendState(with updateFriendStateRequestDTO: UpdateFriendStateRequestDTO, completion: @escaping(Bool)->Void) {
         let path = FriendAPIPath.updateFriendState.rawValue
-        let updateFriendStateInfo = updateFriendStateDomain.toRequestDTO()
-        networkSessionManager.urlPostMethod(path: path, encodeValue: updateFriendStateInfo, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: updateFriendStateRequestDTO, completion: completion)
         
     }
     
-    func deleteFriendRequestList(with deleteFriendRequestDomain: DeleteFriendRequestDomain, completion: @escaping(Bool)->Void) {
+    func deleteFriendRequestList(with deleteFriendRequestDTO: DeleteFriendRequestDTO, completion: @escaping(Bool)->Void) {
         let path = FriendAPIPath.deleteFriendRequestList.rawValue
-        let deleteFriendRequestInfo = deleteFriendRequestDomain.toRequestDTO()
-        networkSessionManager.urlDeleteMethod(path: path, encodeValue: deleteFriendRequestInfo, completion: completion)
+        networkSessionManager.urlDeleteMethod(path: path, encodeValue: deleteFriendRequestDTO, completion: completion)
     }
     
-    func getFriendInformation(with nickname: String, completion: @escaping(SearchFriendDomain)->Void) {
+    func getFriendInformation(with nickname: String, completion: @escaping(Result<SearchFriendDomain, Error>)->Void) {
         let path = "\(FriendAPIPath.getFriendInformation.rawValue)?nickname=\(nickname)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: SearchFriendResponseDTO.self) { result in
             switch result {
             case .success(let responseDTO):
-                completion(responseDTO.toDomain())
+                let searchFriendInfoDomain = responseDTO.toDomain()
+                completion(.success(searchFriendInfoDomain))
                 
             case .failure(let error):
                 print("getFriendInformation ERROR: \(error)")
+                completion(.failure(error))
             }
         }
     }
     
-    func getFriendRequestListInformation(with userID: Int, completion: @escaping([FriendRequestListDomain])->Void) {
+    func getFriendRequestListInformation(with userID: Int, completion: @escaping(Result<[FriendRequestListDomain], Error>)->Void) {
         let path = "\(FriendAPIPath.getFriendRequestListInformation.rawValue)?userID=\(userID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: [FriendRequestListResponseDTO].self) { result in
             switch result {
             case .success(let responseDTO):
-                let friendRequestListInfo = responseDTO.map { $0.toDomain() }
-                completion(friendRequestListInfo)
+                let friendRequestListDomain = responseDTO.map { $0.toDomain() }
+                completion(.success(friendRequestListDomain))
             case .failure(let error):
                 print("get Friend Request List Info ERROR : \(error)")
+                completion(.failure(error))
             }
         }
     }
     
-    func getMyFriendList(with userID: Int, completion: @escaping([MyFriendListDomain])->Void) {
+    func getMyFriendList(with userID: Int, completion: @escaping(Result<[MyFriendListDomain], Error>)->Void) {
         let path = "\(FriendAPIPath.getMyFriendList.rawValue)?userID=\(userID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: [MyFriendListResponseDTO].self) { result in
             switch result {
             case .success(let responseDTO):
-                let myFriendList = responseDTO.map { $0.toDomain() }
-                completion(myFriendList)
+                let myFriendListDomain = responseDTO.map { $0.toDomain() }
+                completion(.success(myFriendListDomain))
             case .failure(let error):
-//                completion(.failure(error))
                 print("get My Friend List Info Error : \(error)")
+                completion(.failure(error))
             }
         }
     }

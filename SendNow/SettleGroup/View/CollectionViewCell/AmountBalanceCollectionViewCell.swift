@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class AmountBalanceCollectionViewCell: UICollectionViewCell, ReuseIdentifierProtocol {
+final class AmountBalanceCollectionViewCell: UICollectionViewCell, ReuseIdentifierProtocol {    
     let nicknameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -64,21 +64,22 @@ extension AmountBalanceCollectionViewCell {
         ])
     }
     
-    func configureCell(_ balanceInformation: SettlementBalanceDomain) {
+    func configureCell(_ transactionRole: TransactionRole, _ balanceInformation: SettlementBalanceDomain) {
         nicknameLabel.text = "\(balanceInformation.nickname) 님"
         guard let receiveAmount = balanceInformation.receiveAmount,
-              let sendAmount = balanceInformation.sendAmount else {
-            amountValueLabel.text = "0원"
-            return
-        }
-        if receiveAmount > 0 {
-            amountValueLabel.text = "\(receiveAmount)원"
+              let sendAmount = balanceInformation.sendAmount else { return }
+        switch transactionRole {
+        case .receiver:
+            amountValueLabel.text = "\(receiveAmount) ₩"
             amountValueLabel.textColor = UIColor(named: "TitleColor")
-        } else if sendAmount < 0 {
-            amountValueLabel.text = "\(sendAmount)원"
+        case .sender:
+            amountValueLabel.text = "\(sendAmount) ₩"
             amountValueLabel.textColor = .systemRed
-        } else {
-            amountValueLabel.text = "0원"
+        case .zero:
+            amountValueLabel.text = "0 ₩"
+            amountValueLabel.textColor = .label
+        default:
+            amountValueLabel.text = "0 ₩"
             amountValueLabel.textColor = .label
         }
     }

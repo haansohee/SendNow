@@ -8,8 +8,9 @@
 import Foundation
 import UIKit
 import RxSwift
+import Toast
 
-final class SettleGroupViewController: UIViewController {
+final class SettleGroupViewController: BaseUIViewController {
     private let settleGroupView = SettleGroupView()
     private let settleGroupViewModel: SettleGroupViewModel
     private let disposeBag = DisposeBag()
@@ -49,7 +50,7 @@ extension SettleGroupViewController {
         settleGroupView.translatesAutoresizingMaskIntoConstraints = false
         settleGroupView.spendingDetailCollectionView.dataSource = self
         settleGroupView.spendingDetailCollectionView.delegate = self
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .secondarySystemBackground
         navigationController?.topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: settleGroupView.groupRemoveButton)
     }
     
@@ -102,21 +103,31 @@ extension SettleGroupViewController {
     }
     
     private func bindIsLoadedGroupExpenseInfo() {
-        settleGroupViewModel.isLoadedGroupExpenseInfo
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isLoadedGroupExpenseInfo in
-                guard isLoadedGroupExpenseInfo else { return }
-                self?.settleGroupView.spendingDetailCollectionView.reloadData()
+        settleGroupViewModel.groupExpenseInfoSubject
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isLoadedGroupExpenseInfoResult in
+                switch isLoadedGroupExpenseInfoResult {
+                case .success(let groupExpenseInfo):
+                    self?.settleGroupView.spendingDetailCollectionView.reloadData()
+                    self?.settleGroupView.configurePaymentLabel(group: groupExpenseInfo.group, personal: groupExpenseInfo.personal)
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }
     
     private func bindIsEqualCreatorUserID() {
-        settleGroupViewModel.isEqualCreatorUserID
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isEqualCreatorUserID in
-                self?.settleGroupView.groupRemoveButton.isEnabled = isEqualCreatorUserID
-                self?.settleGroupView.groupRemoveButton.setTitle(isEqualCreatorUserID ? "그룹 삭제" : "", for: .normal)
+        settleGroupViewModel.isEqualGroupCreatorSubject
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isEqualCreatorUserIDResult in
+                switch isEqualCreatorUserIDResult {
+                case .success(let isEqualCreatorUserID):
+                    self?.settleGroupView.groupRemoveButton.isEnabled = isEqualCreatorUserID
+                    self?.settleGroupView.groupRemoveButton.setTitle(isEqualCreatorUserID ? "그룹 삭제" : "", for: .normal)
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }
@@ -161,12 +172,26 @@ extension SettleGroupViewController: UICollectionViewDataSource {
         cell.setSpendingDetailCollectionViewCellLabel(groupExpenseInfo: groupExpenseDetailInformations[indexPath.row])
         guard let myExpenses = groupExpenseInformations.myExpenses,
               let groupExpenses = groupExpenseInformations.groupExpenses else { return cell }
-        settleGroupView.myTotalContentLabel.text = "\(myExpenses)원"
-        settleGroupView.groupTotalContentLabel.text = "\(groupExpenses)원"
         return cell
     }
     
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let groupExpenseInformations = settleGroupViewModel.groupExpenseInformations,
+              let groupExpensDetailInformations = groupExpenseInformations.expenseInformations else { return }
+        let expenseID = groupExpensDetailInformations[indexPath.row].expenseID
+        let groupID = groupExpensDetailInformations[indexPath.row].groupID
+        let expenseClassfication = groupExpensDetailInformations[indexPath.row].expenseClassfication
+        let expenseDate = groupExpensDetailInformations[indexPath.row].expenseDate
+        let expenseDetails = groupExpensDetailInformations[indexPath.row].expenseDetails
+        let viewController = SpendingDetailsViewController(
+            expenseID: expenseID,
+            groupID: groupID,
+            expenseClassfication: expenseClassfication,
+            expenseDate: expenseDate,
+            expenseDetails: expenseDetails
+        )
+        navigationController?.pushViewController(viewController, animated: true)
+    }
 }
 
 extension SettleGroupViewController: UICollectionViewDelegateFlowLayout {
