@@ -16,9 +16,9 @@ final class FriendRequestViewModel {
     private(set) var friendRequestSendListInfo: [FriendRequestListDomain]?
     private(set) var friendRequestReceiveListInfo: [FriendRequestListDomain]?
     private(set) var friendRequestReceivedUserID: Int?
-    let isEmptySearchFriend = PublishSubject<Bool>()
+    let isEmptySearchFriend = PublishSubject<Result<Bool, Error>>()
     let isSendedFriendRequest = PublishSubject<Bool>()
-    let isLoadedFriendRequestListInfo = PublishSubject<Bool>()
+    let isLoadedFriendRequestListInfo = PublishSubject<Result<Bool, Error>>()
     let isDeletedFriendRequest = PublishSubject<Bool>()
     let isUpdatedFriendRequestState = PublishSubject<Bool>()
     
@@ -58,9 +58,9 @@ final class FriendRequestViewModel {
             switch getFriendInfoResult {
             case .success(let searchFriendInfo):
                 self?.searchFriendInformation = searchFriendInfo
-                self?.isEmptySearchFriend.onNext(!searchFriendInfo.nickname.isEmpty)
+                self?.isEmptySearchFriend.onNext(.success(!searchFriendInfo.nickname.isEmpty))
             case .failure(let error):
-                print("에러 수정 필요")
+                self?.isEmptySearchFriend.onNext(.failure(error))
             }
         }
     }
@@ -70,13 +70,13 @@ final class FriendRequestViewModel {
             switch getFriendRequestListInfoResult {
             case .success(let friendRequestListInfo):
                 guard !friendRequestListInfo.isEmpty else {
-                    self?.isLoadedFriendRequestListInfo.onNext(false)
+                    self?.isLoadedFriendRequestListInfo.onNext(.success(false))
                     return }
-                self?.isLoadedFriendRequestListInfo.onNext(true)
                 self?.friendRequestSendListInfo = friendRequestListInfo.filter { $0.fromUserID == self?.userID }
                 self?.friendRequestReceiveListInfo = friendRequestListInfo.filter { $0.toUserID == self?.userID }
+                self?.isLoadedFriendRequestListInfo.onNext(.success(true))
             case .failure(let error):
-                print("에러 수정 필요")
+                self?.isLoadedFriendRequestListInfo.onNext(.failure(error))
             }
         }
     }

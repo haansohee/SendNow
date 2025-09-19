@@ -33,13 +33,13 @@ final class SettleGroupViewModel {
     private(set) var expenseDetailInformation: ExpenseDetailInformationDomain?
     private(set) var canSelectItems: Bool?
     let isUploadedExpenseInfo = PublishSubject<Bool>()
-    let isLoadedGroupMemberInfo = PublishSubject<Bool>()
-    let groupExpenseInfoSubject = PublishSubject<(String, String)>()
-    let isEqualGroupCreatorSubject = PublishSubject<Bool>()
-    let isEqualSettlementCreatorSubject = PublishSubject<Bool>()
+    let isLoadedGroupMemberInfo = PublishSubject<Result<Bool, Error>>()
+    let groupExpenseInfoSubject = PublishSubject<Result<(group: String, personal: String), Error>>()
+    let isEqualGroupCreatorSubject = PublishSubject<Result<Bool, Error>>()
+    let isEqualSettlementCreatorSubject = PublishSubject<Result<Bool, Error>>()
     let isDeletedGroup = PublishSubject<Bool>()
     let isDeletedSpendingDetailInfoSubject = PublishSubject<Bool>()
-    let loadedGroupExpenseDetailInfoSubject = PublishSubject<Void>()
+    let loadedGroupExpenseDetailInfoSubject = PublishSubject<Result<Void, Error>>()
     let isUpdatedSpendingDetailInfoSubject = PublishSubject<Bool>()
     
     init(groupService: GroupService = GroupService(), userID: Int) {
@@ -85,9 +85,9 @@ final class SettleGroupViewModel {
         groupService.getGroupCreatorUserID(with: groupID, userID: userID) {[weak self] getGroupCreatorUserIdResult in
             switch getGroupCreatorUserIdResult {
             case .success(let isEqualGroupCreatorUser):
-                self?.isEqualGroupCreatorSubject.onNext(isEqualGroupCreatorUser)
+                self?.isEqualGroupCreatorSubject.onNext(.success(isEqualGroupCreatorUser))
             case .failure(let error):
-                print("에러 수정 필요")
+                self?.isEqualGroupCreatorSubject.onNext(.failure(error))
             }
         }
     }
@@ -98,9 +98,9 @@ final class SettleGroupViewModel {
         groupService.getSettlementCreatorID(with: expenseID, groupID: groupID, userID: userID) {[weak self] getSettlementCreatorUserIdresult in
             switch getSettlementCreatorUserIdresult {
             case .success(let isEqualSettlementCreatorUser):
-                self?.isEqualSettlementCreatorSubject.onNext(isEqualSettlementCreatorUser)
+                self?.isEqualSettlementCreatorSubject.onNext(.success(isEqualSettlementCreatorUser))
             case .failure(let error):
-                print("에러 수정 필요")
+                self?.isEqualSettlementCreatorSubject.onNext(.failure(error))
             }
         }
     }
@@ -139,9 +139,9 @@ final class SettleGroupViewModel {
             switch getGroupMemberListResult {
             case .success(let groupMemberListDomain):
                 self?.groupMemberInformations = groupMemberListDomain
-                self?.isLoadedGroupMemberInfo.onNext(!groupMemberListDomain.isEmpty)
+                self?.isLoadedGroupMemberInfo.onNext(.success(!groupMemberListDomain.isEmpty))
             case .failure(let error):
-                print("에러 수정 필요")
+                self?.isLoadedGroupMemberInfo.onNext(.failure(error))
             }
         }
     }
@@ -153,11 +153,11 @@ final class SettleGroupViewModel {
             case .success(let groupExpenseInfosDomain):
                 guard let groupExpenses = groupExpenseInfosDomain.groupExpenses,
                       let myExpenses = groupExpenseInfosDomain.myExpenses else {
-                    self?.groupExpenseInfoSubject.onNext(("0", "0"))
+                    self?.groupExpenseInfoSubject.onNext(.success(("0", "0")))
                     return }
-                self?.groupExpenseInfoSubject.onNext((groupExpenses, myExpenses))
+                self?.groupExpenseInfoSubject.onNext(.success((groupExpenses, myExpenses)))
             case .failure(let error):
-                print("에러 수정 필요")
+                self?.groupExpenseInfoSubject.onNext(.failure(error))
             }
         }
     }
@@ -167,9 +167,9 @@ final class SettleGroupViewModel {
             switch getGroupExpenseDetailInfoResult {
             case .success(let groupExpenseDetailInfoDomain):
                 self?.expenseDetailInformation = groupExpenseDetailInfoDomain
-                self?.loadedGroupExpenseDetailInfoSubject.onNext(Void())
+                self?.loadedGroupExpenseDetailInfoSubject.onNext(.success(Void()))
             case .failure(let error):
-                print("에러 수정 필요")
+                self?.loadedGroupExpenseDetailInfoSubject.onNext(.failure(error))
             }
         }
     }

@@ -21,7 +21,7 @@ final class HomeViewModel {
     private(set) var myFriendList: [MyFriendListDomain]?
     private(set) var remainderCandidateList: [MyFriendListDomain]?
     let isLoadedMemberInformation = PublishSubject<Void>()
-    let isLoadedMyFriendList = PublishSubject<Void>()
+    let isLoadedMyFriendList = PublishSubject<Result<Void, Error>>()
     
     init(with friendService: FriendService = FriendService(),
          notificationService: NotificationService = NotificationService(),
@@ -140,9 +140,9 @@ final class HomeViewModel {
                 self?.myFriendList = myFriendListInfo
                 self?.remainderCandidateList = myFriendListInfo
                 self?.remainderCandidateList?.append(contentsOf: [user])
-                self?.isLoadedMyFriendList.onNext(Void())
+                self?.isLoadedMyFriendList.onNext(.success(Void()))
             case .failure(let error):
-                print("에러 수정 필요 ")
+                self?.isLoadedMyFriendList.onNext(.failure(error))
             }
         }
     }

@@ -93,17 +93,22 @@ extension FriendRequestViewController {
     
     private func bindIsEmptySearchFriend() {
         friendRequestViewModel.isEmptySearchFriend
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isEmptySearchFriend in
-                self?.friendRequestView.searchResultLabel.text = "검색 결과 🔍"
-                guard isEmptySearchFriend else {
-                    self?.friendRequestView.searchResultFriendLabel.text = "해당 아이디의 회원이 존재하지 않아요. 🥲"
-                    self?.friendRequestView.friendRequestButton.isHidden = true
-                    return
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isEmptySearchFriendResult in
+                switch isEmptySearchFriendResult {
+                case .success(let isEmptySearchFriend):
+                    self?.friendRequestView.searchResultLabel.text = "검색 결과 🔍"
+                    guard isEmptySearchFriend else {
+                        self?.friendRequestView.searchResultFriendLabel.text = "해당 아이디의 회원이 존재하지 않아요. 🥲"
+                        self?.friendRequestView.friendRequestButton.isHidden = true
+                        return
+                    }
+                    guard let searchFriendInfo = self?.friendRequestViewModel.searchFriendInformation else { return }
+                    self?.friendRequestView.searchResultFriendLabel.text = searchFriendInfo.nickname
+                    self?.friendRequestView.friendRequestButton.isHidden = false
+                case .failure(_):
+                    self?.serverErrorAlert()
                 }
-                guard let searchFriendInfo = self?.friendRequestViewModel.searchFriendInformation else { return }
-                self?.friendRequestView.searchResultFriendLabel.text = searchFriendInfo.nickname
-                self?.friendRequestView.friendRequestButton.isHidden = false
             })
             .disposed(by: disposeBag)
     }

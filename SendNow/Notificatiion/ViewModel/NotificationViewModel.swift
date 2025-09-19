@@ -11,7 +11,7 @@ import UserNotifications
 
 final class NotificationViewModel {
     private let notificationService: NotificationService
-    let isLoadedNotificationInfo = PublishSubject<Void>()
+    let isLoadedNotificationInfo = PublishSubject<Result<Void, Error>>()
     let notificationStatusSubject = BehaviorSubject(value: (isSetNoti: false, notificationAuth: false))
     let isUpdatedNotification = PublishSubject<Bool>()
     let isUpdatedNotificationAll = PublishSubject<Bool>()
@@ -33,9 +33,9 @@ final class NotificationViewModel {
             case .success(let notificationListDomain):
                 self?.readNotificationList = notificationListDomain.filter { $0.isRead == true}
                 self?.unreadNotificationList = notificationListDomain.filter { $0.isRead == false }
-                self?.isLoadedNotificationInfo.onNext(Void())
+                self?.isLoadedNotificationInfo.onNext(.success(Void()))
             case .failure(let error):
-                print("에러 수정 필요")
+                self?.isLoadedNotificationInfo.onNext(.failure(error))
             }
         }
     }

@@ -95,10 +95,15 @@ extension InvitedGroupViewController {
     
     private func bindIsLoadedMyFriendList() {
         homeViewModel.isLoadedMyFriendList
-            .asDriver(onErrorJustReturn: Void())
-            .drive(onNext: {[weak self] _ in
-                self?.invitedGroupView.invitedGroupCollectionView.reloadData()
-                self?.invitedGroupView.remainderUserCollectionView.reloadData()
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isLoadedMyFriendListResult in
+                switch isLoadedMyFriendListResult {
+                case .success():
+                    self?.invitedGroupView.invitedGroupCollectionView.reloadData()
+                    self?.invitedGroupView.remainderUserCollectionView.reloadData()
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }

@@ -80,20 +80,31 @@ extension IndividualRemmitDetailViewController {
     
     private func bindIsLoadedGroupSettlementInfo() {
         individualRemmitDetailViewModel.isLoadedGroupSettlementInfo
-            .asDriver(onErrorJustReturn: Void())
-            .drive(onNext: {[weak self] _ in
-                self?.individualRemmitDetailView.individualRemmitCollectionView.reloadData()
-                self?.individualRemmitDetailView.amountBalanceCollectionView.reloadData()
-                self?.individualRemmitDetailView.completedRemittanceCollectionView.reloadData()
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isLoadedGroupSettlementInfoResult in
+                switch isLoadedGroupSettlementInfoResult {
+                case .success():
+                    self?.individualRemmitDetailView.individualRemmitCollectionView.reloadData()
+                    self?.individualRemmitDetailView.amountBalanceCollectionView.reloadData()
+                    self?.individualRemmitDetailView.completedRemittanceCollectionView.reloadData()
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
+                
             })
             .disposed(by: disposeBag)
     }
     
     private func bindIsLoadedCompletionRemittanceInfo() {
         individualRemmitDetailViewModel.isLoadedCompletionRemittanceInfo
-            .asDriver(onErrorJustReturn: Void())
-            .drive(onNext: {[weak self] _ in
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isLoadedCompletionRemittanceInfoResult in
+                switch isLoadedCompletionRemittanceInfoResult {
+                case .success():
                     self?.individualRemmitDetailView.completedRemittanceCollectionView.reloadData()
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }

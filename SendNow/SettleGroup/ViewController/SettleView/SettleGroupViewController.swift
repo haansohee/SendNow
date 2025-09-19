@@ -104,20 +104,30 @@ extension SettleGroupViewController {
     
     private func bindIsLoadedGroupExpenseInfo() {
         settleGroupViewModel.groupExpenseInfoSubject
-            .asDriver(onErrorJustReturn: ("0", "0"))
-            .drive(onNext: {[weak self] group, personal in
-                self?.settleGroupView.spendingDetailCollectionView.reloadData()
-                self?.settleGroupView.configurePaymentLabel(group: group, personal: personal)
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isLoadedGroupExpenseInfoResult in
+                switch isLoadedGroupExpenseInfoResult {
+                case .success(let groupExpenseInfo):
+                    self?.settleGroupView.spendingDetailCollectionView.reloadData()
+                    self?.settleGroupView.configurePaymentLabel(group: groupExpenseInfo.group, personal: groupExpenseInfo.personal)
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }
     
     private func bindIsEqualCreatorUserID() {
         settleGroupViewModel.isEqualGroupCreatorSubject
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isEqualCreatorUserID in
-                self?.settleGroupView.groupRemoveButton.isEnabled = isEqualCreatorUserID
-                self?.settleGroupView.groupRemoveButton.setTitle(isEqualCreatorUserID ? "그룹 삭제" : "", for: .normal)
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isEqualCreatorUserIDResult in
+                switch isEqualCreatorUserIDResult {
+                case .success(let isEqualCreatorUserID):
+                    self?.settleGroupView.groupRemoveButton.isEnabled = isEqualCreatorUserID
+                    self?.settleGroupView.groupRemoveButton.setTitle(isEqualCreatorUserID ? "그룹 삭제" : "", for: .normal)
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }

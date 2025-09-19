@@ -18,7 +18,7 @@ final class GroupListViewModel {
     private(set) var remainderUserID: Int?
     private var groupName: String?
     private var invitedFriends: [Int]?
-    let isLoadedMyGroupList = PublishSubject<Void>()
+    let isLoadedMyGroupList = PublishSubject<Result<Void, Error>>()
     let isInvitedFriendToGroup = PublishSubject<Bool>()
     let isExistedInvitedFriend = PublishSubject<Bool>()
     
@@ -32,9 +32,9 @@ final class GroupListViewModel {
             switch getGroupListResult {
             case .success(let groupListDomain):
                 self?.myGroupList = groupListDomain
-                self?.isLoadedMyGroupList.onNext(Void())
+                self?.isLoadedMyGroupList.onNext(.success(Void()))
             case .failure(let error):
-                print("에러 수정 필요")
+                self?.isLoadedMyGroupList.onNext(.failure(error))
             }
         }
     }

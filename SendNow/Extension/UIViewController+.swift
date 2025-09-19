@@ -9,8 +9,6 @@ import Foundation
 import UIKit
 
 extension UIViewController {
-    
-    
     func confirmAlert(title: String, message: String, collectionView: UICollectionView? = nil) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let doneAction = UIAlertAction(title: "확인", style: .cancel) { _ in

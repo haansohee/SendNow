@@ -17,7 +17,7 @@ final class SigninViewModel {
     private let disposeBag = DisposeBag()
     private let memberService = MemberService()
     let isSuccessedUpdatedNickname = PublishSubject<Bool>()
-    let isSuccessSignin = PublishSubject<Bool>()
+    let isSuccessSignin = PublishSubject<Result<Bool, Error>>()
     let isValidEmailPassword = PublishSubject<Bool>()
     let fcmToken = UserDefaults.standard.string(forKey: MemberInfoField.fcmToken.rawValue)
     let isSetNoti = UserDefaults.standard.bool(forKey: MemberInfoField.isSetNoti.rawValue)
@@ -73,7 +73,7 @@ final class SigninViewModel {
                         kakaoPayUrl: kakaoMemberInfo.kakaoPayUrl ?? ""
                     )
                     self?.setUserDefaultsKakaoMember(kakaoMemberInformation)
-                    self?.isSuccessSignin.onNext(false)
+                    self?.isSuccessSignin.onNext(.success(false))
                     return
                 }
 
@@ -88,9 +88,9 @@ final class SigninViewModel {
                     kakaoPayUrl: kakaoMemberInfo.kakaoPayUrl ?? ""
                 )
                 self?.setUserDefaultsKakaoMember(kakaoMemberInformation)
-                self?.isSuccessSignin.onNext(true)
+                self?.isSuccessSignin.onNext(.success(true))
             case .failure(let error):
-                print("에러 수정 필요")
+                self?.isSuccessSignin.onNext(.failure(error))
             }
         }
     }
@@ -156,7 +156,7 @@ final class SigninViewModel {
                         kakaoPayUrl: appleMemberInfo.kakaoPayUrl ?? ""
                     )
                     self?.setUserDefaultsAppleMember(appleMemberInformation: appleMemberInformation)
-                    self?.isSuccessSignin.onNext(false)
+                    self?.isSuccessSignin.onNext(.success(false))
                     return
                 }
                 
@@ -170,9 +170,9 @@ final class SigninViewModel {
                     kakaoPayUrl: appleMemberInfo.kakaoPayUrl ?? ""
                 )
                 self?.setUserDefaultsAppleMember(appleMemberInformation: appleMemberInformation)
-                self?.isSuccessSignin.onNext(true)
+                self?.isSuccessSignin.onNext(.success(true))
             case .failure(let error):
-                print("에러 수정 필요")
+                self?.isSuccessSignin.onNext(.failure(error))
             }
         }
     }
@@ -237,9 +237,9 @@ final class SigninViewModel {
                       !(password.isEmpty) else { return }
                 let emailMemberInformation = EmailMemberDomain(userID: userID, nickname: nickname, email: email, password: password, bankName: emailMemberInfo.bankName ?? "", accountNumber: emailMemberInfo.accountNumber ?? "", kakaoPayUrl: emailMemberInfo.kakaoPayUrl ?? "")
                 self?.setUserDefaultsEmailMember(emailMemberInformation)
-                self?.isSuccessSignin.onNext(true)
+                self?.isSuccessSignin.onNext(.success(true))
             case .failure(let error):
-                print("에러 수정 필요")
+                self?.isSuccessSignin.onNext(.failure(error))
             }
         }
     }

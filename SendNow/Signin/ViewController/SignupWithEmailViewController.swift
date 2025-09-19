@@ -219,12 +219,17 @@ extension SignupWithEmailViewController {
     
     private func bindIsDuplicatedEmail() {
         signupWithEmailViewModel.isDuplicatedEmail
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isDuplicatedEmail in
-                guard isDuplicatedEmail else {
-                    self?.signupWithEmailView.emailAuthSuccessLabel.text = "메일이 도착했어요! 인증번호를 입력해 주세요."
-                    return }
-                self?.signupWithEmailView.emailAuthSuccessLabel.text = "이미 가입된 이메일이에요. 🥲"
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isDuplicatedEmailResult in
+                switch isDuplicatedEmailResult {
+                case .success(let isDuplicatedEmail):
+                    guard isDuplicatedEmail else {
+                        self?.signupWithEmailView.emailAuthSuccessLabel.text = "메일이 도착했어요! 인증번호를 입력해 주세요."
+                        return }
+                    self?.signupWithEmailView.emailAuthSuccessLabel.text = "이미 가입된 이메일이에요. 🥲"
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }

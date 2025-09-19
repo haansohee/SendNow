@@ -320,10 +320,15 @@ extension SpendingDetailsViewController {
     
     private func bindLoadedGroupExpenseDetailInfoSubject() {
         settleGroupViewModel.loadedGroupExpenseDetailInfoSubject
-            .asDriver(onErrorJustReturn: Void())
-            .drive(onNext: {[weak self] _ in
-                guard let expenseDetailInfo = self?.settleGroupViewModel.expenseDetailInformation else { return }
-                self?.spendingDetailsView.configureSpendingDetailView(expenseDetailInfo)
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] loadedGroupExpenseDetailInfoResult in
+                switch loadedGroupExpenseDetailInfoResult {
+                case .success():
+                    guard let expenseDetailInfo = self?.settleGroupViewModel.expenseDetailInformation else { return }
+                    self?.spendingDetailsView.configureSpendingDetailView(expenseDetailInfo)
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }
@@ -359,10 +364,15 @@ extension SpendingDetailsViewController {
     
     private func bindIsEqualSettlementCreatorSubject() {
         settleGroupViewModel.isEqualSettlementCreatorSubject
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isEqual in
-                self?.updateButton.isEnabled = isEqual
-                self?.updateButton.isHidden = !isEqual
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isEqualSettlementCreatorResult in
+                switch isEqualSettlementCreatorResult {
+                case .success(let isEqualSettlementCreator):
+                    self?.updateButton.isEnabled = isEqualSettlementCreator
+                    self?.updateButton.isHidden = !isEqualSettlementCreator
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }

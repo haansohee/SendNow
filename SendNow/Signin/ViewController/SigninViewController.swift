@@ -123,14 +123,19 @@ extension SigninViewController {
     
     private func bindIsSuccessSignin() {
         signinViewModel.isSuccessSignin
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isSuccessSignin in
-                guard isSuccessSignin else {
-                    self?.navigationController?.pushViewController(SettingNicknameViewController(), animated: true)
-                    return }
-                let rootViewController = MainTabBarController()
-                guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
-                sceneDelegate.changeRootViewController(rootViewController, animated: true)
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isSuccessSigninResult in
+                switch isSuccessSigninResult {
+                case .success(let isSuccessSignin):
+                    guard isSuccessSignin else {
+                        self?.navigationController?.pushViewController(SettingNicknameViewController(), animated: true)
+                        return }
+                    let rootViewController = MainTabBarController()
+                    guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+                    sceneDelegate.changeRootViewController(rootViewController, animated: true)
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }

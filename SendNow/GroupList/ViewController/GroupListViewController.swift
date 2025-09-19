@@ -114,9 +114,14 @@ extension GroupListViewController {
     
     private func bindIsLoadedMyGroupList() {
         groupListViewModel.isLoadedMyGroupList
-            .asDriver(onErrorJustReturn: Void())
-            .drive(onNext: {[weak self] in
-                self?.groupListCollectionView.reloadData()
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isLoadedMyGorupListResult in
+                switch isLoadedMyGorupListResult {
+                case .success():
+                    self?.groupListCollectionView.reloadData()
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }

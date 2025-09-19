@@ -16,7 +16,7 @@ final class SignupWithEmailViewModel {
     private(set) var isCheckedAuthCode: Bool = false
     private(set) var emailAuthCodeInfo: EmailAuthCodeDomain?
     let isDuplicatedNickname = PublishSubject<Bool>()
-    let isDuplicatedEmail = PublishSubject<Bool>()
+    let isDuplicatedEmail = PublishSubject<Result<Bool, Error>>()
     let isCompletedSignup = PublishSubject<Bool>()
     
     func setIsEnabledSignupButton(_ isEnabledSignupButton: Bool) {
@@ -51,9 +51,9 @@ final class SignupWithEmailViewModel {
             case .success(let emailAuthCode):
                 let emailAuthCodeDomain = EmailAuthCodeDomain(isDuplicated: emailAuthCode.isDuplicated, authCode: emailAuthCode.authCode)
                 self?.emailAuthCodeInfo = emailAuthCodeDomain
-                self?.isDuplicatedEmail.onNext(emailAuthCode.isDuplicated)
+                self?.isDuplicatedEmail.onNext(.success(emailAuthCode.isDuplicated))
             case .failure(let error):
-                print("에러 수정 필요")
+                self?.isDuplicatedEmail.onNext(.failure(error))
             }
         }
     }

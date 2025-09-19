@@ -23,8 +23,8 @@ final class IndividualRemmitDetailViewModel {
     private(set) var groupID: Int?
     private(set) var groupSettlementInformations: SettlementListDomain?
     private(set) var remittanceInformations: [CompletionRemittanceDomain]?
-    let isLoadedGroupSettlementInfo = PublishSubject<Void>()
-    let isLoadedCompletionRemittanceInfo = PublishSubject<Void>()
+    let isLoadedGroupSettlementInfo = PublishSubject<Result<Void, Error>>()
+    let isLoadedCompletionRemittanceInfo = PublishSubject<Result<Void, Error>>()
     
     init(with groupService: GroupService = GroupService(), userID: Int) {
         self.groupService = groupService
@@ -42,9 +42,9 @@ final class IndividualRemmitDetailViewModel {
             switch getGroupSettlementsInfoResult {
             case .success(let groupSettlementsInfoDomain):
                 self?.groupSettlementInformations = groupSettlementsInfoDomain
-                self?.isLoadedGroupSettlementInfo.onNext(Void())
+                self?.isLoadedGroupSettlementInfo.onNext(.success(Void()))
             case .failure(let error):
-                print("에러 수정 필요")
+                self?.isLoadedGroupSettlementInfo.onNext(.failure(error))
             }
         }
     }
@@ -55,9 +55,9 @@ final class IndividualRemmitDetailViewModel {
             switch getCompletedRemittanceInfoResult {
             case .success(let completedRemittanceInfoDomain):
                 self?.remittanceInformations = completedRemittanceInfoDomain
-                self?.isLoadedCompletionRemittanceInfo.onNext(Void())
+                self?.isLoadedCompletionRemittanceInfo.onNext(.success(Void()))
             case .failure(let error):
-                print("에러 수정 필요")
+                self?.isLoadedCompletionRemittanceInfo.onNext(.failure(error))
             }
         }
     }

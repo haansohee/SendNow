@@ -135,24 +135,34 @@ extension HomeViewController {
     
     private func bindIsLoadedMyFriendList() {
         homeViewModel.isLoadedMyFriendList
-            .asDriver(onErrorJustReturn: Void())
-            .drive(onNext: {[weak self] _ in
-                self?.homeView.friendListCollectionView.reloadData()
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isLoadedMyFriendListResult in
+                switch isLoadedMyFriendListResult {
+                case .success():
+                    self?.homeView.friendListCollectionView.reloadData()
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }
     
     private func bindIsLoadedNotificationInfo() {
         notificationViewModel.isLoadedNotificationInfo
-            .asDriver(onErrorJustReturn: Void())
-            .drive(onNext: {[weak self] in
-                guard let tabItems = self?.tabBarController?.tabBar.items else {return }
-                guard self?.notificationViewModel.unreadNotificationList?.count != 0 else {
-                    tabItems[2].badgeValue = nil
-                    return }
-                tabItems[2].badgeColor = .clear
-                tabItems[2].setBadgeTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemRed], for: .normal)
-                tabItems[2].badgeValue = "●"
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isLoadedNotificationInfoResult in
+                switch isLoadedNotificationInfoResult {
+                case .success():
+                    guard let tabItems = self?.tabBarController?.tabBar.items else {return }
+                    guard self?.notificationViewModel.unreadNotificationList?.count != 0 else {
+                        tabItems[2].badgeValue = nil
+                        return }
+                    tabItems[2].badgeColor = .clear
+                    tabItems[2].setBadgeTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemRed], for: .normal)
+                    tabItems[2].badgeValue = "●"
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
             })
             .disposed(by: disposeBag)
     }
