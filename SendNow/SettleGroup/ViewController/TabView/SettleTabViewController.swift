@@ -13,10 +13,16 @@ final class SettleTabViewController: TabmanViewController {
     private var viewControllers: [UIViewController]?
     private var tabTitle: String?
     
-    init(groupID: Int, groupName: String) {
+    init(
+        groupID: Int,
+        groupName: String,
+        isActiveSettlement: Bool
+    ) {
         super.init(nibName: nil, bundle: nil)
-        viewControllers = [SettleGroupViewController(groupID: groupID),
-                           IndividualRemmitDetailViewController(groupID: groupID)]
+        viewControllers = [SettleGroupViewController(
+            groupID: groupID,
+            isActiveSettlement: isActiveSettlement
+        ),IndividualRemmitDetailViewController(groupID: groupID)]
         tabTitle = groupName
     }
     

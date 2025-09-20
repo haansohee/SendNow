@@ -22,6 +22,7 @@ enum FailedError: Error {
 final class SettleGroupViewModel {
     private let groupService: GroupService
     private let userID: Int
+    private(set) var isActiveSettlement: Bool?
     private(set) var expenseClassfication: String?
     private(set) var groupID: Int?
     private(set) var expenseID: Int?
@@ -45,6 +46,10 @@ final class SettleGroupViewModel {
     init(groupService: GroupService = GroupService(), userID: Int) {
         self.groupService = groupService
         self.userID = userID
+    }
+    
+    func setIsActiveSettlement(_ isActiveSettlement: Bool) {
+        self.isActiveSettlement = isActiveSettlement
     }
     
     func setGroupID(_ groupID: Int) {
@@ -155,6 +160,7 @@ final class SettleGroupViewModel {
                       let myExpenses = groupExpenseInfosDomain.myExpenses else {
                     self?.groupExpenseInfoSubject.onNext(.success(("0", "0")))
                     return }
+                self?.groupExpenseInformations = groupExpenseInfosDomain
                 self?.groupExpenseInfoSubject.onNext(.success((groupExpenses, myExpenses)))
             case .failure(let error):
                 self?.groupExpenseInfoSubject.onNext(.failure(error))
