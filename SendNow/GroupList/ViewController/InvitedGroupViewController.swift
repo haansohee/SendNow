@@ -15,10 +15,12 @@ final class InvitedGroupViewController: BaseUIViewController {
     private let groupListViewModel: GroupListViewModel
     private let disposeBag = DisposeBag()
     
-    init(homeViewModel: HomeViewModel = HomeViewModel(
-        userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)),
-         groupListViewModel: GroupListViewModel = GroupListViewModel(
-            userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue))) {
+    init(
+        homeViewModel: HomeViewModel = HomeViewModel(
+            userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)),
+        groupListViewModel: GroupListViewModel = GroupListViewModel(
+            userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue))
+    ) {
         self.homeViewModel = homeViewModel
         self.groupListViewModel = groupListViewModel
         super.init(nibName: nil, bundle: nil)
@@ -35,11 +37,6 @@ final class InvitedGroupViewController: BaseUIViewController {
         addSubviews()
         setLayoutConstraintsInvitedGroupView()
         bindAll()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-//        groupListViewModel.removeSelectedFriend()
     }
     
     override var childForStatusBarStyle: UIViewController? {

@@ -15,12 +15,16 @@ final class SettleGroupViewController: BaseUIViewController {
     private let settleGroupViewModel: SettleGroupViewModel
     private let disposeBag = DisposeBag()
     
-    init(viewModel: SettleGroupViewModel = SettleGroupViewModel(
-        userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)),
-         groupID: Int? = nil) {
+    init(
+        viewModel: SettleGroupViewModel = SettleGroupViewModel(
+            userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)),
+        groupID: Int? = nil,
+        isActiveSettlement: Bool
+    ) {
         self.settleGroupViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         guard let id = groupID else { return }
+        settleGroupViewModel.setIsActiveSettlement(isActiveSettlement)
         settleGroupViewModel.setGroupID(id)
         settleGroupViewModel.loadGroupExpenseInformation()
         settleGroupViewModel.loadGroupCreatorID()
@@ -34,6 +38,7 @@ final class SettleGroupViewController: BaseUIViewController {
         super.viewDidLoad()
         configureSettleGroupView()
         addSubviews()
+        configureSettlementGroupViewState()
         setLayoutConstraintsSettleGroupView()
         notificationInvitedFriendObsever()
         bindAll()
@@ -52,6 +57,18 @@ extension SettleGroupViewController {
         settleGroupView.spendingDetailCollectionView.delegate = self
         view.backgroundColor = .secondarySystemBackground
         navigationController?.topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: settleGroupView.groupRemoveButton)
+    }
+    
+    private func configureSettlementGroupViewState() {
+        guard let isActive = settleGroupViewModel.isActiveSettlement else { return }
+        DispatchQueue.main.async {[weak self] in
+            self?.settleGroupView.spendingDetailAddButton.isHidden = !isActive
+            self?.settleGroupView.spendingDetailAddButton.isEnabled = isActive
+            self?.settleGroupView.groupRemoveButton.isHidden = !isActive
+            self?.settleGroupView.groupRemoveButton.isEnabled = isActive
+            guard !isActive else { return }
+            self?.settlementDisableAlert()
+        }
     }
     
     private func addSubviews() {
@@ -158,6 +175,13 @@ extension SettleGroupViewController {
             self?.present(alertController, animated: true)
         }
     }
+    
+    private func settlementDisableAlert() {
+        let alertController = UIAlertController(title: "바로보내", message: "현재 이 그룹에는 탈퇴한 회원이 포함되어 있어 정산 기능을 사용할 수 없습니다. 해당 그룹을 삭제 후 새로운 그룹으로 정산을 해 주세요.", preferredStyle: .alert)
+        let doneAction = UIAlertAction(title: "확인", style: .cancel) { _ in }
+        alertController.addAction(doneAction)
+        present(alertController, animated: true)
+    }
 }
 
 extension SettleGroupViewController: UICollectionViewDataSource {
@@ -167,17 +191,15 @@ extension SettleGroupViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SpendingDetailCollectionViewCell.reuseIdentifier, for: indexPath) as? SpendingDetailCollectionViewCell else { return UICollectionViewCell() }
-        guard let groupExpenseInformations = settleGroupViewModel.groupExpenseInformations,
-              let groupExpenseDetailInformations = settleGroupViewModel.groupExpenseInformations?.expenseInformations else { return cell }
+        guard let groupExpenseDetailInformations = settleGroupViewModel.groupExpenseInformations?.expenseInformations else { return cell }
         cell.setSpendingDetailCollectionViewCellLabel(groupExpenseInfo: groupExpenseDetailInformations[indexPath.row])
-        guard let myExpenses = groupExpenseInformations.myExpenses,
-              let groupExpenses = groupExpenseInformations.groupExpenses else { return cell }
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let groupExpenseInformations = settleGroupViewModel.groupExpenseInformations,
-              let groupExpensDetailInformations = groupExpenseInformations.expenseInformations else { return }
+              let groupExpensDetailInformations = groupExpenseInformations.expenseInformations,
+              let isActiveSettlement = settleGroupViewModel.isActiveSettlement else { return }
         let expenseID = groupExpensDetailInformations[indexPath.row].expenseID
         let groupID = groupExpensDetailInformations[indexPath.row].groupID
         let expenseClassfication = groupExpensDetailInformations[indexPath.row].expenseClassfication
@@ -188,7 +210,8 @@ extension SettleGroupViewController: UICollectionViewDataSource {
             groupID: groupID,
             expenseClassfication: expenseClassfication,
             expenseDate: expenseDate,
-            expenseDetails: expenseDetails
+            expenseDetails: expenseDetails,
+            isActiveSettlement: isActiveSettlement
         )
         navigationController?.pushViewController(viewController, animated: true)
     }

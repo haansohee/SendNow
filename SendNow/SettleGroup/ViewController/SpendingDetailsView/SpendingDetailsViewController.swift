@@ -59,22 +59,23 @@ final class SpendingDetailsViewController: BaseUIViewController {
         return button
     }()
     
-    init(settleGroupViewModel: SettleGroupViewModel = SettleGroupViewModel(
-        userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)),
-         expenseID: Int,
-         groupID: Int,
-         expenseClassfication: String,
-         expenseDate: String,
-         expenseDetails: String
+    init(
+        settleGroupViewModel: SettleGroupViewModel = SettleGroupViewModel(
+            userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)),
+        expenseID: Int,
+        groupID: Int,
+        expenseClassfication: String,
+        expenseDate: String,
+        expenseDetails: String,
+        isActiveSettlement: Bool
     ) {
-        
         self.settleGroupViewModel = settleGroupViewModel
         super.init(nibName: nil, bundle: nil)
         self.settleGroupViewModel.setGroupID(groupID)
         self.settleGroupViewModel.setExpenseID(expenseID)
         self.settleGroupViewModel.selectExpenseClassfication(expenseClassfication)
         self.settleGroupViewModel.setExpenseDate(expenseDate)
-//        self.settleGroupViewModel.loadGroupMemberInformation()
+        self.settleGroupViewModel.setIsActiveSettlement(isActiveSettlement)
         self.settleGroupViewModel.loadSettlementCreatorID()
         self.settleGroupViewModel.loadExpenseDetailInformation(expenseID)
     }
@@ -87,6 +88,7 @@ final class SpendingDetailsViewController: BaseUIViewController {
         super.viewDidLoad()
         configureSpendingDetailsView()
         configureDatePicker()
+        configureSettlementGroupViewState()
         disableEditing()
         addSubviews()
         setLayoutConstraintsSpendingDetailsView()
@@ -103,13 +105,18 @@ extension SpendingDetailsViewController {
         view.backgroundColor = .secondarySystemBackground
         self.navigationItem.hidesBackButton = true
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: updateButton)
         navigationItem.title = "지출 상세 내역"
     }
     
     private func configureDatePicker() {
         guard let date = settleGroupViewModel.expenseDate else { return }
         spendingDetailsView.datePicker.date = date
+    }
+    
+    private func configureSettlementGroupViewState() {
+        guard let isActive = settleGroupViewModel.isActiveSettlement,
+              isActive else { return }
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: updateButton)
     }
     
     private func disableEditing() {
