@@ -150,7 +150,8 @@ extension GroupListViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let myGroupList = groupListViewModel.myGroupList,
-              !myGroupList.isEmpty else { return }
+              !myGroupList.isEmpty,
+              myGroupList.count > indexPath.row else { return }
         let viewController = SettleTabViewController(
             groupID: myGroupList[indexPath.row].groupID,
             groupName: myGroupList[indexPath.row].groupName,
