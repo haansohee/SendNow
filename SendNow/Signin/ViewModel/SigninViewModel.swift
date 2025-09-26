@@ -50,6 +50,7 @@ final class SigninViewModel {
         memberService.getKakaoMemberInfo(with: kakaoToken) { [weak self] getKakaoMemberInfoResult in
             switch getKakaoMemberInfoResult {
             case .success(let kakaoMemberInfo):
+                let isDismissed = kakaoMemberInfo.isDismissed
                 guard let kakaoToken = kakaoMemberInfo.kakaoToken,
                       let email = kakaoMemberInfo.email,
                       let userID = kakaoMemberInfo.userID,
@@ -68,9 +69,8 @@ final class SigninViewModel {
                         email: email,
                         kakaoToken: kakaoToken,
                         kakaoID: kakaoID,
-                        bankName: kakaoMemberInfo.bankName ?? "",
-                        accountNumber: kakaoMemberInfo.accountNumber ?? "",
-                        kakaoPayUrl: kakaoMemberInfo.kakaoPayUrl ?? ""
+                        kakaoPayUrl: kakaoMemberInfo.kakaoPayUrl ?? "",
+                        isDismissed: isDismissed
                     )
                     self?.setUserDefaultsKakaoMember(kakaoMemberInformation)
                     self?.isSuccessSignin.onNext(.success(false))
@@ -83,9 +83,8 @@ final class SigninViewModel {
                     email: email,
                     kakaoToken: kakaoToken,
                     kakaoID: kakaoID,
-                    bankName: kakaoMemberInfo.bankName ?? "",
-                    accountNumber: kakaoMemberInfo.accountNumber ?? "",
-                    kakaoPayUrl: kakaoMemberInfo.kakaoPayUrl ?? ""
+                    kakaoPayUrl: kakaoMemberInfo.kakaoPayUrl ?? "",
+                    isDismissed: isDismissed
                 )
                 self?.setUserDefaultsKakaoMember(kakaoMemberInformation)
                 self?.isSuccessSignin.onNext(.success(true))
@@ -117,7 +116,7 @@ final class SigninViewModel {
                     isSetNoti: signinWithKakaoDomain.isSetNoti,
                     fcmToken: signinWithKakaoDomain.fcmToken
                 )
-                self?.memberService.setKakaoMemberInfo(with: signinWithKakaoRequestDTO) { result in
+                self?.memberService.setKakaoMemberInfo(with: signinWithKakaoRequestDTO) { result, _ in
                     guard result else { return }
                     self?.checkRegisteredKakaoMember(accessToken)
                 }
@@ -129,6 +128,7 @@ final class SigninViewModel {
         memberService.getAppleMemberInfo(with: appleToken) {[weak self] getAppleMemberInfoResult in
             switch getAppleMemberInfoResult {
             case .success(let appleMemberInfo):
+                let isDismissed = appleMemberInfo.isDismissed
                 guard let appleToken = appleMemberInfo.appleToken,
                       let email = appleMemberInfo.email,
                       let userID = appleMemberInfo.userID,
@@ -151,9 +151,8 @@ final class SigninViewModel {
                         nickname: "",
                         email: email,
                         appleToken: appleToken,
-                        bankName: appleMemberInfo.bankName ?? "",
-                        accountNumber: appleMemberInfo.accountNumber ?? "",
-                        kakaoPayUrl: appleMemberInfo.kakaoPayUrl ?? ""
+                        kakaoPayUrl: appleMemberInfo.kakaoPayUrl ?? "",
+                        isDismissed: isDismissed
                     )
                     self?.setUserDefaultsAppleMember(appleMemberInformation: appleMemberInformation)
                     self?.isSuccessSignin.onNext(.success(false))
@@ -165,9 +164,8 @@ final class SigninViewModel {
                     nickname: nickname,
                     email: email,
                     appleToken: appleToken,
-                    bankName: appleMemberInfo.bankName ?? "",
-                    accountNumber: appleMemberInfo.accountNumber ?? "",
-                    kakaoPayUrl: appleMemberInfo.kakaoPayUrl ?? ""
+                    kakaoPayUrl: appleMemberInfo.kakaoPayUrl ?? "",
+                    isDismissed: isDismissed
                 )
                 self?.setUserDefaultsAppleMember(appleMemberInformation: appleMemberInformation)
                 self?.isSuccessSignin.onNext(.success(true))
@@ -185,7 +183,7 @@ final class SigninViewModel {
             isSetNoti: signinWithAppleInfo.isSetNoti,
             fcmToken: signinWithAppleInfo.fcmToken
         )
-        memberService.setAppleMemberInfo(with: signinWithAppleInfoReqeustDTO) {[weak self] result in
+        memberService.setAppleMemberInfo(with: signinWithAppleInfoReqeustDTO) {[weak self] result, _ in
             guard result else { return }
             self?.signinWithApple(signinWithAppleInfo.appleToken, signinWithAppleInfo.authorizationCode)
         }
@@ -201,7 +199,7 @@ final class SigninViewModel {
             userID: updateNicknameInfo.userID,
             nickname: updateNicknameInfo.nickname
         )
-        memberService.updateNickname(with: updateNicknameInfoRequestDTO) { [weak self] result in
+        memberService.updateNickname(with: updateNicknameInfoRequestDTO) { [weak self] result, _ in
             if result {
                 UserDefaults.standard.set(nickname, forKey: MemberInfoField.nickname.rawValue)
             }
@@ -218,7 +216,7 @@ final class SigninViewModel {
             email: validationInformation.email,
             password: validationInformation.password
         )
-        memberService.isValidEmailPassword(with: validationInfoRequestDTO) {[weak self] isValid in
+        memberService.isValidEmailPassword(with: validationInfoRequestDTO) {[weak self] isValid, _ in
             self?.isValidEmailPassword.onNext(isValid)
             guard isValid else { return }
             self?.signinWithEmail(email)
@@ -230,12 +228,20 @@ final class SigninViewModel {
         memberService.getEmailMemberInfo(with: email) {[weak self] getEmailMemberInfoResult in
             switch getEmailMemberInfoResult {
             case .success(let emailMemberInfo):
+                let isDismissed = emailMemberInfo.isDismissed
                 guard let userID = emailMemberInfo.userID,
                       let nickname = emailMemberInfo.nickname,
                       let password = emailMemberInfo.password,
                       !(nickname.isEmpty),
                       !(password.isEmpty) else { return }
-                let emailMemberInformation = EmailMemberDomain(userID: userID, nickname: nickname, email: email, password: password, bankName: emailMemberInfo.bankName ?? "", accountNumber: emailMemberInfo.accountNumber ?? "", kakaoPayUrl: emailMemberInfo.kakaoPayUrl ?? "")
+                let emailMemberInformation = EmailMemberDomain(
+                    userID: userID,
+                    nickname: nickname,
+                    email: email,
+                    password: password,
+                    kakaoPayUrl: emailMemberInfo.kakaoPayUrl ?? "",
+                    isDismissed: isDismissed
+                )
                 self?.setUserDefaultsEmailMember(emailMemberInformation)
                 self?.isSuccessSignin.onNext(.success(true))
             case .failure(let error):
@@ -250,9 +256,8 @@ final class SigninViewModel {
         UserDefaults.standard.set(emailMemberInformation.email, forKey: MemberInfoField.email.rawValue)
         UserDefaults.standard.set(emailMemberInformation.nickname, forKey: MemberInfoField.nickname.rawValue)
         UserDefaults.standard.set(SigninType.email.rawValue, forKey: MemberInfoField.signinType.rawValue)
-        UserDefaults.standard.set(emailMemberInformation.bankName ?? nil, forKey: MemberInfoField.bankName.rawValue)
-        UserDefaults.standard.set(emailMemberInformation.accountNumber ?? nil, forKey: MemberInfoField.accountNumber.rawValue)
         UserDefaults.standard.set(emailMemberInformation.kakaoPayUrl ?? nil, forKey: MemberInfoField.kakaoPayUrl.rawValue)
+        UserDefaults.standard.set(emailMemberInformation.isDismissed, forKey: MemberInfoField.isDismissed.rawValue)
     }
     
     func setUserDefaultsKakaoMember(_ kakaoMemberInformation: KakaoMemberDomain) {
@@ -262,9 +267,8 @@ final class SigninViewModel {
         UserDefaults.standard.set(kakaoMemberInformation.nickname, forKey: MemberInfoField.nickname.rawValue)
         UserDefaults.standard.set(kakaoMemberInformation.kakaoID, forKey: MemberInfoField.kakaoID.rawValue)
         UserDefaults.standard.set(SigninType.kakao.rawValue, forKey: MemberInfoField.signinType.rawValue)
-        UserDefaults.standard.set(kakaoMemberInformation.bankName, forKey: MemberInfoField.bankName.rawValue)
-        UserDefaults.standard.set(kakaoMemberInformation.accountNumber, forKey: MemberInfoField.accountNumber.rawValue)
         UserDefaults.standard.set(kakaoMemberInformation.kakaoPayUrl, forKey: MemberInfoField.kakaoPayUrl.rawValue)
+        UserDefaults.standard.set(kakaoMemberInformation.isDismissed, forKey: MemberInfoField.isDismissed.rawValue)
     }
     
     func setUserDefaultsAppleMember(appleMemberInformation: AppleMemberDomain) {
@@ -273,8 +277,7 @@ final class SigninViewModel {
         UserDefaults.standard.set(appleMemberInformation.email, forKey: MemberInfoField.email.rawValue)
         UserDefaults.standard.set(appleMemberInformation.nickname, forKey: MemberInfoField.nickname.rawValue)
         UserDefaults.standard.set(SigninType.apple.rawValue, forKey: MemberInfoField.signinType.rawValue)
-        UserDefaults.standard.set(appleMemberInformation.bankName, forKey: MemberInfoField.bankName.rawValue)
-        UserDefaults.standard.set(appleMemberInformation.accountNumber, forKey: MemberInfoField.accountNumber.rawValue)
         UserDefaults.standard.set(appleMemberInformation.kakaoPayUrl, forKey: MemberInfoField.kakaoPayUrl.rawValue)
+        UserDefaults.standard.set(appleMemberInformation.isDismissed, forKey: MemberInfoField.isDismissed.rawValue)
     }
 }

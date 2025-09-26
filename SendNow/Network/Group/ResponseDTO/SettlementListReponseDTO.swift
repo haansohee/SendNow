@@ -20,8 +20,6 @@ struct SettlementDetailsResponseDTO: Codable {
     let fromNickname: String
     let toNickname: String
     let amount: String
-    let bankName: String?
-    let accountNumber: String?
     let kakaoPayURL: String?
 }
 
@@ -42,8 +40,6 @@ extension SettlementDetailsResponseDTO {
             fromNickname: fromNickname,
             toNickname: toNickname,
             amount: amount,
-            bankName: bankName,
-            accountNumber: accountNumber,
             kakaoPayURL: kakaoPayURL
         )
     }

@@ -20,12 +20,12 @@ enum FriendAPIPath: String {
 final class FriendService {
     private let networkSessionManager = NetworkSessionManager()
     
-    func setFriendRequest(with friendAddRequestDTO: FriendAddRequestDTO, completion: @escaping(Bool)->Void) {
+    func setFriendRequest(with friendAddRequestDTO: FriendAddRequestDTO, completion: @escaping((Bool, Int))->Void) {
         let path = FriendAPIPath.setFriendRequestList.rawValue
         networkSessionManager.urlPostMethod(path: path, encodeValue: friendAddRequestDTO, completion: completion)
     }
     
-    func updateFriendState(with updateFriendStateRequestDTO: UpdateFriendStateRequestDTO, completion: @escaping(Bool)->Void) {
+    func updateFriendState(with updateFriendStateRequestDTO: UpdateFriendStateRequestDTO, completion: @escaping((Bool, Int))->Void) {
         let path = FriendAPIPath.updateFriendState.rawValue
         networkSessionManager.urlPostMethod(path: path, encodeValue: updateFriendStateRequestDTO, completion: completion)
         

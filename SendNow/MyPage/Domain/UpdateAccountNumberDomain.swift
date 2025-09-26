@@ -6,9 +6,9 @@
 //
 
 import Foundation
-
-struct UpdateAccountNumberDomain {
-    let userID: Int
-    let bankName: String
-    let accountNumber: String
-}
+//
+//struct UpdateAccountNumberDomain {
+//    let userID: Int
+//    let bankName: String
+//    let accountNumber: String
+//}

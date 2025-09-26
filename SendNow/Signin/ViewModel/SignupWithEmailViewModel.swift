@@ -40,8 +40,8 @@ final class SignupWithEmailViewModel {
             userID: nicknameDuplicateInfo.userID,
             nickname: nicknameDuplicateInfo.nickname
         )
-        memberService.isDuplicatedNickname(with: nicknameDuplicateInfoRequestDTO) {[weak self] result in
-            self?.isDuplicatedNickname.onNext(result)
+        memberService.isDuplicatedNickname(with: nicknameDuplicateInfoRequestDTO) {[weak self] response, statusCode in
+            self?.isDuplicatedNickname.onNext(response)
         }
     }
     
@@ -66,8 +66,8 @@ final class SignupWithEmailViewModel {
             isSetNoti: signinWithEmailInfo.isSetNoti,
             fcmToken: signinWithEmailInfo.fcmToken
         )
-        memberService.setEmailMemberInfo(with: signinWithEmailInfoRequestDTO) {[weak self] result in
-            self?.isCompletedSignup.onNext(result)
+        memberService.setEmailMemberInfo(with: signinWithEmailInfoRequestDTO) {[weak self] response, statusCode in
+            self?.isCompletedSignup.onNext(response)
         }
     }
 }

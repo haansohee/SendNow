@@ -20,7 +20,6 @@ final class MemberInfoUpdateViewModel {
     private var newAppleToken: String?
     let isDuplicatedNickname = PublishSubject<Bool>()
     let isUpdatedNickname = PublishSubject<Bool>()
-    let isUpdatedAccountNumber = PublishSubject<Bool>()
     let isUpdatedKakaoPayUrl = PublishSubject<Bool>()
     let isCanceledAccount = PublishSubject<Bool>()
     let myPageItems = ["정보 수정하기 >", "개인정보처리방침 >"]
@@ -42,7 +41,7 @@ final class MemberInfoUpdateViewModel {
             userID: updateNicknameInfo.userID,
             nickname: updateNicknameInfo.nickname
         )
-        memberService.isDuplicatedNickname(with: updateNicknameInfoRequestDTO) {[weak self] isDuplicated in
+        memberService.isDuplicatedNickname(with: updateNicknameInfoRequestDTO) {[weak self] isDuplicated, _ in
             self?.isDuplicatedNickname.onNext(isDuplicated)
         }
     }
@@ -56,29 +55,10 @@ final class MemberInfoUpdateViewModel {
             userID: updateNicknameInfo.userID,
             nickname: updateNicknameInfo.nickname
         )
-        memberService.updateNickname(with: updateNicknameInfoRequestDTO) {[weak self] result in
+        memberService.updateNickname(with: updateNicknameInfoRequestDTO) {[weak self] result, _ in
             self?.isUpdatedNickname.onNext(result)
             guard result else { return }
             UserDefaults.standard.set(updateNickname, forKey: MemberInfoField.nickname.rawValue)
-        }
-    }
-    
-    func updateAccountNumber(bankName: String, accountNumber: String) {
-        let updateAccountNumberDomain = UpdateAccountNumberDomain(
-            userID: userID,
-            bankName: bankName,
-            accountNumber: accountNumber
-        )
-        let updateAccountNumberRequestDTO = UpdateAccountNumberRequestDTO(
-            userID: updateAccountNumberDomain.userID,
-            bankName: updateAccountNumberDomain.bankName,
-            accountNumber: updateAccountNumberDomain.accountNumber
-        )
-        memberService.updateAccountNumber(with: updateAccountNumberRequestDTO) {[weak self] result in
-            self?.isUpdatedAccountNumber.onNext(result)
-            guard result else { return }
-            UserDefaults.standard.set(bankName, forKey: MemberInfoField.bankName.rawValue)
-            UserDefaults.standard.set(accountNumber, forKey: MemberInfoField.accountNumber.rawValue)
         }
     }
     
@@ -91,7 +71,7 @@ final class MemberInfoUpdateViewModel {
             userID: updateKakaoPayUrlDomain.userID,
             kakaoPayUrl: updateKakaoPayUrlDomain.kakaoPayUrl
         )
-        memberService.updateKakaoPayUrl(with: upateKakaoPayUrlRequestDTO) {[weak self] result in
+        memberService.updateKakaoPayUrl(with: upateKakaoPayUrlRequestDTO) {[weak self] result, statusCode in
             self?.isUpdatedKakaoPayUrl.onNext(result)
             guard result else { return }
             UserDefaults.standard.set(kakaoPayUrl, forKey: MemberInfoField.kakaoPayUrl.rawValue)
@@ -115,7 +95,7 @@ final class MemberInfoUpdateViewModel {
         case .apple:
             let cancelAccountDomain = CancelAccountDomain(userID: userID)
             let cancelAccountRequestDTO = CancelAccountRequestDTO(userID: cancelAccountDomain.userID)
-            memberService.revokeAppleToken(with: cancelAccountRequestDTO) {[weak self] isRevoked in
+            memberService.revokeAppleToken(with: cancelAccountRequestDTO) {[weak self] isRevoked, _ in
                 guard isRevoked else {
                     self?.isCanceledAccount.onNext(false)
                     return }
@@ -146,8 +126,6 @@ final class MemberInfoUpdateViewModel {
         UserDefaults.standard.removeObject(forKey: MemberInfoField.appleToken.rawValue)
         UserDefaults.standard.removeObject(forKey: MemberInfoField.kakaoID.rawValue)
         UserDefaults.standard.removeObject(forKey: MemberInfoField.signinType.rawValue)
-        UserDefaults.standard.removeObject(forKey: MemberInfoField.bankName.rawValue)
-        UserDefaults.standard.removeObject(forKey: MemberInfoField.accountNumber.rawValue)
         UserDefaults.standard.removeObject(forKey: MemberInfoField.kakaoPayUrl.rawValue)
         UserDefaults.standard.removeObject(forKey: MemberInfoField.notificationBadge.rawValue)
         UNUserNotificationCenter.current().setBadgeCount(0)

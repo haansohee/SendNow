@@ -21,17 +21,17 @@ enum NotificationAPIPath: String {
 final class NotificationService {
     private let networkSessionManager = NetworkSessionManager()
     
-    func sendGroupNotification(with notificationRequestDTO: GroupNotificationRequestDTO, completion: @escaping(Bool)->Void) {
+    func sendGroupNotification(with notificationRequestDTO: GroupNotificationRequestDTO, completion: @escaping(Bool, Int)->Void) {
         let path = NotificationAPIPath.sendGroupNotification.rawValue
         networkSessionManager.urlPostMethod(path: path, encodeValue: notificationRequestDTO, completion: completion)
     }
     
-    func sendFriendNotification(with notificationRequestDTO: FriendNotificationRequestDTO, completion: @escaping(Bool)->Void) {
+    func sendFriendNotification(with notificationRequestDTO: FriendNotificationRequestDTO, completion: @escaping(Bool, Int)->Void) {
         let path = NotificationAPIPath.sendFriendNotification.rawValue
         networkSessionManager.urlPostMethod(path: path, encodeValue: notificationRequestDTO, completion: completion)
     }
     
-    func sendRemittanceNotification(with settlementID: Int, completion: @escaping(Bool)->Void) {
+    func sendRemittanceNotification(with settlementID: Int, completion: @escaping(Bool, Int)->Void) {
         let path = "\(NotificationAPIPath.sendRemittanceNotification.rawValue)?settlementID=\(settlementID)"
         networkSessionManager.urlPostMethod(path: path, encodeValue: settlementID, completion: completion)
     }
@@ -50,13 +50,13 @@ final class NotificationService {
         }
     }
     
-    func updateNotificationIsRead(with notificationID: Int, userID: Int, completion: @escaping(Bool)->Void) {
+    func updateNotificationIsRead(with notificationID: Int, userID: Int, completion: @escaping(Bool, Int)->Void) {
         let path = NotificationAPIPath.updateNoficiationIsRead.rawValue
         let notificationRequestDTO = UpdateNotificationRequestDTO(notificationID: notificationID, userID: userID)
         networkSessionManager.urlPostMethod(path: path, encodeValue: notificationRequestDTO, completion: completion)
     }
     
-    func updateNotificationState(with notificationStateRequestDTO: UpdateNotificationStateRequestDTO, completion: @escaping(Bool)->Void) {
+    func updateNotificationState(with notificationStateRequestDTO: UpdateNotificationStateRequestDTO, completion: @escaping(Bool, Int)->Void) {
         let path = NotificationAPIPath.updateNotificationState.rawValue
         networkSessionManager.urlPostMethod(path: path, encodeValue: notificationStateRequestDTO, completion: completion)
     }

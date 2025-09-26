@@ -20,8 +20,6 @@ struct SettlementDetailsDomain {
     let fromNickname: String
     let toNickname: String
     let amount: String
-    let bankName: String?
-    let accountNumber: String?
     let kakaoPayURL: String?
 }
 

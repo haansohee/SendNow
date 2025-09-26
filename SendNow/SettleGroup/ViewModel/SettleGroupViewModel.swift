@@ -130,7 +130,7 @@ final class SettleGroupViewModel {
             expenseAmount: expenseUploadDomain.expenseAmount,
             expenseDate: expenseUploadDomain.expenseDate
         )
-        groupService.setExpensesUpload(with: expenseUploadRequestDTO) {[weak self] result in
+        groupService.setExpensesUpload(with: expenseUploadRequestDTO) {[weak self] result, _ in
             if result {
                 NotificationCenter.default.post(name: NSNotification.Name(NotificationName.uploadExpense.rawValue), object: result)
             }
@@ -235,7 +235,7 @@ final class SettleGroupViewModel {
             expenseAmount: spendingDetailInformation.expenseAmount,
             expenseDate: spendingDetailInformation.expenseDate
         )
-        groupService.updateSpendingDetailInformation(with: spedingDetailInfoRequestDTO) {[weak self] isUpdated in
+        groupService.updateSpendingDetailInformation(with: spedingDetailInfoRequestDTO) {[weak self] isUpdated, _ in
             self?.isUpdatedSpendingDetailInfoSubject.onNext(isUpdated)
         }
     }

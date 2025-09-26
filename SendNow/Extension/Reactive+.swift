@@ -16,7 +16,6 @@ extension Reactive where Base: FriendRequestListCollectionViewCell {
 
 extension Reactive where Base: IndividualRemmitDetailCollectionViewCell {
     var didTapKakaoPayUrlButton: ControlEvent<Void> { base.receiverKakaoPayButton.rx.tap }
-    var didTapCopyButton: ControlEvent<Void> { base.accountNumberCopyButton.rx.tap }
 }
 
 extension Reactive where Base: CompletedRemittanceCollectionViewCell {

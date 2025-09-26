@@ -27,17 +27,17 @@ enum GroupAPIPath: String {
 final class GroupService {
     private let networkSessionManager = NetworkSessionManager()
     
-    func setGroupList(with groupCreationRequestDTO: GroupCreationRequestDTO, completion: @escaping(Bool)->Void) {
+    func setGroupList(with groupCreationRequestDTO: GroupCreationRequestDTO, completion: @escaping(Bool, Int)->Void) {
         let path = GroupAPIPath.setGroupList.rawValue
         networkSessionManager.urlPostMethod(path: path, encodeValue: groupCreationRequestDTO, completion: completion)
     }
     
-    func setExpensesUpload(with expenseUploadRequestDTO: ExpenseUploadRequestDTO, completion: @escaping(Bool)->Void) {
+    func setExpensesUpload(with expenseUploadRequestDTO: ExpenseUploadRequestDTO, completion: @escaping(Bool, Int)->Void) {
         let path = GroupAPIPath.setExpensesUpload.rawValue
         networkSessionManager.urlPostMethod(path: path, encodeValue: expenseUploadRequestDTO, completion: completion)
     }
     
-    func setCompletedRemittance(with remittanceStatusRequestDTO: RemittanceStatusRequestDTO, completion: @escaping(Bool)->Void) {
+    func setCompletedRemittance(with remittanceStatusRequestDTO: RemittanceStatusRequestDTO, completion: @escaping(Bool, Int)->Void) {
         let path = GroupAPIPath.setCompletedRemittace.rawValue
         networkSessionManager.urlPostMethod(path: path, encodeValue: remittanceStatusRequestDTO, completion: completion)
     }
@@ -163,7 +163,7 @@ final class GroupService {
         }
     }
     
-    func updateSpendingDetailInformation(with expenseDetailInformationRequestDTO: UpdateSpendingDetailInformationRequestDTO, completion: @escaping(Bool)->Void) {
+    func updateSpendingDetailInformation(with expenseDetailInformationRequestDTO: UpdateSpendingDetailInformationRequestDTO, completion: @escaping(Bool, Int)->Void) {
         let path = GroupAPIPath.updateSpendingDetailInfo.rawValue
         networkSessionManager.urlPostMethod(path: path, encodeValue: expenseDetailInformationRequestDTO, completion: completion)
     }

@@ -44,11 +44,6 @@ extension BankInfoRequiredViewController {
         bankInfoRequiredView.layer.cornerRadius = 10
     }
     
-    private func configureMemberInfoUpdateViewBankNameTextField(bankName: String, isEnabled: Bool) {
-        bankInfoRequiredView.bankNameUploadTextField.text = bankName
-        bankInfoRequiredView.bankNameUploadTextField.isEnabled = isEnabled
-    }
-    
     private func addSubivews() {
         view.addSubview(bankInfoRequiredView)
     }
@@ -63,58 +58,57 @@ extension BankInfoRequiredViewController {
     }
     
     // MARK: Bind
-    
     private func bind() {
-        bindBankNameUploadButton()
         bindUploadButton()
-        bindBankInfoUpdatedSubject()
+        bindDismissedButton()
+        bindDismissedForeverButton()
+        bindIsUpdatedKakaoPayUrlSubject()
+        bindIsUpdatedKakaoPayUrlDimissedSubject()
     }
     
-    private func bindBankNameUploadButton() {
-        bankInfoRequiredView.bankNameUploadButton.rx.tap
-            .asDriver()
-            .drive(onNext: {[weak self] _ in
-                let bankNameMenuItems: [UIAction] = {
-                    return [
-                        UIAction(title: BankName.kbstar.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.kbstar.rawValue, isEnabled: false)}),
-                        UIAction(title: BankName.nhbank.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.nhbank.rawValue, isEnabled: false)}),
-                        UIAction(title: BankName.shinhan.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.shinhan.rawValue, isEnabled: false)}),
-                        UIAction(title: BankName.kebhana.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.kebhana.rawValue, isEnabled: false)}),
-                        UIAction(title: BankName.wooribank.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.wooribank.rawValue, isEnabled: false)}),
-                        UIAction(title: BankName.kakaobank.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.kakaobank.rawValue, isEnabled: false)}),
-                        UIAction(title: BankName.directInput.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: "", isEnabled: true)})
-                    ]
-                }()
-                self?.bankInfoRequiredView.bankNameUploadButton.menu = UIMenu(title: "은행기관 선택", options: .displayInline, children: bankNameMenuItems)
-            })
-            .disposed(by: disposeBag)
-    }
-
     private func bindUploadButton() {
         bankInfoRequiredView.uploadButton.rx.tap
             .subscribe(onNext: {[weak self] _ in
-                self?.bankInfoRequiredViewModel.updateMemberBankInfo(bankName: self?.bankInfoRequiredView.bankNameUploadTextField.text,
-                                                                     accountNumber: self?.bankInfoRequiredView.accountNumberUploadTextField.text,
-                                                                     kakaoPayURL: self?.bankInfoRequiredView.kakaoPayUrlUploadTextField.text)
+                guard let kakaoPayURL = self?.bankInfoRequiredView.kakaoPayUrlUploadTextField.text,
+                      !kakaoPayURL.isEmpty else { return }
+                self?.bankInfoRequiredViewModel.updateKakaoPayURL(kakaoPayURL)
             })
             .disposed(by: disposeBag)
     }
     
-    private func bindBankInfoUpdatedSubject() {
-        bankInfoRequiredViewModel.bankInfoUpdatedSubject
-            .asDriver(onErrorJustReturn: .networkError)
-            .drive(onNext: {[weak self] bankInfoResponse in
-                switch bankInfoResponse {
-                case .networkError:
-                    let message = "서버에 일시적인 문제가 생겼어요. 잠시 후에 시도해 주세요. 🥲"
-                    self?.bankInfoUpdatedAlert(message: message, isUpdated: false)
-                case .noValue:
-                    let message = "계좌번호 혹은 카카오페이 송금 링크를 반드시 입력해야 바로보내 서비스를 이용할 수 있어요."
-                    self?.bankInfoUpdatedAlert(message: message, isUpdated: false)
-                case .success:
-                    let message = "회원님의 정보가 업데이트되었어요. 바로보내 서비스를 이용해 보세요! 🙌🏻"
-                    self?.bankInfoUpdatedAlert(message: message, isUpdated: true)
-                }
+    private func bindDismissedButton() {
+        bankInfoRequiredView.dismissButton.rx.tap
+            .asDriver()
+            .drive(onNext: {[weak self] in
+                self?.dismiss(animated: true)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindDismissedForeverButton() {
+        bankInfoRequiredView.dismissForeverButton.rx.tap
+            .subscribe(onNext: {[weak self] _ in
+                self?.bankInfoRequiredViewModel.updateKakaoPayUrlDimissed()
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindIsUpdatedKakaoPayUrlSubject() {
+        bankInfoRequiredViewModel.isUpdatedKakaoPayUrlSubject
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isUpdatedKakaoPayUrl in
+                let message = isUpdatedKakaoPayUrl ? "카카오페이 링크 등록이 완료되었어요!" : "유효한 카카오페이 링크가 아니에요. 다시 시도 해 주세요."
+                self?.bankInfoUpdatedAlert(message: message, isUpdated: isUpdatedKakaoPayUrl)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindIsUpdatedKakaoPayUrlDimissedSubject() {
+        bankInfoRequiredViewModel.isUpdatedKakaoPayUrlDismissedSubject
+            .asDriver(onErrorJustReturn: false)
+            .drive(onNext: {[weak self] isUpdatedKakaoPayUrlSubject in
+                guard isUpdatedKakaoPayUrlSubject else { return }
+                self?.dismiss(animated: true)
             })
             .disposed(by: disposeBag)
     }

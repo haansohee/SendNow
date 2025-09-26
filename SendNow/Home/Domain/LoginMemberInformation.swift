@@ -15,7 +15,6 @@ struct LoginMemberInformation {
     let kakaoToken: String?
     let appleToken: String?
     let kakaoID: String?
-    let bankName: String?
-    let accountNumber: String?
     let kakaoPayUrl: String?
+    let isDismissed: Bool
 }

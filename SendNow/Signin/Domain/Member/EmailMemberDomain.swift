@@ -12,7 +12,6 @@ struct EmailMemberDomain {
     let nickname: String?
     let email: String?
     let password: String?
-    let bankName: String?
-    let accountNumber: String?
     let kakaoPayUrl: String?
+    let isDismissed: Bool
 }

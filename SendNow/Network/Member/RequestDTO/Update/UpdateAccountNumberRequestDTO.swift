@@ -6,9 +6,9 @@
 //
 
 import Foundation
-
-struct UpdateAccountNumberRequestDTO: Codable {
-    let userID: Int
-    let bankName: String
-    let accountNumber: String
-}
+//
+//struct UpdateAccountNumberRequestDTO: Codable {
+//    let userID: Int
+//    let bankName: String
+//    let accountNumber: String
+//}
