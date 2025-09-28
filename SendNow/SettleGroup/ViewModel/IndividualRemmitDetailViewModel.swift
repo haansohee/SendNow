@@ -67,7 +67,7 @@ final class IndividualRemmitDetailViewModel {
             settlementID: remittanceInfo.settlementID,
             isCompletedRemittance: remittanceInfo.isCompletedRemittance
         )
-        groupService.setCompletedRemittance(with: remittanceInfoRequestDTO) {[weak self] isUpdatedRemittance in
+        groupService.setCompletedRemittance(with: remittanceInfoRequestDTO) {[weak self] isUpdatedRemittance, _ in
             guard isUpdatedRemittance else { return }
             self?.loadCompletionRemittanceInformation()
             completion(isUpdatedRemittance)
@@ -80,7 +80,7 @@ final class IndividualRemmitDetailViewModel {
     }
     
     func sendRemittanceNotification(settlementID: Int) {
-        notificationService.sendRemittanceNotification(with: settlementID) { _ in }
+        notificationService.sendRemittanceNotification(with: settlementID) { _, _ in }
     }
     
     func parseFormattednumberSimple(_ amount: String) -> Int {

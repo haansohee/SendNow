@@ -47,57 +47,6 @@ final class MemberInfoUpdateView: UIView {
         return button
     }()
     
-    private let accountNumberLabel: SignupDescriptionLabel = {
-        let label = SignupDescriptionLabel()
-        label.text = "친구에게 송금받을 계좌번호를 입력 후 등록해 주세요."
-        label.numberOfLines = 0
-        return label
-    }()
-    
-    
-    let bankNameUploadTextField: PaddingTextField = {
-        let textField = PaddingTextField()
-        textField.isEnabled = false
-        textField.backgroundColor = .systemGray6
-        textField.borderStyle = .none
-        textField.font = .systemFont(ofSize: 12.0, weight: .light)
-        textField.placeholder = "은행 기관을 선택하세요."
-        return textField
-    }()
-    
-    let bankNameUploadButton: AnimationButton = {
-        let button = AnimationButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.showsMenuAsPrimaryAction = true
-        button.setTitle("은행기관 선택", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor(named: "TitleColor")
-        button.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .medium)
-        button.layer.cornerRadius = 5.0
-        return button
-    }()
-    
-    let accountNumberUploadTextField: PaddingTextField = {
-        let textField = PaddingTextField()
-        textField.backgroundColor = .systemGray6
-        textField.borderStyle = .none
-        textField.font = .systemFont(ofSize: 12.0, weight: .light)
-        textField.placeholder = "계좌번호"
-        textField.keyboardType = .numberPad
-        return textField
-    }()
-    
-    let accountNumberUploadButton: AnimationButton = {
-        let button = AnimationButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("등록하기", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor(named: "TitleColor")
-        button.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .medium)
-        button.layer.cornerRadius = 5.0
-        return button
-    }()
-    
     private let kakaoPayLabel: SignupDescriptionLabel = {
         let label = SignupDescriptionLabel()
         label.text = "카카오페이 링크를 등록해 놓으면 \n 친구가 편하게 입금해 줄 수 있어요!"
@@ -197,11 +146,6 @@ extension MemberInfoUpdateView {
             nicknameTextField,
             nicknameDuplicateButton,
             nicknameUpdateButton,
-            accountNumberLabel,
-            bankNameUploadTextField,
-            bankNameUploadButton,
-            accountNumberUploadTextField,
-            accountNumberUploadButton,
             kakaoPayLabel,
             kakaoPayUrlUploadTextField,
             kakaoPayUrlUploadButton,
@@ -216,9 +160,7 @@ extension MemberInfoUpdateView {
         ].forEach { imageStackView.addSubview($0) }
     }
     
-    func configureMemberAccountInfo(bankName: String, accountNumber: String, kakaoPayUrl: String) {
-        bankNameUploadTextField.placeholder = bankName
-        accountNumberUploadTextField.placeholder = accountNumber
+    func configureMemberAccountInfo(kakaoPayUrl: String) {
         kakaoPayUrlUploadTextField.placeholder = kakaoPayUrl
     }
     
@@ -244,33 +186,7 @@ extension MemberInfoUpdateView {
             nicknameUpdateButton.heightAnchor.constraint(equalTo: nicknameDuplicateButton.heightAnchor),
             nicknameUpdateButton.widthAnchor.constraint(equalTo: nicknameDuplicateButton.widthAnchor),
 
-            accountNumberLabel.topAnchor.constraint(equalTo: nicknameDuplicateButton.bottomAnchor, constant: 50.0),
-            accountNumberLabel.leadingAnchor.constraint(equalTo: nicknameLabel.leadingAnchor),
-            accountNumberLabel.trailingAnchor.constraint(equalTo: nicknameLabel.trailingAnchor),
-            accountNumberLabel.heightAnchor.constraint(equalTo: nicknameLabel.heightAnchor),
-            
-            bankNameUploadTextField.topAnchor.constraint(equalTo: accountNumberLabel.bottomAnchor, constant: 12.0),
-            bankNameUploadTextField.leadingAnchor.constraint(equalTo: accountNumberLabel.leadingAnchor),
-            bankNameUploadTextField.widthAnchor.constraint(equalTo: nicknameTextField.widthAnchor),
-            bankNameUploadTextField.heightAnchor.constraint(equalTo: nicknameTextField.heightAnchor),
-            
-            bankNameUploadButton.topAnchor.constraint(equalTo: bankNameUploadTextField.topAnchor),
-            bankNameUploadButton.leadingAnchor.constraint(equalTo: bankNameUploadTextField.trailingAnchor, constant: 8.0),
-            bankNameUploadButton.trailingAnchor.constraint(equalTo: accountNumberLabel.trailingAnchor),
-            bankNameUploadButton.heightAnchor.constraint(equalTo: bankNameUploadTextField.heightAnchor),
-            
-            accountNumberUploadTextField.topAnchor.constraint(equalTo: bankNameUploadTextField.bottomAnchor, constant: 12.0),
-            accountNumberUploadTextField.leadingAnchor.constraint(equalTo: accountNumberLabel.leadingAnchor),
-            accountNumberUploadTextField.widthAnchor.constraint(equalTo: nicknameTextField.widthAnchor),
-            accountNumberUploadTextField.heightAnchor.constraint(equalTo: bankNameUploadTextField.heightAnchor),
-            
-            accountNumberUploadButton.topAnchor.constraint(equalTo: accountNumberUploadTextField.topAnchor),
-            accountNumberUploadButton.leadingAnchor.constraint(equalTo: accountNumberUploadTextField.trailingAnchor, constant: 8.0),
-            accountNumberUploadButton.trailingAnchor.constraint(equalTo: accountNumberLabel.trailingAnchor),
-            accountNumberUploadButton.heightAnchor.constraint(equalTo: accountNumberUploadTextField.heightAnchor),
-            
-            
-            kakaoPayLabel.topAnchor.constraint(equalTo: accountNumberUploadTextField.bottomAnchor, constant: 50.0),
+            kakaoPayLabel.topAnchor.constraint(equalTo: nicknameUpdateButton.bottomAnchor, constant: 50.0),
             kakaoPayLabel.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 12.0),
             kakaoPayLabel.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -12.0),
             kakaoPayLabel.heightAnchor.constraint(equalToConstant: 40.0),

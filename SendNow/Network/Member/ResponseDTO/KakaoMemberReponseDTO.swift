@@ -13,9 +13,8 @@ struct KakaoMemberReponseDTO: Codable {
     let email: String?
     let kakaoToken: String?
     let kakaoID: Int64?
-    let bankName: String?
-    let accountNumber: String?
     let kakaoPayUrl: String?
+    let isDismissed: Bool
 }
 
 extension KakaoMemberReponseDTO {
@@ -26,9 +25,8 @@ extension KakaoMemberReponseDTO {
             email: email,
             kakaoToken: kakaoToken,
             kakaoID: kakaoID,
-            bankName: bankName,
-            accountNumber: accountNumber,
-            kakaoPayUrl: kakaoPayUrl
+            kakaoPayUrl: kakaoPayUrl,
+            isDismissed: isDismissed
         )
     }
 }

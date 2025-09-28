@@ -47,6 +47,12 @@ final class HomeViewController: BaseUIViewController {
         homeViewModel.loadMemberInformation()
         homeViewModel.loadMyFriend()
     }
+    
+//    override func viewIsAppearing(_ animated: Bool) {
+//        super.viewIsAppearing(animated)
+//        homeViewModel.loadMemberInformation()
+//        homeViewModel.loadMyFriend()
+//    }
 }
 
 extension HomeViewController {
@@ -122,11 +128,12 @@ extension HomeViewController {
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: {[weak self] in
                 self?.configureHomeViewNicknameLabel()
-                guard let bankName = self?.homeViewModel.loginMemberInformation?.bankName,
-                      let kakaoPayURL = self?.homeViewModel.loginMemberInformation?.kakaoPayUrl else {
+                guard let kakaoPayURL = self?.homeViewModel.loginMemberInformation?.kakaoPayUrl,
+                      let isDismissed = self?.homeViewModel.loginMemberInformation?.isDismissed else {
                     return
                 }
-                if bankName.isEmpty && bankName == "" && kakaoPayURL.isEmpty && kakaoPayURL == "" {
+                print("isDismissed : \(isDismissed)")
+                if kakaoPayURL.isEmpty && kakaoPayURL == "" && !isDismissed {
                     self?.present(BankInfoRequiredViewController(), animated: true)
                 }
             })

@@ -77,7 +77,7 @@ final class GroupListViewModel {
             creatorID: groupCreationDomain.creatorID,
             remainderUserID: groupCreationDomain.remainderUserID
         )
-        groupService.setGroupList(with: groupCreationRequestDTO) {[weak self] result in
+        groupService.setGroupList(with: groupCreationRequestDTO) {[weak self] result, _ in
             if result {
                 NotificationCenter.default.post(name: NSNotification.Name(NotificationName.invitedFriend.rawValue), object: result)
                 self?.sendNotification()
@@ -98,7 +98,7 @@ final class GroupListViewModel {
             receiverUserID: notificationDomain.receiverUserID,
             groupName: notificationDomain.groupName
         )
-        notificationService.sendGroupNotification(with: notificationRequestDTO) {[weak self] result in
+        notificationService.sendGroupNotification(with: notificationRequestDTO) {[weak self] result, _ in
             if result { self?.invitedFriendList = [] }
         }
     }

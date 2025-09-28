@@ -54,56 +54,59 @@ final class HomeViewModel {
     }
     
     func loadMemberInformation() {
+        let isDismissed = UserDefaults.standard.bool(forKey: MemberInfoField.isDismissed.rawValue)
         guard let signinType = UserDefaults.standard.string(forKey: MemberInfoField.signinType.rawValue),
               let nickname = UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue),
-              let email = UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue) else { return }
-        let bankName = UserDefaults.standard.string(forKey: MemberInfoField.bankName.rawValue) ?? nil
-        let accountNumber = UserDefaults.standard.string(forKey: MemberInfoField.accountNumber.rawValue) ?? nil
+              let email = UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue)
+        else { return }
         let kakaoPayUrl = UserDefaults.standard.string(forKey: MemberInfoField.kakaoPayUrl.rawValue) ?? nil
         switch signinType {
         case SigninType.kakao.rawValue:
             guard let kakaoToken = UserDefaults.standard.string(forKey: MemberInfoField.kakaoToken.rawValue),
                   let kakaoID = UserDefaults.standard.string(forKey: MemberInfoField.kakaoID.rawValue) else { return }
-            let loginMemberInfo = LoginMemberInformation(userID: userID,
-                                                         nickname: nickname,
-                                                         email: email,
-                                                         password: nil,
-                                                         kakaoToken: kakaoToken,
-                                                         appleToken: nil,
-                                                         kakaoID: kakaoID,
-                                                         bankName: bankName,
-                                                         accountNumber: accountNumber,
-                                                         kakaoPayUrl: kakaoPayUrl)
+            let loginMemberInfo = LoginMemberInformation(
+                userID: userID,
+                nickname: nickname,
+                email: email,
+                password: nil,
+                kakaoToken: kakaoToken,
+                appleToken: nil,
+                kakaoID: kakaoID,
+                kakaoPayUrl: kakaoPayUrl,
+                isDismissed: isDismissed
+            )
             self.loginMemberInformation = loginMemberInfo
             isLoadedMemberInformation.onNext(Void())
             return
         case SigninType.apple.rawValue:
             guard let appleToken = UserDefaults.standard.string(forKey: MemberInfoField.appleToken.rawValue) else { return }
-            let loginMemberInfo = LoginMemberInformation(userID: userID,
-                                                         nickname: nickname,
-                                                         email: email,
-                                                         password: nil,
-                                                         kakaoToken: nil,
-                                                         appleToken: appleToken,
-                                                         kakaoID: nil,
-                                                         bankName: bankName,
-                                                         accountNumber: accountNumber,
-                                                         kakaoPayUrl: kakaoPayUrl)
+            let loginMemberInfo = LoginMemberInformation(
+                userID: userID,
+                nickname: nickname,
+                email: email,
+                password: nil,
+                kakaoToken: nil,
+                appleToken: appleToken,
+                kakaoID: nil,
+                kakaoPayUrl: kakaoPayUrl,
+                isDismissed: isDismissed
+            )
             self.loginMemberInformation = loginMemberInfo
             isLoadedMemberInformation.onNext(Void())
             return
         case SigninType.email.rawValue:
             guard let password = UserDefaults.standard.string(forKey: MemberInfoField.password.rawValue) else { return }
-            let loginMemberInfo = LoginMemberInformation(userID: userID,
-                                                         nickname: nickname,
-                                                         email: email,
-                                                         password: password,
-                                                         kakaoToken: nil,
-                                                         appleToken: nil,
-                                                         kakaoID: nil,
-                                                         bankName: bankName,
-                                                         accountNumber: accountNumber,
-                                                         kakaoPayUrl: kakaoPayUrl)
+            let loginMemberInfo = LoginMemberInformation(
+                userID: userID,
+                nickname: nickname,
+                email: email,
+                password: password,
+                kakaoToken: nil,
+                appleToken: nil,
+                kakaoID: nil,
+                kakaoPayUrl: kakaoPayUrl,
+                isDismissed: isDismissed
+            )
             self.loginMemberInformation = loginMemberInfo
             isLoadedMemberInformation.onNext(Void())
             return
@@ -120,9 +123,8 @@ final class HomeViewModel {
         UserDefaults.standard.removeObject(forKey: MemberInfoField.appleToken.rawValue)
         UserDefaults.standard.removeObject(forKey: MemberInfoField.kakaoID.rawValue)
         UserDefaults.standard.removeObject(forKey: MemberInfoField.signinType.rawValue)
-        UserDefaults.standard.removeObject(forKey: MemberInfoField.bankName.rawValue)
-        UserDefaults.standard.removeObject(forKey: MemberInfoField.accountNumber.rawValue)
         UserDefaults.standard.removeObject(forKey: MemberInfoField.kakaoPayUrl.rawValue)
+        UserDefaults.standard.removeObject(forKey: MemberInfoField.isDismissed.rawValue)
     }
     
     
@@ -130,8 +132,6 @@ final class HomeViewModel {
         let user = MyFriendListDomain(
             userID: userID,
             nickname: "\(UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue) ?? "") (본인)",
-            bankName: UserDefaults.standard.string(forKey: MemberInfoField.bankName.rawValue),
-            accountNumber: UserDefaults.standard.string(forKey: MemberInfoField.accountNumber.rawValue),
             kakaoPayUrl: UserDefaults.standard.string(forKey: MemberInfoField.kakaoPayUrl.rawValue)
         )
         friendService.getMyFriendList(with: userID) {[weak self] getMyFriendListResult in

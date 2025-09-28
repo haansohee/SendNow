@@ -13,7 +13,6 @@ struct KakaoMemberDomain {
     let email: String?
     let kakaoToken: String?
     let kakaoID: Int64?
-    let bankName: String?
-    let accountNumber: String?
     let kakaoPayUrl: String?
+    let isDismissed: Bool
 }

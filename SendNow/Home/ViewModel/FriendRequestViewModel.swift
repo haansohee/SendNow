@@ -43,7 +43,7 @@ final class FriendRequestViewModel {
             fromUserNickname: friendAddInfo.fromUserNickname,
             toUserID: friendAddInfo.toUserID
         )
-        friendService.setFriendRequest(with: friendAddRequestDTO) {[weak self] result in
+        friendService.setFriendRequest(with: friendAddRequestDTO) {[weak self] result, _ in
             if result {
                 self?.friendRequestReceivedUserID = toUserID
                 self?.sendFriendNotification()
@@ -106,7 +106,7 @@ final class FriendRequestViewModel {
             toUserID: updateFriendStateDomain.toUserID,
             isFriended: updateFriendStateDomain.isFriended
         )
-        friendService.updateFriendState(with: updateFriendStateRequestDTO) {[weak self] result in
+        friendService.updateFriendState(with: updateFriendStateRequestDTO) {[weak self] result, _ in
             if result {
                 NotificationCenter.default.post(name: NSNotification.Name(NotificationName.sendFriendRequest.rawValue), object: result)
             }
@@ -124,6 +124,6 @@ final class FriendRequestViewModel {
             senderUserID: friendNotificationInfo.senderUserID,
             receiverUserID: friendNotificationInfo.receiverUserID
         )
-        notificationService.sendFriendNotification(with: friendNotificationRequestDTO) { _ in }
+        notificationService.sendFriendNotification(with: friendNotificationRequestDTO) { _, _ in }
     }
 }

@@ -27,19 +27,19 @@ enum GroupAPIPath: String {
 final class GroupService {
     private let networkSessionManager = NetworkSessionManager()
     
-    func setGroupList(with groupCreationRequestDTO: GroupCreationRequestDTO, completion: @escaping(Bool)->Void) {
+    func setGroupList(with requestDTO: GroupCreationRequestDTO, completion: @escaping(Bool, Int)->Void) {
         let path = GroupAPIPath.setGroupList.rawValue
-        networkSessionManager.urlPostMethod(path: path, encodeValue: groupCreationRequestDTO, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
     }
     
-    func setExpensesUpload(with expenseUploadRequestDTO: ExpenseUploadRequestDTO, completion: @escaping(Bool)->Void) {
+    func setExpensesUpload(with requestDTO: ExpenseUploadRequestDTO, completion: @escaping(Bool, Int)->Void) {
         let path = GroupAPIPath.setExpensesUpload.rawValue
-        networkSessionManager.urlPostMethod(path: path, encodeValue: expenseUploadRequestDTO, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
     }
     
-    func setCompletedRemittance(with remittanceStatusRequestDTO: RemittanceStatusRequestDTO, completion: @escaping(Bool)->Void) {
+    func setCompletedRemittance(with requestDTO: RemittanceStatusRequestDTO, completion: @escaping(Bool, Int)->Void) {
         let path = GroupAPIPath.setCompletedRemittace.rawValue
-        networkSessionManager.urlPostMethod(path: path, encodeValue: remittanceStatusRequestDTO, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
     }
     
     func deleteGroup(with groupID: Int, completion: @escaping(Bool)->Void) {
@@ -47,9 +47,9 @@ final class GroupService {
         networkSessionManager.urlDeleteMethod(path: path, encodeValue: groupID, completion: completion)
     }
     
-    func deleteSpendingDetailInformation(with deleteSpendingDetailInformationRequestDTO: DeleteSpendingDetailInformationRequestDTO, completion: @escaping(Bool)->Void) {
+    func deleteSpendingDetailInformation(with requestDTO: DeleteSpendingDetailInformationRequestDTO, completion: @escaping(Bool)->Void) {
         let path = GroupAPIPath.deleteSpendingDetailInformation.rawValue
-        networkSessionManager.urlDeleteMethod(path: path, encodeValue: deleteSpendingDetailInformationRequestDTO, completion: completion)
+        networkSessionManager.urlDeleteMethod(path: path, encodeValue: requestDTO, completion: completion)
     }
     
     func getGroupList(with userID: Int, completion: @escaping(Result<[GroupListDomain], Error>)->Void) {
@@ -163,8 +163,8 @@ final class GroupService {
         }
     }
     
-    func updateSpendingDetailInformation(with expenseDetailInformationRequestDTO: UpdateSpendingDetailInformationRequestDTO, completion: @escaping(Bool)->Void) {
+    func updateSpendingDetailInformation(with requestDTO: UpdateSpendingDetailInformationRequestDTO, completion: @escaping(Bool, Int)->Void) {
         let path = GroupAPIPath.updateSpendingDetailInfo.rawValue
-        networkSessionManager.urlPostMethod(path: path, encodeValue: expenseDetailInformationRequestDTO, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
     }
 }

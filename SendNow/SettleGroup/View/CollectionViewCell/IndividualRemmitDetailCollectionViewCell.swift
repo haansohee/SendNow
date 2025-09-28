@@ -49,26 +49,6 @@ final class IndividualRemmitDetailCollectionViewCell: UICollectionViewCell, Reus
         return label
     }()
     
-    private let receiverAccountNumberLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = ""
-        label.textAlignment = .right
-        label.textColor = .secondaryLabel
-        label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 12.0, weight: .light)
-        return label
-    }()
-    
-    let accountNumberCopyButton: AnimationButton = {
-        let button = AnimationButton()
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 24.0, weight: .light)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "doc.on.doc",  withConfiguration: imageConfig), for: .normal)
-        button.tintColor = .secondaryLabel
-        return button
-    }()
-    
     let receiverKakaoPayButton: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -97,17 +77,9 @@ final class IndividualRemmitDetailCollectionViewCell: UICollectionViewCell, Reus
         senderNicknameLabel.text = information.fromNickname
         receiverNicknameLabel.text = information.toNickname
         amountLabel.text = "\(information.amount)원 송금해 주세요."
-        
-        guard let bankName = information.bankName,
-              let accountNumber = information.accountNumber,
-              !bankName.isEmpty,
-              !accountNumber.isEmpty else {
-            receiverAccountNumberLabel.text = "\(information.toNickname) 님은 계좌를 등록하지 않았어요."
-            accountNumberCopyButton.isHidden = true
-            return
-        }
-        receiverAccountNumberLabel.text = "\(bankName) \(accountNumber)"
-        accountNumberCopyButton.isHidden = false
+        let hasKakaoPayURL = information.kakaoPayURL != nil
+        receiverKakaoPayButton.isHidden = !hasKakaoPayURL
+        receiverKakaoPayButton.isEnabled = hasKakaoPayURL
     }
 }
 
@@ -118,8 +90,6 @@ extension IndividualRemmitDetailCollectionViewCell {
             arrowImageView,
             receiverNicknameLabel,
             amountLabel,
-            receiverAccountNumberLabel,
-            accountNumberCopyButton,
             receiverKakaoPayButton
         ].forEach { contentView.addSubview($0) }
     }
@@ -147,18 +117,9 @@ extension IndividualRemmitDetailCollectionViewCell {
             amountLabel.heightAnchor.constraint(equalToConstant: 35.0),
             
             receiverKakaoPayButton.topAnchor.constraint(equalTo: amountLabel.bottomAnchor, constant: 8.0),
-            receiverKakaoPayButton.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -24),
+            receiverKakaoPayButton.centerXAnchor.constraint(equalTo: amountLabel.centerXAnchor),
             receiverKakaoPayButton.widthAnchor.constraint(equalToConstant: 75.0),
             receiverKakaoPayButton.heightAnchor.constraint(equalToConstant: 30.0),
-            
-            accountNumberCopyButton.centerYAnchor.constraint(equalTo: receiverKakaoPayButton.centerYAnchor),
-            accountNumberCopyButton.leadingAnchor.constraint(equalTo: receiverAccountNumberLabel.trailingAnchor),
-            accountNumberCopyButton.trailingAnchor.constraint(equalTo: receiverKakaoPayButton.leadingAnchor, constant: -52.0),
-            accountNumberCopyButton.heightAnchor.constraint(equalToConstant: 30.0),
-            
-            receiverAccountNumberLabel.centerYAnchor.constraint(equalTo: accountNumberCopyButton.centerYAnchor),
-            receiverAccountNumberLabel.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 24),
-            receiverAccountNumberLabel.heightAnchor.constraint(equalToConstant: 40.0)
         ])
     }
     

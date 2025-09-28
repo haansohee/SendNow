@@ -20,20 +20,20 @@ enum FriendAPIPath: String {
 final class FriendService {
     private let networkSessionManager = NetworkSessionManager()
     
-    func setFriendRequest(with friendAddRequestDTO: FriendAddRequestDTO, completion: @escaping(Bool)->Void) {
+    func setFriendRequest(with requestDTO: FriendAddRequestDTO, completion: @escaping((Bool, Int))->Void) {
         let path = FriendAPIPath.setFriendRequestList.rawValue
-        networkSessionManager.urlPostMethod(path: path, encodeValue: friendAddRequestDTO, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
     }
     
-    func updateFriendState(with updateFriendStateRequestDTO: UpdateFriendStateRequestDTO, completion: @escaping(Bool)->Void) {
+    func updateFriendState(with requestDTO: UpdateFriendStateRequestDTO, completion: @escaping((Bool, Int))->Void) {
         let path = FriendAPIPath.updateFriendState.rawValue
-        networkSessionManager.urlPostMethod(path: path, encodeValue: updateFriendStateRequestDTO, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
         
     }
     
-    func deleteFriendRequestList(with deleteFriendRequestDTO: DeleteFriendRequestDTO, completion: @escaping(Bool)->Void) {
+    func deleteFriendRequestList(with requestDTO: DeleteFriendRequestDTO, completion: @escaping(Bool)->Void) {
         let path = FriendAPIPath.deleteFriendRequestList.rawValue
-        networkSessionManager.urlDeleteMethod(path: path, encodeValue: deleteFriendRequestDTO, completion: completion)
+        networkSessionManager.urlDeleteMethod(path: path, encodeValue: requestDTO, completion: completion)
     }
     
     func getFriendInformation(with nickname: String, completion: @escaping(Result<SearchFriendDomain, Error>)->Void) {

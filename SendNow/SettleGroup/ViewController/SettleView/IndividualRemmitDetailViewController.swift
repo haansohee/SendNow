@@ -142,7 +142,9 @@ extension IndividualRemmitDetailViewController: UICollectionViewDataSource {
                 return cell
             }
             cell.receiverKakaoPayButton.isHidden = false
-            cell.receiverKakaoPayButton.isEnabled = individualRemmitDetailViewModel.compareUserID(fromUserID: settlementInformations.settlementDetails[indexPath.row].fromUserID)
+            cell.receiverKakaoPayButton.isEnabled = individualRemmitDetailViewModel
+                .compareUserID(fromUserID: settlementInformations.settlementDetails[indexPath.row].fromUserID)
+            
             cell.rx.didTapKakaoPayUrlButton
                 .asDriver()
                 .drive(onNext: {[weak self] _ in
@@ -150,15 +152,6 @@ extension IndividualRemmitDetailViewController: UICollectionViewDataSource {
                           let amount = self?.toHexValue(strToIntAmount),
                           let url = URL(string: "\(String(describing: kakaoPayUrl))\(String(describing: amount))") else { return }
                     UIApplication.shared.open(url, options: [:])
-                })
-                .disposed(by: cell.disposeBag)
-            
-            cell.rx.didTapCopyButton
-                .asDriver()
-                .drive(onNext: { _ in
-                    guard let bankName = settlementInformations.settlementDetails[indexPath.row].bankName,
-                          let accountNumber = settlementInformations.settlementDetails[indexPath.row].accountNumber else { return }
-                    UIPasteboard.general.string = "\(bankName) \(accountNumber)"
                 })
                 .disposed(by: cell.disposeBag)
             return cell

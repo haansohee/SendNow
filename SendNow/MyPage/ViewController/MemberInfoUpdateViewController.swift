@@ -73,32 +73,20 @@ extension MemberInfoUpdateViewController {
         memberInfoUpdateView.nicknameTextField.placeholder = nickname
     }
     
-    private func configureMemberInfoUpdateViewBankNameTextField(bankName: String, isEnabled: Bool) {
-        memberInfoUpdateView.bankNameUploadTextField.text = bankName
-        memberInfoUpdateView.bankNameUploadTextField.isEnabled = isEnabled
-    }
-    
     private func configureMemberInfoUpdateViewAccountInfo() {
-        let bankName = homeViewModel.loginMemberInformation?.bankName ?? "은행 기관을 선택하세요."
-        let accountNumber = homeViewModel.loginMemberInformation?.accountNumber ?? "계좌번호"
         let kakaoPayUrl = homeViewModel.loginMemberInformation?.kakaoPayUrl ?? "송금 코드 링크를 입력해 주세요."
-        memberInfoUpdateView.configureMemberAccountInfo(bankName: bankName,
-                                                        accountNumber: accountNumber,
-                                                        kakaoPayUrl: kakaoPayUrl)
+        memberInfoUpdateView.configureMemberAccountInfo(kakaoPayUrl: kakaoPayUrl)
     }
     
     //MARK: Bind
     private func bindAll() {
         bindNicknameDuplicateButton()
         bindNicknameUpdateButton()
-        bindBankNameUploadButton()
         bindKakaoPayUrlUploadButton()
-        bindAccountNumberUploadButton()
         bindCancelAccountButton()
         bindNicknameTextField()
         bindIsDuplicatedNickname()
         bindIsUpdatedNickname()
-        bindIsUpdatedAccountNumber()
         bindIsUpdatedKakaoPayUrl()
         bindIsCanceldAccount()
     }
@@ -121,45 +109,6 @@ extension MemberInfoUpdateViewController {
                       !updateNickname.isEmpty else { return }
                 self?.memberInfoUpdateViewModel.updateNickname(updateNickname: updateNickname)
             }).disposed(by: disposeBag)
-    }
-    
-    private func bindBankNameUploadButton() {
-        memberInfoUpdateView.bankNameUploadButton.rx.tap
-            .asDriver()
-            .drive(onNext: {[weak self] _ in
-                let bankNameMenuItems: [UIAction] = {
-                    return [
-                        UIAction(title: BankName.kbstar.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.kbstar.rawValue, isEnabled: false)}),
-                        UIAction(title: BankName.nhbank.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.nhbank.rawValue, isEnabled: false)}),
-                        UIAction(title: BankName.shinhan.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.shinhan.rawValue, isEnabled: false)}),
-                        UIAction(title: BankName.kebhana.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.kebhana.rawValue, isEnabled: false)}),
-                        UIAction(title: BankName.wooribank.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.wooribank.rawValue, isEnabled: false)}),
-                        UIAction(title: BankName.kakaobank.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: BankName.kakaobank.rawValue, isEnabled: false)}),
-                        UIAction(title: BankName.directInput.rawValue, handler: { _ in self?.configureMemberInfoUpdateViewBankNameTextField(bankName: "", isEnabled: true)})
-                    ]
-                }()
-                self?.memberInfoUpdateView.bankNameUploadButton.menu = UIMenu(title: "은행기관 선택", options: .displayInline, children: bankNameMenuItems)
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    private func bindAccountNumberUploadButton() {
-        memberInfoUpdateView.accountNumberUploadButton.rx.tap
-            .asDriver()
-            .drive(onNext: {[weak self] _ in
-                guard let bankName = self?.memberInfoUpdateView.bankNameUploadTextField.text,
-                      !bankName.isEmpty else {
-                    self?.confirmAlert(title: "바로보내", message: "은행기관을 선택해 주세요.")
-                    return
-                }
-                guard let accountNumber = self?.memberInfoUpdateView.accountNumberUploadTextField.text,
-                      !accountNumber.isEmpty else {
-                    self?.confirmAlert(title: "바로보내", message: "계좌번호를 입력해 주세요.")
-                    return
-                }
-                self?.memberInfoUpdateViewModel.updateAccountNumber(bankName: bankName, accountNumber: accountNumber)
-            })
-            .disposed(by: disposeBag)
     }
     
     private func bindKakaoPayUrlUploadButton() {
@@ -220,25 +169,6 @@ extension MemberInfoUpdateViewController {
                 self?.memberInfoUpdateView.configureNicknameUpdateButton(false)
                 self?.memberInfoUpdateView.configureNicknameDuplicateButton(false)
                 
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    private func bindIsUpdatedAccountNumber() {
-        memberInfoUpdateViewModel.isUpdatedAccountNumber
-            .asDriver(onErrorJustReturn: false)
-            .drive(onNext: {[weak self] isUpdatedAccountNumber in
-                guard isUpdatedAccountNumber else {
-                    self?.confirmAlert(title: "바로보내", message: "잠시후에 시도해 주세요. 🥲")
-                    return
-                }
-                self?.confirmAlert(title: "바로보내", message: "계좌번호가 등록되었어요.")
-                guard let updateBankName = self?.memberInfoUpdateView.bankNameUploadTextField.text,
-                      let updateAccountNumber = self?.memberInfoUpdateView.accountNumberUploadTextField.text,
-                      !updateBankName.isEmpty,
-                      !updateAccountNumber.isEmpty else { return }
-                self?.memberInfoUpdateView.bankNameUploadTextField.placeholder = updateBankName
-                self?.memberInfoUpdateView.accountNumberUploadTextField.placeholder = updateAccountNumber
             })
             .disposed(by: disposeBag)
     }

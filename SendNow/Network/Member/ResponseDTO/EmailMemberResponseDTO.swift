@@ -12,9 +12,8 @@ struct EmailMemberResponseDTO: Codable {
     let nickname: String?
     let email: String?
     let password: String?
-    let bankName: String?
-    let accountNumber: String?
     let kakaoPayUrl: String?
+    let isDismissed: Bool
 }
 
 extension EmailMemberResponseDTO {
@@ -24,9 +23,8 @@ extension EmailMemberResponseDTO {
             nickname: nickname,
             email: email,
             password: password,
-            bankName: bankName,
-            accountNumber: accountNumber,
-            kakaoPayUrl: kakaoPayUrl
+            kakaoPayUrl: kakaoPayUrl,
+            isDismissed: isDismissed
         )
     }
 }

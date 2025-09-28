@@ -10,7 +10,5 @@ import Foundation
 struct MyFriendListDomain: Equatable, Error {
     let userID: Int
     let nickname: String
-    let bankName: String?
-    let accountNumber: String?
     let kakaoPayUrl: String?
 }

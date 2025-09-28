@@ -39,7 +39,7 @@ final class NetworkSessionManager {
         }
     }
     
-    func urlPostMethod<T: Codable>(path: String, encodeValue: T, completion: @escaping(Bool)->Void) {
+    func urlPostMethod<T: Codable>(path: String, encodeValue: T, completion: @escaping((response: Bool, statusCode: Int))->Void) {
         guard let BaseURL = BaseURL,
               let url = URL(string: BaseURL+path) else { return }
         AF.request(url,
@@ -50,13 +50,13 @@ final class NetworkSessionManager {
         ).validate(statusCode: 200..<500).responseString { response in
             switch response.response?.statusCode {
             case 200:
-                completion(true)
+                completion((response: true, statusCode: 200))
             case 400:
-                completion(false)  // 요청 문제
+                completion((response: false, statusCode: 400))  // 요청 문제
             case 500:
-                completion(false)  // 서버 문제
+                completion((response: false, statusCode: 500))  // 서버 문제
             default:
-                completion(false)
+                completion((response: false, statusCode: 0))
             }
         }
     }
