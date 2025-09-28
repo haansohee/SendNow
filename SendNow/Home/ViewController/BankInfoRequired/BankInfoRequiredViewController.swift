@@ -88,7 +88,7 @@ extension BankInfoRequiredViewController {
     private func bindDismissedForeverButton() {
         bankInfoRequiredView.dismissForeverButton.rx.tap
             .subscribe(onNext: {[weak self] _ in
-                self?.bankInfoRequiredViewModel.updateKakaoPayUrlDimissed()
+                self?.bankInfoRequiredViewModel.updateKakaoPayUrlDismissed()
             })
             .disposed(by: disposeBag)
     }

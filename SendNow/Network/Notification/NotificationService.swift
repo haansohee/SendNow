@@ -21,14 +21,14 @@ enum NotificationAPIPath: String {
 final class NotificationService {
     private let networkSessionManager = NetworkSessionManager()
     
-    func sendGroupNotification(with notificationRequestDTO: GroupNotificationRequestDTO, completion: @escaping(Bool, Int)->Void) {
+    func sendGroupNotification(with requestDTO: GroupNotificationRequestDTO, completion: @escaping(Bool, Int)->Void) {
         let path = NotificationAPIPath.sendGroupNotification.rawValue
-        networkSessionManager.urlPostMethod(path: path, encodeValue: notificationRequestDTO, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
     }
     
-    func sendFriendNotification(with notificationRequestDTO: FriendNotificationRequestDTO, completion: @escaping(Bool, Int)->Void) {
+    func sendFriendNotification(with requestDTO: FriendNotificationRequestDTO, completion: @escaping(Bool, Int)->Void) {
         let path = NotificationAPIPath.sendFriendNotification.rawValue
-        networkSessionManager.urlPostMethod(path: path, encodeValue: notificationRequestDTO, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
     }
     
     func sendRemittanceNotification(with settlementID: Int, completion: @escaping(Bool, Int)->Void) {
@@ -56,9 +56,9 @@ final class NotificationService {
         networkSessionManager.urlPostMethod(path: path, encodeValue: notificationRequestDTO, completion: completion)
     }
     
-    func updateNotificationState(with notificationStateRequestDTO: UpdateNotificationStateRequestDTO, completion: @escaping(Bool, Int)->Void) {
+    func updateNotificationState(with requestDTO: UpdateNotificationStateRequestDTO, completion: @escaping(Bool, Int)->Void) {
         let path = NotificationAPIPath.updateNotificationState.rawValue
-        networkSessionManager.urlPostMethod(path: path, encodeValue: notificationStateRequestDTO, completion: completion)
+        networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
     }
     
     func deleteNotification(with userID: Int, completion: @escaping(Bool)->Void) {

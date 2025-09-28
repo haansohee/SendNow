@@ -77,8 +77,9 @@ final class IndividualRemmitDetailCollectionViewCell: UICollectionViewCell, Reus
         senderNicknameLabel.text = information.fromNickname
         receiverNicknameLabel.text = information.toNickname
         amountLabel.text = "\(information.amount)원 송금해 주세요."
-        receiverKakaoPayButton.isHidden = !(information.kakaoPayURL != nil)
-        receiverKakaoPayButton.isEnabled = information.kakaoPayURL != nil
+        let hasKakaoPayURL = information.kakaoPayURL != nil
+        receiverKakaoPayButton.isHidden = !hasKakaoPayURL
+        receiverKakaoPayButton.isEnabled = hasKakaoPayURL
     }
 }
 

@@ -34,7 +34,7 @@ final class BankInfoRequiredViewModel {
         }
     }
     
-    func updateKakaoPayUrlDimissed() {
+    func updateKakaoPayUrlDismissed() {
         let updateKakaoPayUrlRequestDTO = UpdateKakaoPayDismissedRequestDTO(userID: userID, isDismissed: true)
         memberService.updateKakaoPayUrlDismissed(with: updateKakaoPayUrlRequestDTO) {[weak self] updateKakaoPayDismissedResult, _ in
             UserDefaults.standard.set(updateKakaoPayDismissedResult, forKey: MemberInfoField.isDismissed.rawValue)

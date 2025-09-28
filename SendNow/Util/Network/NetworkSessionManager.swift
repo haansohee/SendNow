@@ -54,7 +54,7 @@ final class NetworkSessionManager {
             case 400:
                 completion((response: false, statusCode: 400))  // 요청 문제
             case 500:
-                completion((response: false, statusCode: 400))  // 서버 문제
+                completion((response: false, statusCode: 500))  // 서버 문제
             default:
                 completion((response: false, statusCode: 0))
             }
