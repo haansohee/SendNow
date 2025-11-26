@@ -14,6 +14,9 @@ struct AppleMemberResponseDTO: Codable {
     let appleToken: String?
     let kakaoPayUrl: String?
     let isDismissed: Bool
+    let summaryReceived: String?
+    let summarySent: String?
+    let summaryUnsettled: Int?
 }
 
 extension AppleMemberResponseDTO {
@@ -24,7 +27,10 @@ extension AppleMemberResponseDTO {
             email: email,
             appleToken: appleToken,
             kakaoPayUrl: kakaoPayUrl,
-            isDismissed: isDismissed
+            isDismissed: isDismissed,
+            summaryReceived: summaryReceived,
+            summarySent: summarySent,
+            summaryUnsettled: summaryUnsettled
         )
     }
 }

@@ -54,8 +54,6 @@ final class NotificationViewController: BaseUIViewController {
         notificationViewModel = viewModel
         self.disposeBag = disposeBag
         super.init(nibName: nil, bundle: nil)
-        notificationViewModel.getNotificationList()
-        notificationViewModel.loadNotificationStatus()
     }
     
     required init?(coder: NSCoder) {
@@ -63,6 +61,8 @@ final class NotificationViewController: BaseUIViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        notificationViewModel.getNotificationList()
+        notificationViewModel.loadNotificationStatus()
         configureNotificationView()
         configureRefreshControl()
         addSubviews()

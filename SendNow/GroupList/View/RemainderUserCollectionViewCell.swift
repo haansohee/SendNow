@@ -10,16 +10,16 @@ import UIKit
 final class RemainderUserCollectionViewCell: UICollectionViewCell,ReuseIdentifierProtocol {
     private let nicknameLabel: UILabel = {
         let label = UILabel()
-        label.text = "User"
         label.textColor = .label
         label.font = .systemFont(ofSize: 14, weight: .medium)
-        label.textAlignment = .center 
+        label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        contentView.addSubview(nicknameLabel)
         setLayoutConstrainst()
         configureReamidnerUserCollectionViewCell()
     }
@@ -42,6 +42,12 @@ extension RemainderUserCollectionViewCell {
     private func configureReamidnerUserCollectionViewCell() {
         contentView.layer.masksToBounds = false
         contentView.layer.cornerRadius = 12.0
-        contentView.backgroundColor = .secondarySystemBackground
+        contentView.layer.borderColor = UIColor.systemGray5.cgColor
+        contentView.layer.borderWidth = 1.0
+        contentView.backgroundColor = .systemBackground
+    }
+    
+    func configureNicknameLabel(_ nickanme: String) {
+        nicknameLabel.text = nickanme
     }
 }

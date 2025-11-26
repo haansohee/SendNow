@@ -31,7 +31,6 @@ final class FriendRequestListViewController: BaseUIViewController {
     init(viewModel: FriendRequestViewModel = FriendRequestViewModel(userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue))) {
         self.friendRequestViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        friendRequestViewModel.getFriendRequestList()
     }
     
     required init?(coder: NSCoder) {
@@ -40,6 +39,7 @@ final class FriendRequestListViewController: BaseUIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        friendRequestViewModel.getFriendRequestList()
         configureFriendRequestView()
         addSubivews()
         setLayoutConstraintsFriendRequestListView()

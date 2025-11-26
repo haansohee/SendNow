@@ -15,4 +15,7 @@ struct KakaoMemberDomain {
     let kakaoID: Int64?
     let kakaoPayUrl: String?
     let isDismissed: Bool
+    let summaryReceived: String?
+    let summarySent: String?
+    let summaryUnsettled: Int?
 }

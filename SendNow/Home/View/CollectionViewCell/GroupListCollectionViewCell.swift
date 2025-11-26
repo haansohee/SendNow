@@ -88,7 +88,7 @@ extension GroupListCollectionViewCell {
     
     private func configureGroupListCollectionViewCell( ) {
         contentView.layer.masksToBounds = false
-        contentView.layer.cornerRadius = 24.0
+        contentView.layer.cornerRadius = 12.0
         contentView.backgroundColor = .systemBackground
     }
     

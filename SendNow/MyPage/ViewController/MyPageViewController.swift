@@ -61,7 +61,7 @@ extension MyPageViewController {
 // MARK: UICollectionViewDataSource
 extension MyPageViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 2
+        return 3
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -82,6 +82,11 @@ extension MyPageViewController: UICollectionViewDataSource {
             let viewController = PrivacyPolicyViewController()
             viewController.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(viewController, animated: true)
+        case 2:
+            memberInfoUpdateViewModel.removeUserDefatulsData()
+            let rootViewController = UINavigationController(rootViewController: SigninViewController())
+            guard let sceneDelgate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
+            sceneDelgate.changeRootViewController(rootViewController, animated: true)
         default:
             return
         }

@@ -76,8 +76,6 @@ final class SpendingDetailsViewController: BaseUIViewController {
         self.settleGroupViewModel.selectExpenseClassfication(expenseClassfication)
         self.settleGroupViewModel.setExpenseDate(expenseDate)
         self.settleGroupViewModel.setIsActiveSettlement(isActiveSettlement)
-        self.settleGroupViewModel.loadSettlementCreatorID()
-        self.settleGroupViewModel.loadExpenseDetailInformation(expenseID)
     }
     
     required init?(coder: NSCoder) {
@@ -86,6 +84,8 @@ final class SpendingDetailsViewController: BaseUIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        settleGroupViewModel.loadSettlementCreatorID()
+        loadExpenseDetailInformation()
         configureSpendingDetailsView()
         configureDatePicker()
         configureSettlementGroupViewState()
@@ -97,6 +97,16 @@ final class SpendingDetailsViewController: BaseUIViewController {
 }
 
 extension SpendingDetailsViewController {
+    private func loadExpenseDetailInformation() {
+        guard let expenseID = settleGroupViewModel.expenseID else {
+            DispatchQueue.main.async {[weak self] in
+                self?.navigationController?.popViewController(animated: true)
+            }
+            return
+        }
+        settleGroupViewModel.loadExpenseDetailInformation(expenseID)
+    }
+    
     private func configureSpendingDetailsView() {
         spendingDetailsView.translatesAutoresizingMaskIntoConstraints = false
         spendingDetailsView.spendingDetailAddButton.setTitle("수정", for: .normal)

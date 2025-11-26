@@ -54,6 +54,7 @@ final class FriendRequestListCollectionViewCell: UICollectionViewCell, ReuseIden
         super.init(frame: frame)
         addSubviews()
         setLayoutConstraints()
+        configureFriendRequestListCollectionViewCell()
     }
     
     required init?(coder: NSCoder) {
@@ -87,5 +88,11 @@ extension FriendRequestListCollectionViewCell {
             friendNicknameLabel.trailingAnchor.constraint(equalTo: requesetAcceptButton.leadingAnchor, constant: -24.0),
             friendNicknameLabel.heightAnchor.constraint(equalTo: requestCancelButton.heightAnchor)
         ])
+    }
+    
+    private func configureFriendRequestListCollectionViewCell( ) {
+        contentView.layer.masksToBounds = false
+        contentView.layer.cornerRadius = 12.0
+        contentView.backgroundColor = .systemBackground
     }
 }

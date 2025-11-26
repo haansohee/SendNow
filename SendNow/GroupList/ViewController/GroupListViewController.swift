@@ -37,7 +37,6 @@ final class GroupListViewController: BaseUIViewController {
     init(viewModel: GroupListViewModel = GroupListViewModel(userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue))) {
         self.groupListViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        groupListViewModel.loadMyGroup()
     }
     
     required init?(coder: NSCoder) {
@@ -46,6 +45,7 @@ final class GroupListViewController: BaseUIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        groupListViewModel.loadMyGroup()
         configureGroupListView()
         addSubviews()
         setLayoutConstraintsGroupListView()

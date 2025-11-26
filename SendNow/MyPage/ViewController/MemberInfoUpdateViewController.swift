@@ -23,7 +23,6 @@ final class MemberInfoUpdateViewController: BaseUIViewController {
         self.homeViewModel = viewModel
         self.memberInfoUpdateViewModel = updateViewModel
         super.init(nibName: nil, bundle: nil)
-        homeViewModel.loadMemberInformation()
     }
     
     required init?(coder: NSCoder) {
@@ -32,6 +31,7 @@ final class MemberInfoUpdateViewController: BaseUIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        homeViewModel.loadMemberInformation()
         configureMemberInfoView()
         addSubviews()
         setLayoutConstraintsMemberInfoUpdateView()
