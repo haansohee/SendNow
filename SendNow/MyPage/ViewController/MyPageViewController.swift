@@ -83,7 +83,7 @@ extension MyPageViewController: UICollectionViewDataSource {
             viewController.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(viewController, animated: true)
         case 2:
-            memberInfoUpdateViewModel.removeUserDefatulsData()
+            memberInfoUpdateViewModel.removeUserDefaultsData()
             let rootViewController = UINavigationController(rootViewController: SigninViewController())
             guard let sceneDelgate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
             sceneDelgate.changeRootViewController(rootViewController, animated: true)

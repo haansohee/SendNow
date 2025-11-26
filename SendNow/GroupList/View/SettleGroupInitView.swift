@@ -49,6 +49,7 @@ final class SettleGroupInitView: UIView {
         collectionView.backgroundColor = .systemBackground
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.isPagingEnabled = false
+        collectionView.allowsMultipleSelection = false 
         return collectionView
     }()
     

@@ -113,11 +113,11 @@ final class MemberInfoUpdateViewModel {
         memberService.cancelAccount(with: cancelAccountRequestDTO) {[weak self] isCanceledAccount in
             self?.isCanceledAccount.onNext(isCanceledAccount)
             guard isCanceledAccount else { return }
-            self?.removeUserDefatulsData()
+            self?.removeUserDefaultsData()
         }
     }
     
-    func removeUserDefatulsData() {
+    func removeUserDefaultsData() {
         UserDefaults.standard.removeObject(forKey: MemberInfoField.userID.rawValue)
         UserDefaults.standard.removeObject(forKey: MemberInfoField.nickname.rawValue)
         UserDefaults.standard.removeObject(forKey: MemberInfoField.email.rawValue)

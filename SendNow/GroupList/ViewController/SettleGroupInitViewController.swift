@@ -13,7 +13,6 @@ final class SettleGroupInitViewController: BaseUIViewController {
     private let settleGroupInitView = SettleGroupInitView()
     private let groupListViewModel: GroupListViewModel
     private let disposeBag = DisposeBag()
-    private var selectedIndexPath: IndexPath?
     
     init(groupListViewModel: GroupListViewModel = GroupListViewModel(
         userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)),
@@ -45,7 +44,6 @@ extension SettleGroupInitViewController {
         view.backgroundColor = .clear
         settleGroupInitView.remainderUserCollectionView.delegate = self
         settleGroupInitView.remainderUserCollectionView.dataSource = self
-        settleGroupInitView.remainderUserCollectionView.allowsMultipleSelection = true
         settleGroupInitView.translatesAutoresizingMaskIntoConstraints = false
         settleGroupInitView.layer.cornerRadius = 10.0
     }
@@ -110,22 +108,21 @@ extension SettleGroupInitViewController: UICollectionViewDataSource {
         
         let invitedFriendList = groupListViewModel.invitedFriendList
         cell.configureNicknameLabel(invitedFriendList[indexPath.row].nickname)
-        if !(indexPath == selectedIndexPath) {
-            cell.contentView.backgroundColor = .systemBackground
-        }
-        
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? RemainderUserCollectionViewCell else { return }
         let invitedFriendList = groupListViewModel.invitedFriendList
-        selectedIndexPath = indexPath
         cell.contentView.backgroundColor = .secondarySystemBackground
         settleGroupInitView.doneButton.backgroundColor = UIColor(named: "TitleColor")
         settleGroupInitView.doneButton.isEnabled = true
-        groupListViewModel.selectRemainderUserID(invitedFriendList[indexPath.row].userID)
-        collectionView.reloadData()
+        groupListViewModel.selectRemainderUserID(invitedFriendList[indexPath.row].userID)  
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? RemainderUserCollectionViewCell else { return }
+        cell.contentView.backgroundColor = .systemBackground
     }
 }
 

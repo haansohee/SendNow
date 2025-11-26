@@ -47,7 +47,7 @@ extension RemainderUserCollectionViewCell {
         contentView.backgroundColor = .systemBackground
     }
     
-    func configureNicknameLabel(_ nickanme: String) {
-        nicknameLabel.text = nickanme
+    func configureNicknameLabel(_ nickname: String) {
+        nicknameLabel.text = nickname
     }
 }

@@ -40,7 +40,7 @@ final class HomeViewModel {
         self.userID = userID
     }
     
-    private func setSummaryInfomration(receivedAmount: String, sentAmount: String, unsettledCount: Int) {
+    private func setSummaryInformation(receivedAmount: String, sentAmount: String, unsettledCount: Int) {
         guard let receivedImage = UIImage(systemName: "wonsign.arrow.trianglehead.counterclockwise.rotate.90"),
               let sentImage = UIImage(systemName: "arrow.up.message.fill"),
               let unsettledImage = UIImage(systemName: "person.2.circle") else { return }
@@ -107,7 +107,7 @@ final class HomeViewModel {
                     summaryReceived: summaryReceived,
                     summarySent: summarySent,
                     summaryUnsettled: summaryUnsettled)
-                self?.setSummaryInfomration(
+                self?.setSummaryInformation(
                     receivedAmount: summaryReceived,
                     sentAmount: summarySent,
                     unsettledCount: summaryUnsettled)
@@ -145,7 +145,7 @@ final class HomeViewModel {
                     summaryReceived: summaryReceived,
                     summarySent: summarySent,
                     summaryUnsettled: summaryUnsettled)
-                self?.setSummaryInfomration(
+                self?.setSummaryInformation(
                     receivedAmount: summaryReceived,
                     sentAmount: summarySent,
                     unsettledCount: summaryUnsettled)
@@ -158,7 +158,7 @@ final class HomeViewModel {
         }
     }
     
-    func loadEmailMemberInfomation() {
+    func loadEmailMemberInformation() {
         guard let email = UserDefaults.standard.string(forKey: MemberInfoField.email.rawValue) else { return }
         memberService.getEmailMemberInfo(with: email) {[weak self] getEmailMemberInfoResult in
             switch getEmailMemberInfoResult {
@@ -183,7 +183,7 @@ final class HomeViewModel {
                     summaryReceived: summaryReceived,
                     summarySent: summarySent,
                     summaryUnsettled: summaryUnsettled)
-                self?.setSummaryInfomration(
+                self?.setSummaryInformation(
                     receivedAmount: summaryReceived,
                     sentAmount: summarySent,
                     unsettledCount: summaryUnsettled)
@@ -208,7 +208,7 @@ final class HomeViewModel {
             return
             
         case SigninType.email.rawValue:
-            loadEmailMemberInfomation()
+            loadEmailMemberInformation()
             return
             
         default: return

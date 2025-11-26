@@ -17,7 +17,7 @@ struct LoginMemberInformation {
     let kakaoID: String?
     let kakaoPayUrl: String?
     let isDismissed: Bool
-    let summaryReceived: String
-    let summarySent: String
-    let summaryUnsettled: Int
+    let summaryReceived: String?
+    let summarySent: String?
+    let summaryUnsettled: Int?
 }
