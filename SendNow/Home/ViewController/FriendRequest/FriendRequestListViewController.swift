@@ -158,33 +158,35 @@ extension FriendRequestListViewController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FriendRequestListCollectionViewCell.reuseIdentifier, for: indexPath) as? FriendRequestListCollectionViewCell else { return UICollectionViewCell() }
         switch indexPath.section {
         case 0:
-            guard let friendRequestListSendInfo = friendRequestViewModel.friendRequestSendListInfo else { return cell }
+            guard let friendRequestListSendInfoList = friendRequestViewModel.friendRequestSendListInfo,
+                  let friendRequestListSendInfo = friendRequestListSendInfoList[safe: indexPath.row] else { return cell }
             cell.requestCancelButton.isHidden = false
             cell.requestCancelButton.setTitle("요청 취소", for: .normal)
             cell.requestCancelButton.backgroundColor = .lightGray
-            cell.friendNicknameLabel.text = friendRequestListSendInfo[indexPath.row].toUserNickname
+            cell.friendNicknameLabel.text = friendRequestListSendInfo.toUserNickname
             cell.rx.didTapRequestCancelButton
                 .asDriver()
                 .drive(onNext: {[weak self] _ in
                     self?.friendRequestViewModel.deleteFriendRequest(
-                        toUserID: friendRequestListSendInfo[indexPath.row].toUserID,
-                        fromUserID: friendRequestListSendInfo[indexPath.row].fromUserID
+                        toUserID: friendRequestListSendInfo.toUserID,
+                        fromUserID: friendRequestListSendInfo.fromUserID
                     )
                 })
                 .disposed(by: cell.disposeBag)
         case 1:
-            guard let friendRequestListReceiveInfo = friendRequestViewModel.friendRequestReceiveListInfo else { return cell }
+            guard let friendRequestListReceiveInfoList = friendRequestViewModel.friendRequestReceiveListInfo,
+                  let friendRequestListReceiveInfo = friendRequestListReceiveInfoList[safe: indexPath.row] else { return cell }
             cell.requestCancelButton.isHidden = false
             cell.requesetAcceptButton.isHidden = false
             cell.requestCancelButton.setTitle("요청 삭제", for: .normal)
             cell.requestCancelButton.backgroundColor = .systemRed
-            cell.friendNicknameLabel.text = friendRequestListReceiveInfo[indexPath.row].fromUserNickname
+            cell.friendNicknameLabel.text = friendRequestListReceiveInfo.fromUserNickname
             cell.rx.didTapRequestCancelButton
                 .asDriver()
                 .drive(onNext: {[weak self] _ in
                     self?.friendRequestViewModel.deleteFriendRequest(
-                        toUserID: friendRequestListReceiveInfo[indexPath.row].toUserID,
-                        fromUserID: friendRequestListReceiveInfo[indexPath.row].fromUserID
+                        toUserID: friendRequestListReceiveInfo.toUserID,
+                        fromUserID: friendRequestListReceiveInfo.fromUserID
                     )
                 })
                 .disposed(by: cell.disposeBag)
@@ -192,8 +194,8 @@ extension FriendRequestListViewController: UICollectionViewDataSource {
                 .asDriver()
                 .drive(onNext: {[weak self] _ in
                     self?.friendRequestViewModel.updateFriendRequestState(
-                        toUserID: friendRequestListReceiveInfo[indexPath.row].toUserID,
-                        fromUserID: friendRequestListReceiveInfo[indexPath.row].fromUserID)
+                        toUserID: friendRequestListReceiveInfo.toUserID,
+                        fromUserID: friendRequestListReceiveInfo.fromUserID)
                 })
                 .disposed(by: cell.disposeBag)
         default:

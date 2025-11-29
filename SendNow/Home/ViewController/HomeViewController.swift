@@ -177,14 +177,16 @@ extension HomeViewController: UICollectionViewDataSource {
         case homeView.friendListCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FriendListCollectionViewCell.reuseIdentifier, for: indexPath) as? FriendListCollectionViewCell else { return UICollectionViewCell() }
             guard let myGroupList = homeViewModel.myFriendList,
-                  myGroupList.count != 0 else { return cell }
-            cell.setFriendListCollectionViewCell(myGroupList[indexPath.row].nickname)
+                  myGroupList.count != 0,
+                  let myGroup = myGroupList[safe: indexPath.row] else { return cell }
+            cell.setFriendListCollectionViewCell(myGroup.nickname)
             return cell
             
         case homeView.summaryCardCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SummaryCardCollectionViewCell.reuseIdentifier, for: indexPath) as? SummaryCardCollectionViewCell else { return UICollectionViewCell() }
-            guard let summaryInformation = homeViewModel.summaryInformation else { return cell }
-            cell.configureSummaryCardCollectionViewCell(summaryInformation[indexPath.row])
+            guard let summaryInformationList = homeViewModel.summaryInformation,
+                  let summaryInformation = summaryInformationList[safe: indexPath.row] else { return cell }
+            cell.configureSummaryCardCollectionViewCell(summaryInformation)
             return cell
         default: return UICollectionViewCell()
         }

@@ -107,17 +107,20 @@ extension SettleGroupInitViewController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RemainderUserCollectionViewCell.reuseIdentifier, for: indexPath) as? RemainderUserCollectionViewCell else { return UICollectionViewCell() }
         
         let invitedFriendList = groupListViewModel.invitedFriendList
-        cell.configureNicknameLabel(invitedFriendList[indexPath.row].nickname)
+        guard let invitedFriend = invitedFriendList[safe: indexPath.row] else { return cell }
+        cell.configureNicknameLabel(invitedFriend.nickname)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? RemainderUserCollectionViewCell else { return }
         let invitedFriendList = groupListViewModel.invitedFriendList
+        guard let selectedFriendInfo = invitedFriendList[safe: indexPath.row] else { return }
         cell.contentView.backgroundColor = .secondarySystemBackground
         settleGroupInitView.doneButton.backgroundColor = UIColor(named: "TitleColor")
         settleGroupInitView.doneButton.isEnabled = true
-        groupListViewModel.selectRemainderUserID(invitedFriendList[indexPath.row].userID)  
+        groupListViewModel.selectRemainderUserID(selectedFriendInfo.userID)
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {

@@ -65,10 +65,9 @@ extension MyPageViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MyPageCollectionViewCell.reuseIdentifier, for: indexPath) as? MyPageCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        cell.configureTitleLabel(memberInfoUpdateViewModel.myPageItems[indexPath.row])
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MyPageCollectionViewCell.reuseIdentifier, for: indexPath) as? MyPageCollectionViewCell else { return UICollectionViewCell() }
+        guard let myPageItem = memberInfoUpdateViewModel.myPageItems[safe: indexPath.row] else { return cell }
+        cell.configureTitleLabel(myPageItem)
         return cell
     }
     

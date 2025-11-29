@@ -191,20 +191,23 @@ extension SettleGroupViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SpendingDetailCollectionViewCell.reuseIdentifier, for: indexPath) as? SpendingDetailCollectionViewCell else { return UICollectionViewCell() }
-        guard let groupExpenseDetailInformations = settleGroupViewModel.groupExpenseInformations?.expenseInformations else { return cell }
-        cell.setSpendingDetailCollectionViewCellLabel(groupExpenseInfo: groupExpenseDetailInformations[indexPath.row])
+        guard let groupExpenseDetailInformationList = settleGroupViewModel.groupExpenseInformations?.expenseInformations,
+              let groupExpenseDetailInformation = groupExpenseDetailInformationList[safe: indexPath.row] else { return cell }
+        cell.setSpendingDetailCollectionViewCellLabel(groupExpenseInfo: groupExpenseDetailInformation)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let groupExpenseInformations = settleGroupViewModel.groupExpenseInformations,
-              let groupExpensDetailInformations = groupExpenseInformations.expenseInformations,
-              let isActiveSettlement = settleGroupViewModel.isActiveSettlement else { return }
-        let expenseID = groupExpensDetailInformations[indexPath.row].expenseID
-        let groupID = groupExpensDetailInformations[indexPath.row].groupID
-        let expenseClassfication = groupExpensDetailInformations[indexPath.row].expenseClassfication
-        let expenseDate = groupExpensDetailInformations[indexPath.row].expenseDate
-        let expenseDetails = groupExpensDetailInformations[indexPath.row].expenseDetails
+        guard let groupExpenseInformationList = settleGroupViewModel.groupExpenseInformations,
+              let groupExpensDetailInformationList = groupExpenseInformationList.expenseInformations,
+              let isActiveSettlement = settleGroupViewModel.isActiveSettlement,
+              let groupExpensDetailInformation = groupExpensDetailInformationList[safe: indexPath.row]
+        else { return }
+        let expenseID = groupExpensDetailInformation.expenseID
+        let groupID = groupExpensDetailInformation.groupID
+        let expenseClassfication = groupExpensDetailInformation.expenseClassfication
+        let expenseDate = groupExpensDetailInformation.expenseDate
+        let expenseDetails = groupExpensDetailInformation.expenseDetails
         let viewController = SpendingDetailsViewController(
             expenseID: expenseID,
             groupID: groupID,

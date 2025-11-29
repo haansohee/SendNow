@@ -146,26 +146,28 @@ extension InvitedGroupViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: InvitedGroupCollectionViewCell.reuseIdentifier, for: indexPath) as? InvitedGroupCollectionViewCell else { return UICollectionViewCell() }
         guard let myFriendList = homeViewModel.myFriendList,
-              !myFriendList.isEmpty else {
+              !myFriendList.isEmpty,
+              let myFriend = myFriendList[safe: indexPath.row] else {
             cell.configureCollectionViewCellAttributes(isEmpty: true, nickname: "")
             return cell
         }
-        cell.configureCollectionViewCellAttributes(isEmpty: false, nickname: myFriendList[indexPath.row].nickname)
-        return cell 
+        cell.configureCollectionViewCellAttributes(isEmpty: false, nickname: myFriend.nickname)
+        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? InvitedGroupCollectionViewCell,
               let myFriendList = homeViewModel.myFriendList,
-              !myFriendList.isEmpty else { return }
+              !myFriendList.isEmpty,
+              let myFriend = myFriendList[safe: indexPath.row] else { return }
         if cell.selectedButton.isSelected {
             cell.selectedButton.isSelected = false
             cell.selectedButton.setImage(UIImage(systemName: "circle"), for: .normal)
-            groupListViewModel.deselectInvitedFriend(friendUserID: myFriendList[indexPath.row])
+            groupListViewModel.deselectInvitedFriend(friendUserID: myFriend)
         } else {
             cell.selectedButton.isSelected = true
             cell.selectedButton.setImage(UIImage(systemName: "circle.fill"), for: .selected)
-            groupListViewModel.selectInvitedFriend(friendUserID: myFriendList[indexPath.row])
+            groupListViewModel.selectInvitedFriend(friendUserID: myFriend)
         }
     }
 }

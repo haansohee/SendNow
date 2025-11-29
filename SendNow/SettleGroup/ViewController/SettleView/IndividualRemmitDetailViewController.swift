@@ -135,20 +135,21 @@ extension IndividualRemmitDetailViewController: UICollectionViewDataSource {
         switch collectionView {
         case individualRemmitDetailView.individualRemmitCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: IndividualRemmitDetailCollectionViewCell.reuseIdentifier, for: indexPath) as? IndividualRemmitDetailCollectionViewCell else { return UICollectionViewCell() }
-            guard let settlementInformations = individualRemmitDetailViewModel.groupSettlementInformations else { return cell }
-            cell.configureIndividualRemmitDetailCollectionViewCell(information: settlementInformations.settlementDetails[indexPath.row])
-            guard let kakaoPayUrl = settlementInformations.settlementDetails[indexPath.row].kakaoPayURL else {
+            guard let settlementInformations = individualRemmitDetailViewModel.groupSettlementInformations,
+                  let settlementDetails = settlementInformations.settlementDetails[safe: indexPath.row] else { return cell }
+            cell.configureIndividualRemmitDetailCollectionViewCell(information: settlementDetails)
+            guard let kakaoPayUrl = settlementDetails.kakaoPayURL else {
                 cell.receiverKakaoPayButton.isHidden = true
                 return cell
             }
             cell.receiverKakaoPayButton.isHidden = false
             cell.receiverKakaoPayButton.isEnabled = individualRemmitDetailViewModel
-                .compareUserID(fromUserID: settlementInformations.settlementDetails[indexPath.row].fromUserID)
+                .compareUserID(fromUserID: settlementDetails.fromUserID)
             
             cell.rx.didTapKakaoPayUrlButton
                 .asDriver()
                 .drive(onNext: {[weak self] _ in
-                    guard let strToIntAmount = self?.individualRemmitDetailViewModel.parseFormattednumberSimple(settlementInformations.settlementDetails[indexPath.row].amount),
+                    guard let strToIntAmount = self?.individualRemmitDetailViewModel.parseFormattednumberSimple(settlementDetails.amount),
                           let amount = self?.toHexValue(strToIntAmount),
                           let url = URL(string: "\(String(describing: kakaoPayUrl))\(String(describing: amount))") else { return }
                     UIApplication.shared.open(url, options: [:])
@@ -158,29 +159,31 @@ extension IndividualRemmitDetailViewController: UICollectionViewDataSource {
             
         case individualRemmitDetailView.amountBalanceCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AmountBalanceCollectionViewCell.reuseIdentifier, for: indexPath) as? AmountBalanceCollectionViewCell else { return UICollectionViewCell() }
-            guard let balanceInformation = individualRemmitDetailViewModel.groupSettlementInformations?.settlementBalance else { return cell }
-            individualRemmitDetailView.setAmountBalanceCollectionViewHeight(Double(balanceInformation.count))
+            guard let balanceInformationList = individualRemmitDetailViewModel.groupSettlementInformations?.settlementBalance,
+                  let balanceInformation = balanceInformationList[safe: indexPath.row] else { return cell }
+            individualRemmitDetailView.setAmountBalanceCollectionViewHeight(Double(balanceInformationList.count))
             
-            let transactionRole = individualRemmitDetailViewModel.comparedAmount(balanceInformation[indexPath.row])
-            cell.configureCell(transactionRole, balanceInformation[indexPath.row])
+            let transactionRole = individualRemmitDetailViewModel.comparedAmount(balanceInformation)
+            cell.configureCell(transactionRole, balanceInformation)
             
-            if balanceInformation[indexPath.row].userID == individualRemmitDetailViewModel.userID {
-                cell.nicknameLabel.text = "\(balanceInformation[indexPath.row].nickname) (본인)"
+            if balanceInformation.userID == individualRemmitDetailViewModel.userID {
+                cell.nicknameLabel.text = "\(balanceInformation.nickname) (본인)"
             }
             return cell
             
         case individualRemmitDetailView.completedRemittanceCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CompletedRemittanceCollectionViewCell.reuseIdentifier, for: indexPath) as? CompletedRemittanceCollectionViewCell else { return UICollectionViewCell () }
-            guard let remittanceInformation = individualRemmitDetailViewModel.remittanceInformations,
-                  !remittanceInformation.isEmpty else {
+            guard let remittanceInformationList = individualRemmitDetailViewModel.remittanceInformations,
+                  !remittanceInformationList.isEmpty,
+                  let remittanceInformation = remittanceInformationList[safe: indexPath.row] else {
                 cell.configureEmptyCell()
                 return cell }
-            cell.configureLabel(with: remittanceInformation[indexPath.row])
+            cell.configureLabel(with: remittanceInformation)
             
             cell.rx.didTapCompletedButton
                 .subscribe(onNext: { [weak self] in
-                    let remittanceUpdatedStatus = !remittanceInformation[indexPath.row].isCompletedRemittance
-                    let remittanceStatusDomain = RemittanceStatusDomain(settlementID: remittanceInformation[indexPath.row].settlementID,
+                    let remittanceUpdatedStatus = !remittanceInformation.isCompletedRemittance
+                    let remittanceStatusDomain = RemittanceStatusDomain(settlementID: remittanceInformation.settlementID,
                                                                         isCompletedRemittance: remittanceUpdatedStatus)
                     self?.individualRemmitDetailViewModel.setCompletedRemittance(remittanceStatusDomain) { isUpdated in
                         guard isUpdated else { return }

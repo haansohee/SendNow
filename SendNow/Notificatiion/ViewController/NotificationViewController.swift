@@ -278,21 +278,23 @@ extension NotificationViewController: UICollectionViewDataSource {
         switch indexPath.section {
         case 0:
             guard let unreadNotificationList = notificationViewModel.unreadNotificationList,
-                  !unreadNotificationList.isEmpty else {
+                  !unreadNotificationList.isEmpty,
+                  let unreadNotification = unreadNotificationList[safe: indexPath.row] else {
                 cell.setUnreadNotificationCollectionViewCell()
                 return cell }
             cell.setReadNotificationCollectionViewCell(
-                notificationBody: unreadNotificationList[indexPath.row].notificationBody,
-                isRead: unreadNotificationList[indexPath.row].isRead,
-                subject: unreadNotificationList[indexPath.row].subject)
+                notificationBody: unreadNotification.notificationBody,
+                isRead: unreadNotification.isRead,
+                subject: unreadNotification.subject)
             return cell
         case 1:
             guard let readNotificationList = notificationViewModel.readNotificationList,
-                  !readNotificationList.isEmpty else { return cell }
+                  !readNotificationList.isEmpty,
+                  let readNotification = readNotificationList[safe: indexPath.row] else { return cell }
             cell.setReadNotificationCollectionViewCell(
-                notificationBody: readNotificationList[indexPath.row].notificationBody,
-                isRead: readNotificationList[indexPath.row].isRead,
-                subject: readNotificationList[indexPath.row].subject)
+                notificationBody: readNotification.notificationBody,
+                isRead: readNotification.isRead,
+                subject: readNotification.subject)
             return cell
         default: return cell
             
@@ -304,9 +306,10 @@ extension NotificationViewController: UICollectionViewDataSource {
         switch indexPath.section {
         case 0:
             guard let unreadNotificationList = notificationViewModel.unreadNotificationList,
-                  !unreadNotificationList.isEmpty else { return }
-            notificationViewModel.updateNotificationIsRead(notificationID: unreadNotificationList[indexPath.row].notificationID)
-            switch unreadNotificationList[indexPath.row].subject {
+                  !unreadNotificationList.isEmpty,
+                  let unreadNotification = unreadNotificationList[safe: indexPath.row] else { return }
+            notificationViewModel.updateNotificationIsRead(notificationID: unreadNotification.notificationID)
+            switch unreadNotification.subject {
             case .friendRequest:
                 navigationController?.pushViewController(FriendRequestListViewController(), animated: true)
             case .groupInvited:
@@ -316,8 +319,9 @@ extension NotificationViewController: UICollectionViewDataSource {
             
         case 1:
             guard let readNotificationList = notificationViewModel.readNotificationList,
-                  !readNotificationList.isEmpty else { return }
-            switch readNotificationList[indexPath.row].subject {
+                  !readNotificationList.isEmpty,
+                  let readNotification = readNotificationList[safe: indexPath.row] else { return }
+            switch readNotification.subject {
             case .friendRequest:
                 navigationController?.pushViewController(FriendRequestListViewController(), animated: true)
             case .groupInvited:
