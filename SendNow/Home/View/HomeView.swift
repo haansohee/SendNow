@@ -13,14 +13,14 @@ final class HomeView: UIView {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor(named: "SubTitleColor")
         view.layer.masksToBounds = false
-        view.layer.cornerRadius = 24
+        view.layer.cornerRadius = 12.0
         return view
     }()
     
     let memberNicknameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 20.0, weight: .bold)
+        label.font = .systemFont(ofSize: 18.0, weight: .bold)
         label.textColor = .black
         label.textAlignment = .left
         label.numberOfLines = 0
@@ -31,21 +31,37 @@ final class HomeView: UIView {
     private let welcomeLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 15.0)
-        label.text = "님 안녕하세요! 👋🏼"
+        label.font = .systemFont(ofSize: 16.0)
+        label.text = "님, 안녕하세요! 👋🏼"
         label.textColor = .black
         label.textAlignment = .left
         label.numberOfLines = 0
         return label
     }()
     
-    let signoutButton: AnimationButton = {
-        let button = AnimationButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("로그아웃 >", for: .normal)
-        button.setTitleColor(.black, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 12.0, weight: .thin)
-        return button
+    private let summaryLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 21.0, weight: .bold)
+        label.text = "오늘의 정산 현황이에요"
+        label.textColor = .black
+        label.textAlignment = .left
+        label.numberOfLines = 0
+        return label
+    }()
+    
+    let summaryCardCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 0.0
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.register(SummaryCardCollectionViewCell.self, forCellWithReuseIdentifier: SummaryCardCollectionViewCell.reuseIdentifier)
+        collectionView.backgroundColor = .systemBackground
+        collectionView.isPagingEnabled = false
+        collectionView.layer.cornerRadius = 12.0
+        return collectionView
     }()
     
     private let friendListLabel: UILabel = {
@@ -95,52 +111,50 @@ final class HomeView: UIView {
 extension HomeView {
     private func addSubviews() {
         [
-            memberContainerView,
+            memberNicknameLabel,
+            welcomeLabel,
+            summaryLabel,
+            summaryCardCollectionView,
             friendListLabel,
             friendRequestButton,
             friendListCollectionView
         ].forEach { self.addSubview($0) }
-        [
-            memberNicknameLabel,
-            welcomeLabel,
-            signoutButton
-        ].forEach { memberContainerView.addSubview($0) }
     }
     
     private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
-            memberContainerView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 18.0),
-            memberContainerView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 18.0),
-            memberContainerView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -18.0),
-            memberContainerView.heightAnchor.constraint(equalToConstant: 140.0),
-            
-            memberNicknameLabel.topAnchor.constraint(equalTo: memberContainerView.topAnchor, constant: 36.0),
-            memberNicknameLabel.leadingAnchor.constraint(equalTo: memberContainerView.leadingAnchor, constant: 12.0),
+            memberNicknameLabel.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 40.0),
+            memberNicknameLabel.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 24.0),
             memberNicknameLabel.heightAnchor.constraint(equalToConstant: 30.0),
             
             welcomeLabel.centerYAnchor.constraint(equalTo: memberNicknameLabel.centerYAnchor),
             welcomeLabel.leadingAnchor.constraint(equalTo: memberNicknameLabel.trailingAnchor, constant: 8.0),
             welcomeLabel.widthAnchor.constraint(equalToConstant: 140.0),
-            welcomeLabel.heightAnchor.constraint(equalToConstant: 30.0),
+            welcomeLabel.heightAnchor.constraint(equalTo: memberNicknameLabel.heightAnchor),
             
-            signoutButton.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor),
-            signoutButton.trailingAnchor.constraint(equalTo: memberContainerView.trailingAnchor, constant: -12.0),
-            signoutButton.widthAnchor.constraint(equalToConstant: 80),
-            signoutButton.heightAnchor.constraint(equalToConstant: 30.0),
+            summaryLabel.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 28.0),
+            summaryLabel.leadingAnchor.constraint(equalTo: memberNicknameLabel.leadingAnchor),
+            summaryLabel.widthAnchor.constraint(equalToConstant: 200.0),
+            summaryLabel.heightAnchor.constraint(equalToConstant: 50.0),
             
-            friendListLabel.topAnchor.constraint(equalTo: memberContainerView.bottomAnchor, constant: 12.0),
-            friendListLabel.leadingAnchor.constraint(equalTo: memberContainerView.leadingAnchor),
-            friendListLabel.heightAnchor.constraint(equalToConstant: 50.0),
+            summaryCardCollectionView.topAnchor.constraint(equalTo: summaryLabel.bottomAnchor, constant: 5.0),
+            summaryCardCollectionView.leadingAnchor.constraint(equalTo: memberNicknameLabel.leadingAnchor),
+            summaryCardCollectionView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -24.0),
+            summaryCardCollectionView.heightAnchor.constraint(equalToConstant: 240.0),
+            
+            friendListLabel.topAnchor.constraint(equalTo: summaryCardCollectionView.bottomAnchor, constant: 12.0),
+            friendListLabel.leadingAnchor.constraint(equalTo: memberNicknameLabel.leadingAnchor),
+            friendListLabel.heightAnchor.constraint(equalTo: summaryLabel.heightAnchor),
             friendListLabel.widthAnchor.constraint(equalToConstant: 60.0),
             
             friendRequestButton.topAnchor.constraint(equalTo: friendListLabel.topAnchor),
-            friendRequestButton.trailingAnchor.constraint(equalTo: memberContainerView.trailingAnchor),
+            friendRequestButton.trailingAnchor.constraint(equalTo: summaryCardCollectionView.trailingAnchor),
             friendRequestButton.heightAnchor.constraint(equalTo: friendListLabel.heightAnchor),
             friendRequestButton.widthAnchor.constraint(equalToConstant: 60.0),
             
             friendListCollectionView.topAnchor.constraint(equalTo: friendListLabel.bottomAnchor, constant: 8.0),
-            friendListCollectionView.leadingAnchor.constraint(equalTo: memberContainerView.leadingAnchor),
-            friendListCollectionView.trailingAnchor.constraint(equalTo: memberContainerView.trailingAnchor),
+            friendListCollectionView.leadingAnchor.constraint(equalTo: summaryCardCollectionView.leadingAnchor),
+            friendListCollectionView.trailingAnchor.constraint(equalTo: summaryCardCollectionView.trailingAnchor),
             friendListCollectionView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -8.0)
         ])
     }

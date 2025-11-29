@@ -29,6 +29,7 @@ final class SpendingDetailsAddViewController: BaseUIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        settleGroupViewModel.loadGroupMemberInformation()
         configureSettleGroupView()
         addSubviews()
         setLayoutConstraintsSettleGroupView()
@@ -37,7 +38,7 @@ final class SpendingDetailsAddViewController: BaseUIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        settleGroupViewModel.loadGroupMemberInformation()
+        settleGroupViewModel.loadGroupMemberInformation()
     }
 }
 

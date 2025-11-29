@@ -24,9 +24,6 @@ final class HomeViewController: BaseUIViewController {
                 self.homeViewModel = viewModel
                 self.notificationViewModel = notificationViewModel
                 super.init(nibName: nil, bundle: nil)
-                homeViewModel.loadMemberInformation()
-                homeViewModel.loadMyFriend()
-                notificationViewModel.getNotificationList()
             }
     
     required init?(coder: NSCoder) {
@@ -35,6 +32,9 @@ final class HomeViewController: BaseUIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        homeViewModel.loadMemberInformation()
+        homeViewModel.loadMyFriend()
+        notificationViewModel.getNotificationList()
         configureHomeView()
         addSubviews()
         setLayoutConstraintsHomeView()
@@ -47,12 +47,6 @@ final class HomeViewController: BaseUIViewController {
         homeViewModel.loadMemberInformation()
         homeViewModel.loadMyFriend()
     }
-    
-//    override func viewIsAppearing(_ animated: Bool) {
-//        super.viewIsAppearing(animated)
-//        homeViewModel.loadMemberInformation()
-//        homeViewModel.loadMyFriend()
-//    }
 }
 
 extension HomeViewController {
@@ -60,6 +54,8 @@ extension HomeViewController {
         homeView.translatesAutoresizingMaskIntoConstraints = false
         homeView.friendListCollectionView.delegate = self
         homeView.friendListCollectionView.dataSource = self
+        homeView.summaryCardCollectionView.delegate = self
+        homeView.summaryCardCollectionView.dataSource = self
         view.backgroundColor = .secondarySystemBackground
         navigationItem.title = "홈"
     }
@@ -93,23 +89,10 @@ extension HomeViewController {
     
     //MARK: Bind
     private func bindAll() {
-        bindSignoutButton()
         bindFriendRequestButton()
         bindIsLoadedMemberInformation()
         bindIsLoadedMyFriendList()
         bindIsLoadedNotificationInfo()
-    }
-    
-    private func bindSignoutButton() {
-        homeView.signoutButton.rx.tap
-            .asDriver()
-            .drive(onNext: {[weak self] _ in
-                self?.homeViewModel.signout()
-                let rootViewController = UINavigationController(rootViewController: SigninViewController())
-                guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
-                sceneDelegate.changeRootViewController(rootViewController, animated: true)
-            })
-            .disposed(by: disposeBag)
     }
     
     private func bindFriendRequestButton() {
@@ -128,11 +111,11 @@ extension HomeViewController {
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: {[weak self] in
                 self?.configureHomeViewNicknameLabel()
+                self?.homeView.summaryCardCollectionView.reloadData()
                 guard let kakaoPayURL = self?.homeViewModel.loginMemberInformation?.kakaoPayUrl,
                       let isDismissed = self?.homeViewModel.loginMemberInformation?.isDismissed else {
                     return
                 }
-                print("isDismissed : \(isDismissed)")
                 if kakaoPayURL.isEmpty && kakaoPayURL == "" && !isDismissed {
                     self?.present(BankInfoRequiredViewController(), animated: true)
                 }
@@ -178,24 +161,51 @@ extension HomeViewController {
 //MARK: UICollectionViewDataSource
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let listCount = homeViewModel.myFriendList?.count else { return 1 }
-        return listCount == 0 ? 1 : listCount
+        switch collectionView {
+        case homeView.friendListCollectionView:
+            guard let listCount = homeViewModel.myFriendList?.count else { return 1 }
+            return listCount == 0 ? 1 : listCount
+        case homeView.summaryCardCollectionView:
+            return 3
+        default:
+            return 0
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FriendListCollectionViewCell.reuseIdentifier, for: indexPath) as? FriendListCollectionViewCell else { return UICollectionViewCell() }
-        guard let myGroupList = homeViewModel.myFriendList,
-              myGroupList.count != 0 else { return cell }
-        cell.setFriendListCollectionViewCell(myGroupList[indexPath.row].nickname)
-        return cell
+        switch collectionView {
+        case homeView.friendListCollectionView:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FriendListCollectionViewCell.reuseIdentifier, for: indexPath) as? FriendListCollectionViewCell else { return UICollectionViewCell() }
+            guard let myGroupList = homeViewModel.myFriendList,
+                  myGroupList.count != 0,
+                  let myGroup = myGroupList[safe: indexPath.row] else { return cell }
+            cell.setFriendListCollectionViewCell(myGroup.nickname)
+            return cell
+            
+        case homeView.summaryCardCollectionView:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SummaryCardCollectionViewCell.reuseIdentifier, for: indexPath) as? SummaryCardCollectionViewCell else { return UICollectionViewCell() }
+            guard let summaryInformationList = homeViewModel.summaryInformation,
+                  let summaryInformation = summaryInformationList[safe: indexPath.row] else { return cell }
+            cell.configureSummaryCardCollectionViewCell(summaryInformation)
+            return cell
+        default: return UICollectionViewCell()
+        }
     }
 }
 
 //MARK: UICollectionViewDelegateFlowLayout
 extension HomeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = (UIScreen.main.bounds.width) - 36.0
-        let height = 70.0
-        return CGSize(width: width, height: height)
+        switch collectionView {
+        case homeView.friendListCollectionView:
+            let width = (UIScreen.main.bounds.width) - 50.0
+            let height = 70.0
+            return CGSize(width: width, height: height)
+        case homeView.summaryCardCollectionView:
+            let width = (UIScreen.main.bounds.width) - 50.0
+            let height = 80.0
+            return CGSize(width: width, height: height)
+        default: return CGSize(width: 0, height: 0)
+        }
     }
 }

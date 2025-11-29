@@ -14,4 +14,7 @@ struct EmailMemberDomain {
     let password: String?
     let kakaoPayUrl: String?
     let isDismissed: Bool
+    let summaryReceived: String?
+    let summarySent: String?
+    let summaryUnsettled: Int?
 }

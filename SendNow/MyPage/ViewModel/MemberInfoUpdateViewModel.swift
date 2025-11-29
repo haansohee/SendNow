@@ -22,7 +22,7 @@ final class MemberInfoUpdateViewModel {
     let isUpdatedNickname = PublishSubject<Bool>()
     let isUpdatedKakaoPayUrl = PublishSubject<Bool>()
     let isCanceledAccount = PublishSubject<Bool>()
-    let myPageItems = ["정보 수정하기 >", "개인정보처리방침 >"]
+    let myPageItems = ["정보 수정하기 >", "개인정보처리방침 >", "로그아웃 >"]
     
     init(with memberService: MemberService = MemberService(),
          userID: Int,
@@ -113,11 +113,11 @@ final class MemberInfoUpdateViewModel {
         memberService.cancelAccount(with: cancelAccountRequestDTO) {[weak self] isCanceledAccount in
             self?.isCanceledAccount.onNext(isCanceledAccount)
             guard isCanceledAccount else { return }
-            self?.removeUserDefatulsData()
+            self?.removeUserDefaultsData()
         }
     }
     
-    func removeUserDefatulsData() {
+    func removeUserDefaultsData() {
         UserDefaults.standard.removeObject(forKey: MemberInfoField.userID.rawValue)
         UserDefaults.standard.removeObject(forKey: MemberInfoField.nickname.rawValue)
         UserDefaults.standard.removeObject(forKey: MemberInfoField.email.rawValue)
@@ -128,6 +128,9 @@ final class MemberInfoUpdateViewModel {
         UserDefaults.standard.removeObject(forKey: MemberInfoField.signinType.rawValue)
         UserDefaults.standard.removeObject(forKey: MemberInfoField.kakaoPayUrl.rawValue)
         UserDefaults.standard.removeObject(forKey: MemberInfoField.notificationBadge.rawValue)
+        UserDefaults.standard.removeObject(forKey: MemberInfoField.summaryReceived.rawValue)
+        UserDefaults.standard.removeObject(forKey: MemberInfoField.summarySent.rawValue)
+        UserDefaults.standard.removeObject(forKey: MemberInfoField.summaryUnsettled.rawValue)
         UNUserNotificationCenter.current().setBadgeCount(0)
     }
 }

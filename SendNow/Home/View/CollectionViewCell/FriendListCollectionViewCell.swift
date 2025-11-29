@@ -64,7 +64,7 @@ extension FriendListCollectionViewCell {
     
     private func configureFriendListCollectionViewCell( ) {
         contentView.layer.masksToBounds = false
-        contentView.layer.cornerRadius = 24.0
+        contentView.layer.cornerRadius = 12.0
         contentView.backgroundColor = .systemBackground
     }
     

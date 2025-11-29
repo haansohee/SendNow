@@ -13,14 +13,12 @@ final class GroupListViewModel {
     private let notificationService = NotificationService()
     private let userID: Int
     private(set) var myGroupList: [GroupListDomain]?
-    private(set) var invitedFriendListTest: [Int]?
-    private(set) var invitedFriendList: [Int] = []
+    private(set) var invitedFriendList: [MyFriendListDomain] = []
     private(set) var remainderUserID: Int?
     private var groupName: String?
     private var invitedFriends: [Int]?
     let isLoadedMyGroupList = PublishSubject<Result<Void, Error>>()
     let isInvitedFriendToGroup = PublishSubject<Bool>()
-    let isExistedInvitedFriend = PublishSubject<Bool>()
     
     init(groupService: GroupService = GroupService(), userID: Int) {
         self.groupService = groupService
@@ -39,35 +37,38 @@ final class GroupListViewModel {
         }
     }
     
-    func setInvitedFriendList(friendList: [Int]) {
-        self.invitedFriendListTest = friendList
+    func setInvitedFriendList(friendList: [MyFriendListDomain]) {
+        self.invitedFriendList = friendList
     }
     
-    func selectInvitedFriend(friendUserID: Int) {
+    func loadSelectedFriendList() {
+        guard let nickname = UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue) else { return }
+        let kakaoPayUrl = UserDefaults.standard.string(forKey: MemberInfoField.kakaoPayUrl.rawValue)
+        let myInformation = MyFriendListDomain(userID: userID, nickname: nickname, kakaoPayUrl: kakaoPayUrl)
+        self.invitedFriendList.append(myInformation)
+    }
+    
+    func selectInvitedFriend(friendUserID: MyFriendListDomain) {
         self.invitedFriendList.append(friendUserID)
-        print("invited Friend List : \(self.invitedFriendList)")
     }
     
-    func deselectInvitedFriend(friendUserID: Int) {
+    func deselectInvitedFriend(friendUserID: MyFriendListDomain) {
         guard let deselectIndex = self.invitedFriendList .firstIndex(of: friendUserID) else { return }
         self.invitedFriendList.remove(at: deselectIndex)
-    }
-    
-    func checkSelectedFriend() {
-        isExistedInvitedFriend.onNext(!self.invitedFriendList.isEmpty)
     }
     
     func selectRemainderUserID(_ remainderUserID: Int) {
         self.remainderUserID = remainderUserID
     }
     
-    func invitedFriendToGroup(groupName: String) {
-        self.groupName = groupName
+    func invitedFriendToGroup(groupName: String, remainderUserID: Int) {
+        guard let userNickname = UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue) else { return }
+        let newGroupName = (groupName.isEmpty || groupName == "") ? "\(userNickname) 님의 그룹" : groupName
+        self.groupName = newGroupName
         guard !self.invitedFriendList.isEmpty else { return }
-        guard let remainderUserID = self.remainderUserID else { return }
         let groupCreationDomain = GroupCreationDomain(
-            groupName: groupName,
-            userIDList: self.invitedFriendList,
+            groupName: newGroupName,
+            userIDList: self.invitedFriendList.map { $0.userID },
             creatorID: userID,
             remainderUserID: remainderUserID
         )
@@ -90,7 +91,7 @@ final class GroupListViewModel {
         guard let groupName = groupName else { return }
         let notificationDomain = GroupNotificationDomain(
             senderUserID: userID,
-            receiverUserID: self.invitedFriendList,
+            receiverUserID: self.invitedFriendList.map { $0.userID },
             groupName: groupName
         )
         let notificationRequestDTO = GroupNotificationRequestDTO(

@@ -84,4 +84,9 @@ extension InvitedGroupCollectionViewCell {
         contentView.layer.borderWidth = 1.0
         contentView.backgroundColor = .systemBackground
     }
+    
+    func configureCollectionViewCellAttributes(isEmpty: Bool, nickname: String) {
+        friendNicknameLabel.text = isEmpty ? "초대할 수 있는 친구가 없어요." : nickname
+        selectedButton.isHidden = isEmpty
+    }
 }

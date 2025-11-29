@@ -21,4 +21,7 @@ enum MemberInfoField: String {
     case fcmToken
     case notificationBadge
     case isDismissed
+    case summaryReceived
+    case summarySent
+    case summaryUnsettled
 }
