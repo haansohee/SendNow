@@ -11,6 +11,9 @@ struct GroupMemberListResponseDTO: Codable {
     let groupID: Int
     let userID: Int
     let nickname: String
+    let groupName: String
+    let groupCreatorID: Int
+    let remainderUserID: Int
 }
 
 extension GroupMemberListResponseDTO {
@@ -18,7 +21,10 @@ extension GroupMemberListResponseDTO {
         return .init(
             groupID: groupID,
             userID: userID,
-            nickname: nickname
+            nickname: nickname,
+            groupName: groupName,
+            groupCreatorID: groupCreatorID,
+            remainderUserID: remainderUserID
         )
     }
 }

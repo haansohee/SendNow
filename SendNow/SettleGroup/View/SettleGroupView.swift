@@ -8,11 +8,11 @@
 import UIKit
 
 final class SettleGroupView: UIView {
-    let groupRemoveButton: AnimationButton = {
+    let groupManagementButton: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitleColor(.systemRed, for: .normal)
-        button.setTitle("그룹 삭제", for: .normal)
+        button.setTitleColor(UIColor(named: "TitleColor"), for: .normal)
+        button.setTitle("그룹 관리", for: .normal)
         return button
     }()
     

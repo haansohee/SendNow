@@ -21,7 +21,7 @@ enum FailedError: Error {
 
 final class SettleGroupViewModel {
     private let groupService: GroupService
-    private let userID: Int
+    private(set) var userID: Int
     private(set) var isActiveSettlement: Bool?
     private(set) var expenseClassfication: String?
     private(set) var groupID: Int?
@@ -33,6 +33,8 @@ final class SettleGroupViewModel {
     private(set) var groupMemberInformations: [GroupMemberListDomain]?
     private(set) var expenseDetailInformation: ExpenseDetailInformationDomain?
     private(set) var canSelectItems: Bool?
+    private(set) var creatorUserIndex: Int?
+    private(set) var remainderUserIndex: Int?
     let isUploadedExpenseInfo = PublishSubject<Bool>()
     let isLoadedGroupMemberInfo = PublishSubject<Result<Bool, Error>>()
     let groupExpenseInfoSubject = PublishSubject<Result<(group: String, personal: String), Error>>()
@@ -40,8 +42,10 @@ final class SettleGroupViewModel {
     let isEqualSettlementCreatorSubject = PublishSubject<Result<Bool, Error>>()
     let isDeletedGroup = PublishSubject<Bool>()
     let isDeletedSpendingDetailInfoSubject = PublishSubject<Bool>()
-    let loadedGroupExpenseDetailInfoSubject = PublishSubject<Result<Void, Error>>()
+    let loadedGroupExpenseDetailInfoSubject = PublishSubject<Result<Bool, Error>>()
     let isUpdatedSpendingDetailInfoSubject = PublishSubject<Bool>()
+    let isUpdatedGroupInformations = PublishSubject<Bool>()
+    let isCanceledState = PublishSubject<Void>()
     
     init(groupService: GroupService = GroupService(), userID: Int) {
         self.groupService = groupService
@@ -83,18 +87,6 @@ final class SettleGroupViewModel {
     
     func setCanSelectItems(_ canSelectItems: Bool) {
         self.canSelectItems = canSelectItems
-    }
-    
-    func loadGroupCreatorID() {
-        guard let groupID = self.groupID else { return }
-        groupService.getGroupCreatorUserID(with: groupID, userID: userID) {[weak self] getGroupCreatorUserIdResult in
-            switch getGroupCreatorUserIdResult {
-            case .success(let isEqualGroupCreatorUser):
-                self?.isEqualGroupCreatorSubject.onNext(.success(isEqualGroupCreatorUser))
-            case .failure(let error):
-                self?.isEqualGroupCreatorSubject.onNext(.failure(error))
-            }
-        }
     }
     
     func loadSettlementCreatorID() {
@@ -143,7 +135,15 @@ final class SettleGroupViewModel {
         groupService.getGroupMemberList(with: groupID) {[weak self] getGroupMemberListResult in
             switch getGroupMemberListResult {
             case .success(let groupMemberListDomain):
-                self?.groupMemberInformations = groupMemberListDomain
+                let groupMemberInformation = groupMemberListDomain.filter { $0.userID != 0 }
+                self?.groupMemberInformations = groupMemberInformation
+                let groupMemberUserID = groupMemberInformation.map { $0.userID }
+                let creatorUserID = groupMemberListDomain[0].groupCreatorID
+                let creatorUserIndex = groupMemberUserID.firstIndex(of: creatorUserID)
+                let remainderUserID = groupMemberListDomain[0].remainderUserID
+                let remainderUserIndex = groupMemberUserID.firstIndex(of: remainderUserID)
+                self?.remainderUserIndex = remainderUserIndex
+                self?.creatorUserIndex = creatorUserIndex
                 self?.isLoadedGroupMemberInfo.onNext(.success(!groupMemberListDomain.isEmpty))
             case .failure(let error):
                 self?.isLoadedGroupMemberInfo.onNext(.failure(error))
@@ -173,7 +173,8 @@ final class SettleGroupViewModel {
             switch getGroupExpenseDetailInfoResult {
             case .success(let groupExpenseDetailInfoDomain):
                 self?.expenseDetailInformation = groupExpenseDetailInfoDomain
-                self?.loadedGroupExpenseDetailInfoSubject.onNext(.success(Void()))
+                let isPaidUser = self?.userID == groupExpenseDetailInfoDomain.paidBy
+                self?.loadedGroupExpenseDetailInfoSubject.onNext(.success(isPaidUser))
             case .failure(let error):
                 self?.loadedGroupExpenseDetailInfoSubject.onNext(.failure(error))
             }
@@ -238,5 +239,48 @@ final class SettleGroupViewModel {
         groupService.updateSpendingDetailInformation(with: spedingDetailInfoRequestDTO) {[weak self] isUpdated, _ in
             self?.isUpdatedSpendingDetailInfoSubject.onNext(isUpdated)
         }
+    }
+    
+    func updateGroupManagementUser(_ updateUserID: Int) {
+        guard let groupID = self.groupID else { return }
+        let updateGroupManagementUserDomain = UpdateGroupManagementUserDomain(
+            groupID: groupID,
+            updateUserID: updateUserID)
+        let updateGroupManagementUserRequestDTO = UpdateGroupManagementUserRequestDTO(
+            groupID: updateGroupManagementUserDomain.groupID,
+            updateUserID: updateGroupManagementUserDomain.updateUserID)
+        groupService.updateGroupManagementUser(with: updateGroupManagementUserRequestDTO) {[weak self] isUpdated, _ in
+            self?.isUpdatedGroupInformations.onNext(isUpdated)
+        }
+    }
+    
+    func updateGroupRemainderUser(_ newRemainderUserID: Int) {
+        guard let groupID = self.groupID else { return }
+        let updateGroupRemainderUserDomain = UpdateGroupManagementUserDomain(
+            groupID: groupID,
+            updateUserID: newRemainderUserID)
+        let updateGroupRemainderUserRequestDTO = UpdateGroupManagementUserRequestDTO(
+            groupID: updateGroupRemainderUserDomain.groupID,
+            updateUserID: updateGroupRemainderUserDomain.updateUserID)
+        groupService.updateGroupRemainderUser(with: updateGroupRemainderUserRequestDTO) {[weak self] isUpdated, _ in
+            self?.isUpdatedGroupInformations.onNext(isUpdated)
+        }
+    }
+    
+    func updateGroupName(_ newGroupName: String) {
+        guard let groupID = self.groupID else { return }
+        let updateGroupNameDomain = UpdateGroupNameDomain(
+            groupID: groupID,
+            groupName: newGroupName)
+        let updateGroupNameRequestDTO = UpdateGroupNameRequestDTO(
+            groupID: updateGroupNameDomain.groupID,
+            groupName: updateGroupNameDomain.groupName)
+        groupService.updateGroupName(with: updateGroupNameRequestDTO) {[weak self] isUpdated, _ in
+            self?.isUpdatedGroupInformations.onNext(isUpdated)
+        }
+    }
+    
+    func cancelUpdate() {
+        isCanceledState.onNext(Void())
     }
 }

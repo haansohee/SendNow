@@ -12,6 +12,9 @@ enum GroupAPIPath: String {
     case setExpensesUpload = "/SendNow/setExpenseUpload/"
     case setCompletedRemittace = "/SendNow/setCompletedRemittance/"
     case updateSpendingDetailInfo = "/SendNow/updateSpendingDetailInformations/"
+    case updateGroupManagementUser = "/SendNow/UpdateGroupManagementUser/"
+    case updateGroupRemainderUser = "/SendNow/UpdateGroupRemainderUser/"
+    case updateGroupName = "/SendNow/UpdateGroupName/"
     case deleteGroup = "/SendNow/deleteGroup"
     case deleteSpendingDetailInformation = "/SendNow/DeleteSpendingDetailInformation/"
     case getGroupList = "/SendNow/getGroupList"
@@ -165,6 +168,21 @@ final class GroupService {
     
     func updateSpendingDetailInformation(with requestDTO: UpdateSpendingDetailInformationRequestDTO, completion: @escaping(Bool, Int)->Void) {
         let path = GroupAPIPath.updateSpendingDetailInfo.rawValue
+        networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
+    }
+    
+    func updateGroupManagementUser(with requestDTO: UpdateGroupManagementUserRequestDTO, completion: @escaping(Bool, Int)->Void) {
+        let path = GroupAPIPath.updateGroupManagementUser.rawValue
+        networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
+    }
+    
+    func updateGroupRemainderUser(with requestDTO: UpdateGroupManagementUserRequestDTO, completion: @escaping(Bool, Int)->Void) {
+        let path = GroupAPIPath.updateGroupRemainderUser.rawValue
+        networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
+    }
+    
+    func updateGroupName(with requestDTO: UpdateGroupNameRequestDTO, completion: @escaping(Bool, Int)->Void) {
+        let path = GroupAPIPath.updateGroupName.rawValue
         networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
     }
 }

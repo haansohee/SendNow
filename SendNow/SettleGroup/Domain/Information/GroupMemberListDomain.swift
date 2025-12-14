@@ -11,4 +11,7 @@ struct GroupMemberListDomain {
     let groupID: Int
     let userID: Int
     let nickname: String
+    let groupName: String
+    let groupCreatorID: Int
+    let remainderUserID: Int 
 }

@@ -26,8 +26,6 @@ final class SettleGroupViewController: BaseUIViewController {
         guard let id = groupID else { return }
         settleGroupViewModel.setIsActiveSettlement(isActiveSettlement)
         settleGroupViewModel.setGroupID(id)
-        settleGroupViewModel.loadGroupExpenseInformation()
-        settleGroupViewModel.loadGroupCreatorID()
     }
     
     required init?(coder: NSCoder) {
@@ -36,6 +34,7 @@ final class SettleGroupViewController: BaseUIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        settleGroupViewModel.loadGroupExpenseInformation()
         configureSettleGroupView()
         addSubviews()
         configureSettlementGroupViewState()
@@ -56,7 +55,7 @@ extension SettleGroupViewController {
         settleGroupView.spendingDetailCollectionView.dataSource = self
         settleGroupView.spendingDetailCollectionView.delegate = self
         view.backgroundColor = .secondarySystemBackground
-        navigationController?.topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: settleGroupView.groupRemoveButton)
+        navigationController?.topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: settleGroupView.groupManagementButton)
     }
     
     private func configureSettlementGroupViewState() {
@@ -64,8 +63,6 @@ extension SettleGroupViewController {
         DispatchQueue.main.async {[weak self] in
             self?.settleGroupView.spendingDetailAddButton.isHidden = !isActive
             self?.settleGroupView.spendingDetailAddButton.isEnabled = isActive
-            self?.settleGroupView.groupRemoveButton.isHidden = !isActive
-            self?.settleGroupView.groupRemoveButton.isEnabled = isActive
             guard !isActive else { return }
             self?.settlementDisableAlert()
         }
@@ -93,16 +90,17 @@ extension SettleGroupViewController {
     }
     
     private func bindAll() {
-        bindGroupRemoveButton()
+        groupManagementButton()
         bindSpendingDetailAddButton()
         bindIsLoadedGroupExpenseInfo()
-        bindIsEqualCreatorUserID()
-        bindIsDeletedGroup()
     }
-    private func bindGroupRemoveButton() {
-        settleGroupView.groupRemoveButton.rx.tap
-            .subscribe(onNext: {[weak self] _ in
-                self?.confirmAlert()
+    
+    private func groupManagementButton() {
+        settleGroupView.groupManagementButton.rx.tap
+            .asDriver()
+            .drive(onNext: {[weak self] _ in
+                guard let groupID = self?.settleGroupViewModel.groupID else { return }
+                self?.navigationController?.pushViewController(GroupManagementViewController(groupID: groupID), animated: true)
             })
             .disposed(by: disposeBag)
     }
@@ -134,47 +132,19 @@ extension SettleGroupViewController {
             .disposed(by: disposeBag)
     }
     
-    private func bindIsEqualCreatorUserID() {
-        settleGroupViewModel.isEqualGroupCreatorSubject
-            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
-            .drive(onNext: {[weak self] isEqualCreatorUserIDResult in
-                switch isEqualCreatorUserIDResult {
-                case .success(let isEqualCreatorUserID):
-                    self?.settleGroupView.groupRemoveButton.isEnabled = isEqualCreatorUserID
-                    self?.settleGroupView.groupRemoveButton.setTitle(isEqualCreatorUserID ? "그룹 삭제" : "", for: .normal)
-                case .failure(_):
-                    self?.serverErrorAlert()
-                }
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    private func bindIsDeletedGroup() {
-        settleGroupViewModel.isDeletedGroup
-            .subscribe(onNext: {[weak self] isDeletedGroup in
-                guard isDeletedGroup else { return }
-                DispatchQueue.main.async {
-                    self?.navigationController?.popViewController(animated: true)
-                }
-            }, onError: { error in
-                print("ERROR")
-            })
-            .disposed(by: disposeBag)
-    }
-    
     // MARK: Alert
-    private func confirmAlert() {
-        let alertController = UIAlertController(title: "바로보내", message: "해당 그룹을 정말 삭제할까요? \n ⚠️ 삭제된 데이터는 복구되지 않습니다.", preferredStyle: .alert)
-        let doneAction = UIAlertAction(title: "확인", style: .destructive) {[weak self] _ in
-            self?.settleGroupViewModel.deleteGroup()
-        }
-        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
-        alertController.addAction(doneAction)
-        alertController.addAction(cancelAction)
-        DispatchQueue.main.async {[weak self] in
-            self?.present(alertController, animated: true)
-        }
-    }
+//    private func confirmAlert() {
+//        let alertController = UIAlertController(title: "바로보내", message: "해당 그룹을 정말 삭제할까요? \n ⚠️ 삭제된 데이터는 복구되지 않습니다.", preferredStyle: .alert)
+//        let doneAction = UIAlertAction(title: "확인", style: .destructive) {[weak self] _ in
+//            self?.settleGroupViewModel.deleteGroup()
+//        }
+//        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+//        alertController.addAction(doneAction)
+//        alertController.addAction(cancelAction)
+//        DispatchQueue.main.async {[weak self] in
+//            self?.present(alertController, animated: true)
+//        }
+//    }
     
     private func settlementDisableAlert() {
         let alertController = UIAlertController(title: "바로보내", message: "현재 이 그룹에는 탈퇴한 회원이 포함되어 있어 정산 기능을 사용할 수 없습니다. 해당 그룹을 삭제 후 새로운 그룹으로 정산을 해 주세요.", preferredStyle: .alert)

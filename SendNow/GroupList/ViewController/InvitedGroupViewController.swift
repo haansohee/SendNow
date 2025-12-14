@@ -130,7 +130,7 @@ extension InvitedGroupViewController {
     private func configureInvitedGroupCollectionView(_ cell: InvitedGroupCollectionViewCell, _ indexPath: IndexPath) {
         guard let myFriendList = homeViewModel.myFriendList else { return }
         cell.friendNicknameLabel.text = myFriendList.isEmpty  ? "초대할 수 있는 친구가 없어요." : myFriendList[indexPath.row].nickname
-        cell.selectedButton.isHidden = myFriendList.isEmpty
+        cell.selectedImage.isHidden = myFriendList.isEmpty
     }
 
 }
@@ -160,15 +160,14 @@ extension InvitedGroupViewController: UICollectionViewDataSource {
               let myFriendList = homeViewModel.myFriendList,
               !myFriendList.isEmpty,
               let myFriend = myFriendList[safe: indexPath.row] else { return }
-        if cell.selectedButton.isSelected {
-            cell.selectedButton.isSelected = false
-            cell.selectedButton.setImage(UIImage(systemName: "circle"), for: .normal)
+        let isSelectedFriend = cell.selectedImage.tag == 1
+        cell.selectedImage.tag = isSelectedFriend ? 0 : 1
+        cell.selectedImage.image = isSelectedFriend ? UIImage(systemName: "circle.fill") : UIImage(systemName: "circle")
+        guard isSelectedFriend else {
             groupListViewModel.deselectInvitedFriend(friendUserID: myFriend)
-        } else {
-            cell.selectedButton.isSelected = true
-            cell.selectedButton.setImage(UIImage(systemName: "circle.fill"), for: .selected)
-            groupListViewModel.selectInvitedFriend(friendUserID: myFriend)
+            return
         }
+        groupListViewModel.selectInvitedFriend(friendUserID: myFriend)
     }
 }
 

@@ -11,6 +11,7 @@ import RxSwift
 
 final class IndividualRemmitDetailViewController: BaseUIViewController {
     private let individualRemmitDetailView = IndividualRemmitDetailView()
+    private let settleGroupView = SettleGroupView()
     private let individualRemmitDetailViewModel: IndividualRemmitDetailViewModel
     private let disposeBag = DisposeBag()
     
@@ -74,8 +75,19 @@ extension IndividualRemmitDetailViewController {
     }
     
     private func bindAll() {
+        bindGroupManagementButton()
         bindIsLoadedGroupSettlementInfo()
         bindIsLoadedCompletionRemittanceInfo()
+    }
+    
+    private func bindGroupManagementButton() {
+        settleGroupView.groupManagementButton.rx.tap
+            .asDriver()
+            .drive(onNext: {[weak self] _ in
+                guard let groupID = self?.individualRemmitDetailViewModel.groupID else { return }
+                self?.navigationController?.pushViewController(GroupManagementViewController(groupID: groupID), animated: true)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func bindIsLoadedGroupSettlementInfo() {

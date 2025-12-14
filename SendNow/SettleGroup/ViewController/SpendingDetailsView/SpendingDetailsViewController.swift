@@ -126,6 +126,7 @@ extension SpendingDetailsViewController {
     private func configureSettlementGroupViewState() {
         guard let isActive = settleGroupViewModel.isActiveSettlement,
               isActive else { return }
+        print("isActive: \(isActive)")
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: updateButton)
     }
     
@@ -340,9 +341,12 @@ extension SpendingDetailsViewController {
             .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
             .drive(onNext: {[weak self] loadedGroupExpenseDetailInfoResult in
                 switch loadedGroupExpenseDetailInfoResult {
-                case .success():
+                case .success(let isPaidUser):
                     guard let expenseDetailInfo = self?.settleGroupViewModel.expenseDetailInformation else { return }
                     self?.spendingDetailsView.configureSpendingDetailView(expenseDetailInfo)
+                    print("isPaidUser: \(isPaidUser)")
+                    self?.updateButton.isHidden = !isPaidUser
+                    self?.updateButton.isEnabled = isPaidUser
                 case .failure(_):
                     self?.serverErrorAlert()
                 }
