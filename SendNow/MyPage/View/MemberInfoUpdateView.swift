@@ -68,7 +68,7 @@ final class MemberInfoUpdateView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("등록하기", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor(named: "TitleColor")
+        button.backgroundColor = .titleColor
         button.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .medium)
         button.layer.cornerRadius = 5.0
         return button
@@ -235,12 +235,12 @@ extension MemberInfoUpdateView {
     
     func configureNicknameDuplicateButton(_ isEnabled: Bool) {
         nicknameDuplicateButton.isEnabled = isEnabled
-        nicknameDuplicateButton.backgroundColor = isEnabled ? UIColor(named: "SubTitleColor") : .lightGray
+        nicknameDuplicateButton.backgroundColor = isEnabled ? .subTitleColor : .lightGray
         nicknameDuplicateButton.setTitleColor(isEnabled ? .black : .white, for: .normal)
     }
     
     func configureNicknameUpdateButton(_ isEnabled: Bool) {
         nicknameUpdateButton.isEnabled = isEnabled
-        nicknameUpdateButton.backgroundColor = isEnabled ? UIColor(named: "TitleColor") : .lightGray
+        nicknameUpdateButton.backgroundColor = isEnabled ? .titleColor : .lightGray
     }
 }

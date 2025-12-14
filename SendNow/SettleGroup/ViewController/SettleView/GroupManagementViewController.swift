@@ -30,15 +30,15 @@ final class GroupManagementViewController: BaseUIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         settleGroupViewModel.loadGroupMemberInformation()
-        configureGroupManagementViewController()
+        configure()
         addSubviews()
-        setLayoutConstraintsGroupManagementViewController()
+        setLayoutConstraints()
         bindAll()
     }
 }
 
 extension GroupManagementViewController {
-    private func configureGroupManagementViewController() {
+    private func configure() {
         groupManagementView.translatesAutoresizingMaskIntoConstraints = false
         groupManagementView.groupMemberListCollectionView.delegate = self
         groupManagementView.groupMemberListCollectionView.dataSource = self
@@ -51,13 +51,34 @@ extension GroupManagementViewController {
         view.addSubview(groupManagementView)
     }
     
-    private func setLayoutConstraintsGroupManagementViewController() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             groupManagementView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             groupManagementView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             groupManagementView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             groupManagementView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+    
+    private func setupCollectionViewSelection() {
+        guard let groupMemberInformation = settleGroupViewModel.groupMemberInformations,
+              !groupMemberInformation.isEmpty,
+              let creatorUserIndex = settleGroupViewModel.creatorUserIndex,
+              let remainderUserIndex = settleGroupViewModel.remainderUserIndex else { return }
+        let isCreatorUser = settleGroupViewModel.userID == groupMemberInformation[0].groupCreatorID
+        groupManagementView.configureGroupManagementView(
+            groupName: groupMemberInformation[0].groupName,
+            isCreatorUser: isCreatorUser)
+        groupManagementView.groupMemberListCollectionView.reloadData()
+        groupManagementView.groupMemberListCollectionView.selectItem(
+            at: .init(item: creatorUserIndex, section: 0),
+            animated: false,
+            scrollPosition: .bottom)
+        groupManagementView.groupRemainderMemberListCollectionView.reloadData()
+        groupManagementView.groupRemainderMemberListCollectionView.selectItem(
+            at: .init(item: remainderUserIndex, section: 0),
+            animated: false,
+            scrollPosition: .bottom)
     }
     
     //MARK: Bind
@@ -75,7 +96,7 @@ extension GroupManagementViewController {
             .asDriver()
             .drive(onNext: {[weak self] inputGroupName in
                 self?.groupManagementView.groupNameUpdateButton.isEnabled = !inputGroupName.isEmpty
-                self?.groupManagementView.groupNameUpdateButton.backgroundColor = !inputGroupName.isEmpty ? UIColor(named: "TitleColor") : .systemGray
+                self?.groupManagementView.groupNameUpdateButton.backgroundColor = !inputGroupName.isEmpty ? .titleColor : .systemGray
             })
             .disposed(by: disposeBag)
     }
@@ -96,24 +117,8 @@ extension GroupManagementViewController {
             .drive(onNext: {[weak self] isLoadedGroupMemberInfo in
                 switch isLoadedGroupMemberInfo {
                 case .success(let isLoaded):
-                    guard isLoaded,
-                          let groupMemberInformation = self?.settleGroupViewModel.groupMemberInformations,
-                          let creatorUserIndex = self?.settleGroupViewModel.creatorUserIndex,
-                          let remainderUserIndex = self?.settleGroupViewModel.remainderUserIndex else { return }
-                    let isCreatorUser = self?.settleGroupViewModel.userID == groupMemberInformation[0].groupCreatorID
-                    self?.groupManagementView.configureGroupManagementView(
-                        groupName: groupMemberInformation[0].groupName,
-                        isCreatorUser: isCreatorUser)
-                    self?.groupManagementView.groupMemberListCollectionView.reloadData()
-                    self?.groupManagementView.groupMemberListCollectionView.selectItem(
-                        at: .init(item: creatorUserIndex, section: 0),
-                        animated: false,
-                        scrollPosition: .bottom)
-                    self?.groupManagementView.groupRemainderMemberListCollectionView.reloadData()
-                    self?.groupManagementView.groupRemainderMemberListCollectionView.selectItem(
-                        at: .init(item: remainderUserIndex, section: 0),
-                        animated: false,
-                        scrollPosition: .bottom)
+                    guard isLoaded else { return }
+                    self?.setupCollectionViewSelection()
                     
                 case .failure(_):
                     self?.serverErrorAlert()
@@ -140,23 +145,7 @@ extension GroupManagementViewController {
         settleGroupViewModel.isCanceledState
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: {[weak self] _ in
-                guard let groupMemberInformation = self?.settleGroupViewModel.groupMemberInformations,
-                      let creatorUserIndex = self?.settleGroupViewModel.creatorUserIndex,
-                      let remainderUserIndex = self?.settleGroupViewModel.remainderUserIndex else { return }
-                let isCreatorUser = self?.settleGroupViewModel.userID == groupMemberInformation[0].groupCreatorID
-                self?.groupManagementView.configureGroupManagementView(
-                    groupName: groupMemberInformation[0].groupName,
-                    isCreatorUser: isCreatorUser)
-                self?.groupManagementView.groupMemberListCollectionView.reloadData()
-                self?.groupManagementView.groupMemberListCollectionView.selectItem(
-                    at: .init(item: creatorUserIndex, section: 0),
-                    animated: false,
-                    scrollPosition: .bottom)
-                self?.groupManagementView.groupRemainderMemberListCollectionView.reloadData()
-                self?.groupManagementView.groupRemainderMemberListCollectionView.selectItem(
-                    at: .init(item: remainderUserIndex, section: 0),
-                    animated: false,
-                    scrollPosition: .bottom)
+                self?.setupCollectionViewSelection()
             })
             .disposed(by: disposeBag)
     }
@@ -209,10 +198,10 @@ extension GroupManagementViewController: UICollectionViewDataSource {
         cell.isUserInteractionEnabled = isCreatorUser
         switch collectionView {
         case groupManagementView.groupMemberListCollectionView:
-            cell.configureGroupManagementCollecionViewCell(nickname: groupMemberInformation.nickname)
+            cell.configureCell(nickname: groupMemberInformation.nickname)
             return cell
         case groupManagementView.groupRemainderMemberListCollectionView:
-            cell.configureGroupRemainderCollectionViewCell(nickname: groupMemberInformation.nickname)
+            cell.configureCell(nickname: groupMemberInformation.nickname)
             return cell
         default: return cell 
         }
@@ -232,7 +221,7 @@ extension GroupManagementViewController: UICollectionViewDataSource {
 }
 extension GroupManagementViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = (groupManagementView.groupMemberListCollectionView.bounds.width) - 10.0
+        let width = (collectionView.bounds.width) - 10.0
         let height = 40.0
         return CGSize(width: width, height: height)
     }

@@ -20,7 +20,7 @@ struct EmailMemberResponseDTO: Codable {
 }
 
 extension EmailMemberResponseDTO {
-    func toDomain() -> EmailMemberDomain {
+    func toDomain() -> EmailMember {
         return .init(
             userID: userID,
             nickname: nickname,

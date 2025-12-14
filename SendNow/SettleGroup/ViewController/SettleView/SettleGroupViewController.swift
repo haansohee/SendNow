@@ -35,10 +35,10 @@ final class SettleGroupViewController: BaseUIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         settleGroupViewModel.loadGroupExpenseInformation()
-        configureSettleGroupView()
+        configure()
         addSubviews()
         configureSettlementGroupViewState()
-        setLayoutConstraintsSettleGroupView()
+        setLayoutConstraints()
         notificationInvitedFriendObsever()
         bindAll()
     }
@@ -50,7 +50,7 @@ final class SettleGroupViewController: BaseUIViewController {
 }
 
 extension SettleGroupViewController {
-    private func configureSettleGroupView() {
+    private func configure() {
         settleGroupView.translatesAutoresizingMaskIntoConstraints = false
         settleGroupView.spendingDetailCollectionView.dataSource = self
         settleGroupView.spendingDetailCollectionView.delegate = self
@@ -72,7 +72,7 @@ extension SettleGroupViewController {
         view.addSubview(settleGroupView)
     }
     
-    private func setLayoutConstraintsSettleGroupView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             settleGroupView.topAnchor.constraint(equalTo: view.topAnchor),
             settleGroupView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -132,20 +132,7 @@ extension SettleGroupViewController {
             .disposed(by: disposeBag)
     }
     
-    // MARK: Alert
-//    private func confirmAlert() {
-//        let alertController = UIAlertController(title: "바로보내", message: "해당 그룹을 정말 삭제할까요? \n ⚠️ 삭제된 데이터는 복구되지 않습니다.", preferredStyle: .alert)
-//        let doneAction = UIAlertAction(title: "확인", style: .destructive) {[weak self] _ in
-//            self?.settleGroupViewModel.deleteGroup()
-//        }
-//        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
-//        alertController.addAction(doneAction)
-//        alertController.addAction(cancelAction)
-//        DispatchQueue.main.async {[weak self] in
-//            self?.present(alertController, animated: true)
-//        }
-//    }
-    
+    // MARK: Alert    
     private func settlementDisableAlert() {
         let alertController = UIAlertController(title: "바로보내", message: "현재 이 그룹에는 탈퇴한 회원이 포함되어 있어 정산 기능을 사용할 수 없습니다. 해당 그룹을 삭제 후 새로운 그룹으로 정산을 해 주세요.", preferredStyle: .alert)
         let doneAction = UIAlertAction(title: "확인", style: .cancel) { _ in }

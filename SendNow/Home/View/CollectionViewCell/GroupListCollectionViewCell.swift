@@ -92,7 +92,7 @@ extension GroupListCollectionViewCell {
         contentView.backgroundColor = .systemBackground
     }
     
-    func setGroupListCollectionViewCellLabel(_ groupList: GroupListDomain) {
+    func setGroupListCollectionViewCellLabel(_ groupList: GroupListInformation) {
         let friendsName = groupList.groupFriends.joined(separator: ", ")
         groupNameLabel.text = groupList.groupName
         creationDateLabel.text = groupList.createdDate

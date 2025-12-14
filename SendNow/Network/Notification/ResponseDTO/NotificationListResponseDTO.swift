@@ -17,7 +17,7 @@ struct NotificationListResponseDTO: Codable {
 }
 
 extension NotificationListResponseDTO {
-    func toDomain() -> NotificationListDomain {
+    func toDomain() -> NotificationList {
         return .init(
             notificationID: notificationID,
             senderUserID: senderUserID,

@@ -24,8 +24,8 @@ final class HomeViewModel {
     private let userID: Int
     private var groupName: String?
     private(set) var loginMemberInformation: LoginMemberInformation?
-    private(set) var myFriendList: [MyFriendListDomain]?
-    private(set) var remainderCandidateList: [MyFriendListDomain]?
+    private(set) var myFriendList: [MyFriendList]?
+    private(set) var remainderCandidateList: [MyFriendList]?
     private(set) var summaryInformation: [SummaryInformation]?
     let isLoadedMemberInformation = PublishSubject<Void>()
     let isLoadedMyFriendList = PublishSubject<Result<Void, Error>>()
@@ -68,7 +68,7 @@ final class HomeViewModel {
             }
             guard let fcmToken = token,
                   let userID = self?.userID else { return }
-            let updateFcmTokenInfoDomain = UpdateFcmTokenInformationDomain(
+            let updateFcmTokenInfoDomain = UpdateFcmTokenInformation(
                 userID: userID,
                 fcmToken: fcmToken
             )
@@ -216,7 +216,7 @@ final class HomeViewModel {
     }
     
     func loadMyFriend() {
-        let user = MyFriendListDomain(
+        let user = MyFriendList(
             userID: userID,
             nickname: "\(UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue) ?? "") (본인)",
             kakaoPayUrl: UserDefaults.standard.string(forKey: MemberInfoField.kakaoPayUrl.rawValue)
@@ -234,7 +234,7 @@ final class HomeViewModel {
         }
     }
     
-    func setUserDefaultsEmailMember(_ emailMemberInformation: EmailMemberDomain) {
+    func setUserDefaultsEmailMember(_ emailMemberInformation: EmailMember) {
         UserDefaults.standard.set(emailMemberInformation.userID, forKey: MemberInfoField.userID.rawValue)
         UserDefaults.standard.set(emailMemberInformation.password, forKey: MemberInfoField.password.rawValue)
         UserDefaults.standard.set(emailMemberInformation.email, forKey: MemberInfoField.email.rawValue)
@@ -247,7 +247,7 @@ final class HomeViewModel {
         UserDefaults.standard.set(emailMemberInformation.summaryUnsettled, forKey: MemberInfoField.summaryUnsettled.rawValue)
     }
     
-    func setUserDefaultsKakaoMember(_ kakaoMemberInformation: KakaoMemberDomain) {
+    func setUserDefaultsKakaoMember(_ kakaoMemberInformation: KakaoMember) {
         UserDefaults.standard.set(kakaoMemberInformation.userID, forKey: MemberInfoField.userID.rawValue)
         UserDefaults.standard.set(kakaoMemberInformation.kakaoToken, forKey: MemberInfoField.kakaoToken.rawValue)
         UserDefaults.standard.set(kakaoMemberInformation.email, forKey: MemberInfoField.email.rawValue)
@@ -261,7 +261,7 @@ final class HomeViewModel {
         UserDefaults.standard.set(kakaoMemberInformation.summaryUnsettled, forKey: MemberInfoField.summaryUnsettled.rawValue)
     }
     
-    func setUserDefaultsAppleMember(_ appleMemberInformation: AppleMemberDomain) {
+    func setUserDefaultsAppleMember(_ appleMemberInformation: AppleMember) {
         UserDefaults.standard.set(appleMemberInformation.userID, forKey: MemberInfoField.userID.rawValue)
         UserDefaults.standard.set(appleMemberInformation.appleToken, forKey: MemberInfoField.appleToken.rawValue)
         UserDefaults.standard.set(appleMemberInformation.email, forKey: MemberInfoField.email.rawValue)

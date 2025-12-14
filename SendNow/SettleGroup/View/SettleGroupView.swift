@@ -11,7 +11,7 @@ final class SettleGroupView: UIView {
     let groupManagementButton: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitleColor(UIColor(named: "TitleColor"), for: .normal)
+        button.setTitleColor(.titleColor, for: .normal)
         button.setTitle("그룹 관리", for: .normal)
         return button
     }()
@@ -33,11 +33,11 @@ final class SettleGroupView: UIView {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 30.0, weight: .light)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: "plus", withConfiguration: imageConfig), for: .normal)
-        button.tintColor = UIColor(named: "TitleColor")
+        button.tintColor = .titleColor
         button.backgroundColor = .systemBackground
         button.layer.cornerRadius = 25.0
         button.layer.borderWidth = 1.0
-        button.layer.borderColor = UIColor(named: "TitleColor")?.cgColor
+        button.layer.borderColor = UIColor.titleColor?.cgColor
         return button
     }()
     
@@ -85,7 +85,7 @@ final class SettleGroupView: UIView {
         super.init(frame: frame)
         addSubviews()
         setLayoutConstraints()
-        self.backgroundColor = UIColor(named: "SubTitleColor")
+        self.backgroundColor = .subTitleColor
     }
     
     required init?(coder: NSCoder) {

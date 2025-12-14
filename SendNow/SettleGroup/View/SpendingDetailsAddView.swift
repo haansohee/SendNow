@@ -23,7 +23,7 @@ final class SpendingDetailsAddView: UIView {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 20.0, weight: .light)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: "plus", withConfiguration: imageConfig), for: .normal)
-        button.tintColor = UIColor(named: "TitleColor")
+        button.tintColor = .titleColor
         return button
     }()
     
@@ -294,35 +294,35 @@ extension SpendingDetailsAddView {
         }
     }
     
-    func configureSpendingDetailView(_ detailsInfo: ExpenseDetailInformationDomain) {
+    func configureSpendingDetailView(_ detailsInfo: ExpenseDetailInformation) {
         datePicker.date = detailsInfo.expenseDate.stringToDate() ?? Date()
         contentTextField.text = detailsInfo.expenseDetails
         paymentTextField.text = String(detailsInfo.expenseAmount)
         switch detailsInfo.expenseClassfication {
         case classficationType.traffic.rawValue:
             trafficclassficationView.tag = 1
-            trafficclassficationView.classficationImage.tintColor = UIColor(named: "TitleColor")
-            trafficclassficationView.classficationLabel.textColor = UIColor(named: "TitleColor")
+            trafficclassficationView.classficationImage.tintColor = .titleColor
+            trafficclassficationView.classficationLabel.textColor = .titleColor
             
         case classficationType.accommodation.rawValue:
             accommodationclassficationView.tag = 1
-            accommodationclassficationView.classficationImage.tintColor = UIColor(named: "TitleColor")
-            accommodationclassficationView.classficationLabel.textColor = UIColor(named: "TitleColor")
+            accommodationclassficationView.classficationImage.tintColor = .titleColor
+            accommodationclassficationView.classficationLabel.textColor = .titleColor
             
         case classficationType.tourism.rawValue:
             tourismclassficationView.tag = 1
-            tourismclassficationView.classficationImage.tintColor = UIColor(named: "TitleColor")
-            tourismclassficationView.classficationLabel.textColor = UIColor(named: "TitleColor")
+            tourismclassficationView.classficationImage.tintColor = .titleColor
+            tourismclassficationView.classficationLabel.textColor = .titleColor
             
         case classficationType.food.rawValue:
             foodclassficationView.tag = 1
-            foodclassficationView.classficationImage.tintColor = UIColor(named: "TitleColor")
-            foodclassficationView.classficationLabel.textColor = UIColor(named: "TitleColor")
+            foodclassficationView.classficationImage.tintColor = .titleColor
+            foodclassficationView.classficationLabel.textColor = .titleColor
             
         case classficationType.etc.rawValue:
             etcclassficationView.tag = 1
-            etcclassficationView.classficationImage.tintColor = UIColor(named: "TitleColor")
-            etcclassficationView.classficationLabel.textColor = UIColor(named: "TitleColor")
+            etcclassficationView.classficationImage.tintColor = .titleColor
+            etcclassficationView.classficationLabel.textColor = .titleColor
 
         default:
             return

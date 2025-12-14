@@ -11,7 +11,7 @@ final class SummaryCardCollectionViewCell: UICollectionViewCell, ReuseIdentifier
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.tintColor = UIColor(named: "TitleColor")
+        imageView.tintColor = .titleColor
         imageView.image = UIImage(systemName: "envelope.fill")
         return imageView
     }()

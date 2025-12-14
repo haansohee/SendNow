@@ -66,7 +66,7 @@ final class SigninViewModel {
                 
                 guard let nickname = kakaoMemberInfo.nickname,
                       !(nickname.isEmpty) else {
-                    let kakaoMemberInformation = KakaoMemberDomain(
+                    let kakaoMemberInformation = KakaoMember(
                         userID: userID,
                         nickname: "",
                         email: email,
@@ -83,7 +83,7 @@ final class SigninViewModel {
                     return
                 }
 
-                let kakaoMemberInformation = KakaoMemberDomain(
+                let kakaoMemberInformation = KakaoMember(
                     userID: userID,
                     nickname: nickname,
                     email: email,
@@ -109,7 +109,7 @@ final class SigninViewModel {
                 guard let accessToken = UserDefaults.standard.string(forKey: MemberInfoField.kakaoToken.rawValue),
                       let kakaoID = user.id,
                       let email = user.kakaoAccount?.email as? String else { return }
-                let signinWithKakaoDomain = SigninWithKakaoDomain(
+                let signinWithKakaoDomain = SigninWithKakao(
                     nickname: "",
                     email: email,
                     kakaoToken: accessToken,
@@ -147,7 +147,7 @@ final class SigninViewModel {
                       !(appleToken.isEmpty),
                       !(email.isEmpty)
                 else {
-                    let signupWithAppleInfo = SigninWithAppleDomain(
+                    let signupWithAppleInfo = SigninWithApple(
                         nickname: "",
                         appleToken: appleToken,
                         authorizationCode: authorizationCode,
@@ -159,7 +159,7 @@ final class SigninViewModel {
                 
                 guard let nickname = appleMemberInfo.nickname,
                       !(nickname.isEmpty) else {
-                    let appleMemberInformation = AppleMemberDomain(
+                    let appleMemberInformation = AppleMember(
                         userID: userID,
                         nickname: "",
                         email: email,
@@ -175,7 +175,7 @@ final class SigninViewModel {
                     return
                 }
                 
-                let appleMemberInformation = AppleMemberDomain(
+                let appleMemberInformation = AppleMember(
                     userID: userID,
                     nickname: nickname,
                     email: email,
@@ -194,7 +194,7 @@ final class SigninViewModel {
         }
     }
     
-    func signupWithApple(_ signinWithAppleInfo: SigninWithAppleDomain) {
+    func signupWithApple(_ signinWithAppleInfo: SigninWithApple) {
         let signinWithAppleInfoReqeustDTO = SigninWithAppleRequestDTO(
             nickname: signinWithAppleInfo.nickname,
             appleToken: signinWithAppleInfo.appleToken,
@@ -210,7 +210,7 @@ final class SigninViewModel {
     
     func updateNickname(_ nickname: String) {
         let userID = UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)
-        let updateNicknameInfo = UpdateNicknameDomain(
+        let updateNicknameInfo = UpdateNicknameInformation(
             userID: userID,
             nickname: nickname
         )
@@ -227,7 +227,7 @@ final class SigninViewModel {
     }
     
     func isValidEmailPassword(_ email: String, _ password: String) {
-        let validationInformation = ValidationEmailPasswordDomain(
+        let validationInformation = ValidationEmailPassword(
             email: email,
             password: password
         )
@@ -256,7 +256,7 @@ final class SigninViewModel {
                       let summaryUnsettled = emailMemberInfo.summaryUnsettled,
                       !(nickname.isEmpty),
                       !(password.isEmpty) else { return }
-                let emailMemberInformation = EmailMemberDomain(
+                let emailMemberInformation = EmailMember(
                     userID: userID,
                     nickname: nickname,
                     email: email,
@@ -275,7 +275,7 @@ final class SigninViewModel {
         }
     }
     
-    func setUserDefaultsEmailMember(_ emailMemberInformation: EmailMemberDomain) {
+    func setUserDefaultsEmailMember(_ emailMemberInformation: EmailMember) {
         UserDefaults.standard.set(emailMemberInformation.userID, forKey: MemberInfoField.userID.rawValue)
         UserDefaults.standard.set(emailMemberInformation.password, forKey: MemberInfoField.password.rawValue)
         UserDefaults.standard.set(emailMemberInformation.email, forKey: MemberInfoField.email.rawValue)
@@ -288,7 +288,7 @@ final class SigninViewModel {
         UserDefaults.standard.set(emailMemberInformation.summaryUnsettled, forKey: MemberInfoField.summaryUnsettled.rawValue)
     }
     
-    func setUserDefaultsKakaoMember(_ kakaoMemberInformation: KakaoMemberDomain) {
+    func setUserDefaultsKakaoMember(_ kakaoMemberInformation: KakaoMember) {
         UserDefaults.standard.set(kakaoMemberInformation.userID, forKey: MemberInfoField.userID.rawValue)
         UserDefaults.standard.set(kakaoMemberInformation.kakaoToken, forKey: MemberInfoField.kakaoToken.rawValue)
         UserDefaults.standard.set(kakaoMemberInformation.email, forKey: MemberInfoField.email.rawValue)
@@ -302,7 +302,7 @@ final class SigninViewModel {
         UserDefaults.standard.set(kakaoMemberInformation.summaryUnsettled, forKey: MemberInfoField.summaryUnsettled.rawValue)
     }
     
-    func setUserDefaultsAppleMember(appleMemberInformation: AppleMemberDomain) {
+    func setUserDefaultsAppleMember(appleMemberInformation: AppleMember) {
         UserDefaults.standard.set(appleMemberInformation.userID, forKey: MemberInfoField.userID.rawValue)
         UserDefaults.standard.set(appleMemberInformation.appleToken, forKey: MemberInfoField.appleToken.rawValue)
         UserDefaults.standard.set(appleMemberInformation.email, forKey: MemberInfoField.email.rawValue)

@@ -63,7 +63,7 @@ final class BankInfoRequiredView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("등록하기", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor(named: "TitleColor")
+        button.backgroundColor = .titleColor
         button.titleLabel?.font = .systemFont(ofSize: 13.5, weight: .semibold)
         button.layer.cornerRadius = 5.0
         return button

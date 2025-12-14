@@ -25,7 +25,7 @@ final class InvitedGroupCollectionViewCell: UICollectionViewCell, ReuseIdentifie
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(systemName: "circle")
-        imageView.tintColor = UIColor(named: "TitleColor")
+        imageView.tintColor = .titleColor
         imageView.tag = 0
         return imageView
     }()
@@ -90,12 +90,7 @@ extension InvitedGroupCollectionViewCell {
         selectedImage.isHidden = isEmpty
     }
     
-    func configureGroupManagementCollecionViewCell(nickname: String) {
-        friendNicknameLabel.text = nickname
-        selectedImage.isHidden = false
-    }
-    
-    func configureGroupRemainderCollectionViewCell(nickname: String) {
+    func configureCell(nickname: String) {
         friendNicknameLabel.text = nickname
         selectedImage.isHidden = false
     }

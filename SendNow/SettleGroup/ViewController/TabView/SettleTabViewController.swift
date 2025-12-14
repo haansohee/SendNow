@@ -36,7 +36,7 @@ final class SettleTabViewController: TabmanViewController {
         
         let bar = TMBar.TabBar()
         navigationItem.title = tabTitle
-        navigationController?.navigationBar.tintColor = UIColor(named: "TitleColor")
+        navigationController?.navigationBar.tintColor = .titleColor
         
         bar.backgroundView.style = .blur(style: .regular)
         bar.indicator.tintColor = .label
@@ -45,7 +45,7 @@ final class SettleTabViewController: TabmanViewController {
         
         bar.buttons.customize { (button) in
             button.tintColor = .label
-            button.selectedTintColor = UIColor(named: "TitleColor")
+            button.selectedTintColor = .titleColor
             button.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
             button.backgroundColor = .secondarySystemBackground
         }

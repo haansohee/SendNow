@@ -31,7 +31,7 @@ struct SettlementBalanlceResponseDTO: Codable {
 }
 
 extension SettlementDetailsResponseDTO {
-    func toDomain() -> SettlementDetailsDomain {
+    func toDomain() -> SettlementDetails {
         return .init(
             settlementID: settlementID,
             groupID: groupID,
@@ -46,7 +46,7 @@ extension SettlementDetailsResponseDTO {
 }
 
 extension SettlementBalanlceResponseDTO {
-    func toDomain() -> SettlementBalanceDomain {
+    func toDomain() -> SettlementBalance {
         return .init(
             userID: userID,
             nickname: nickname,
@@ -57,7 +57,7 @@ extension SettlementBalanlceResponseDTO {
 }
 
 extension SettlementListReponseDTO {
-    func toDomain() -> SettlementListDomain {
+    func toDomain() -> SettlementList {
         return .init(
             settlementDetails: settlementDetails.map { $0.toDomain() },
             settlementBalance: settlementBalance.map { $0.toDomain() }

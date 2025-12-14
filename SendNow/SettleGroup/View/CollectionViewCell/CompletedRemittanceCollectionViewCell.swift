@@ -37,7 +37,7 @@ final class CompletedRemittanceCollectionViewCell: UICollectionViewCell, ReuseId
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: "square"), for: .normal)
-        button.tintColor = UIColor(named: "TitleColor")
+        button.tintColor = .titleColor
         button.isHidden = true
         return button
     }()
@@ -94,7 +94,7 @@ extension CompletedRemittanceCollectionViewCell {
         contentView.backgroundColor = .systemBackground
     }
     
-    func configureLabel(with information: CompletionRemittanceDomain) {
+    func configureLabel(with information: CompletionRemittanceInformation) {
         remittanceInformationLabel.text = "\(information.receiverNickname)에게\n\(information.amount)원 송금하기"
         remittanceCheckLabel.isHidden = false
         completedButton.isHidden = false

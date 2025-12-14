@@ -13,7 +13,7 @@ final class NotificationViewController: BaseUIViewController {
     private let notificationStateButton: AnimationButton = {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitleColor(UIColor(named: "TitleColor"), for: .normal)
+        button.setTitleColor(.titleColor, for: .normal)
         button.setTitle("알림 끄기", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 14.0, weight: .semibold)
         button.tag = 0
@@ -63,10 +63,10 @@ final class NotificationViewController: BaseUIViewController {
         super.viewDidLoad()
         notificationViewModel.getNotificationList()
         notificationViewModel.loadNotificationStatus()
-        configureNotificationView()
+        configure()
         configureRefreshControl()
         addSubviews()
-        setLayoutConstraintsNotificationView()
+        setLayoutConstraints()
         addNotificationStatusUpdate()
         bindAll()
     }
@@ -78,7 +78,7 @@ final class NotificationViewController: BaseUIViewController {
 }
 
 extension NotificationViewController {
-    private func configureNotificationView() {
+    private func configure() {
         notificationListCollectionView.translatesAutoresizingMaskIntoConstraints = false
         notificationListCollectionView.delegate = self
         notificationListCollectionView.dataSource = self
@@ -90,14 +90,14 @@ extension NotificationViewController {
     
     private func configureRefreshControl() {
         notificationListCollectionView.refreshControl = refreshControl
-        notificationListCollectionView.refreshControl?.tintColor = UIColor(named: "TitleColor")
+        notificationListCollectionView.refreshControl?.tintColor = .titleColor
     }
     
     private func addSubviews() {
         view.addSubview(notificationListCollectionView)
     }
     
-    private func setLayoutConstraintsNotificationView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             notificationListCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 18.0),
             notificationListCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),

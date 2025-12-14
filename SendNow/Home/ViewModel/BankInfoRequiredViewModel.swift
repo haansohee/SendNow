@@ -21,7 +21,7 @@ final class BankInfoRequiredViewModel {
     }
     
     func updateKakaoPayURL(_ kakaoPayURL: String) {
-        let updateKakaoPayUrlDomain = UpdateKakaoPayUrlDomain(
+        let updateKakaoPayUrlDomain = UpdateKakaoPayUrlInformation(
             userID: userID,
             kakaoPayUrl: kakaoPayURL
         )

@@ -18,7 +18,7 @@ final class SpendingDetailsViewController: BaseUIViewController {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("수정", for: .normal)
-        button.setTitleColor(UIColor(named: "TitleColor"), for: .normal)
+        button.setTitleColor(.titleColor, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 14.0, weight: .bold)
         button.tag = 0
         return button
@@ -28,7 +28,7 @@ final class SpendingDetailsViewController: BaseUIViewController {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("< 뒤로가기", for: .normal)
-        button.setTitleColor(UIColor(named: "TitleColor"), for: .normal)
+        button.setTitleColor(.titleColor, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 14.0, weight: .light)
         return button
     }()
@@ -39,7 +39,7 @@ final class SpendingDetailsViewController: BaseUIViewController {
         button.setTitle("저장하기", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .bold)
-        button.backgroundColor = UIColor(named: "TitleColor")
+        button.backgroundColor = .titleColor
         button.layer.cornerRadius = 12.0
         button.isEnabled = false
         button.isHidden = true
@@ -86,12 +86,12 @@ final class SpendingDetailsViewController: BaseUIViewController {
         super.viewDidLoad()
         settleGroupViewModel.loadSettlementCreatorID()
         loadExpenseDetailInformation()
-        configureSpendingDetailsView()
+        configure()
         configureDatePicker()
         configureSettlementGroupViewState()
         disableEditing()
         addSubviews()
-        setLayoutConstraintsSpendingDetailsView()
+        setLayoutConstraints()
         bindAll()
     }
 }
@@ -107,7 +107,7 @@ extension SpendingDetailsViewController {
         settleGroupViewModel.loadExpenseDetailInformation(expenseID)
     }
     
-    private func configureSpendingDetailsView() {
+    private func configure() {
         spendingDetailsView.translatesAutoresizingMaskIntoConstraints = false
         spendingDetailsView.spendingDetailAddButton.setTitle("수정", for: .normal)
         spendingDetailsView.contentTextField.text = settleGroupViewModel.expenseDetails
@@ -126,7 +126,6 @@ extension SpendingDetailsViewController {
     private func configureSettlementGroupViewState() {
         guard let isActive = settleGroupViewModel.isActiveSettlement,
               isActive else { return }
-        print("isActive: \(isActive)")
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: updateButton)
     }
     
@@ -144,7 +143,7 @@ extension SpendingDetailsViewController {
         ].forEach { view.addSubview($0) }
     }
     
-    private func setLayoutConstraintsSpendingDetailsView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             spendingDetailsView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             spendingDetailsView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -344,7 +343,7 @@ extension SpendingDetailsViewController {
                 case .success(let isPaidUser):
                     guard let expenseDetailInfo = self?.settleGroupViewModel.expenseDetailInformation else { return }
                     self?.spendingDetailsView.configureSpendingDetailView(expenseDetailInfo)
-                    print("isPaidUser: \(isPaidUser)")
+
                     self?.updateButton.isHidden = !isPaidUser
                     self?.updateButton.isEnabled = isPaidUser
                 case .failure(_):
@@ -403,8 +402,8 @@ extension SpendingDetailsViewController {
         switch tag {
         case 0:
             view.tag = 1
-            view.classficationImage.tintColor = UIColor(named: "TitleColor")
-            view.classficationLabel.textColor = UIColor(named: "TitleColor")
+            view.classficationImage.tintColor = .titleColor
+            view.classficationLabel.textColor = .titleColor
             guard let classfication = view.classficationLabel.text,
                   !classfication.isEmpty else { return }
             settleGroupViewModel.selectExpenseClassfication(classfication)

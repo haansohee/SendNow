@@ -27,7 +27,7 @@ final class GroupListViewController: BaseUIViewController {
         let button = AnimationButton(frame: CGRect(x: 0, y: 0, width: 34, height: 34))
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 20.0, weight: .light)
         button.setImage(UIImage(systemName: "plus.app", withConfiguration: imageConfig), for: .normal)
-        button.tintColor = UIColor(named: "TitleColor")
+        button.tintColor = .titleColor
         return button
     }()
     
@@ -46,9 +46,9 @@ final class GroupListViewController: BaseUIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         groupListViewModel.loadMyGroup()
-        configureGroupListView()
+        configure()
         addSubviews()
-        setLayoutConstraintsGroupListView()
+        setLayoutConstraints()
         bindAll()
         addInvitedFriendNotification()
         addDeletedGroupNotification()
@@ -61,7 +61,7 @@ final class GroupListViewController: BaseUIViewController {
 }
 
 extension GroupListViewController {
-    private func configureGroupListView() {
+    private func configure() {
         groupListCollectionView.translatesAutoresizingMaskIntoConstraints = false
         groupListCollectionView.dataSource = self
         groupListCollectionView.delegate = self
@@ -74,7 +74,7 @@ extension GroupListViewController {
         view.addSubview(groupListCollectionView)
     }
     
-    private func setLayoutConstraintsGroupListView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             groupListCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 18.0),
             groupListCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),

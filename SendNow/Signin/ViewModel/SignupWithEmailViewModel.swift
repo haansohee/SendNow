@@ -14,7 +14,7 @@ final class SignupWithEmailViewModel {
     private(set) var isEnabledSignupButton: Bool = false
     private(set) var isCheckedValidNickname: Bool = false
     private(set) var isCheckedAuthCode: Bool = false
-    private(set) var emailAuthCodeInfo: EmailAuthCodeDomain?
+    private(set) var emailAuthCodeInfo: EmailAuthCode?
     let isDuplicatedNickname = PublishSubject<Bool>()
     let isDuplicatedEmail = PublishSubject<Result<Bool, Error>>()
     let isCompletedSignup = PublishSubject<Bool>()
@@ -32,7 +32,7 @@ final class SignupWithEmailViewModel {
     }
     
     func isDuplicatedNickname(nickname: String) {
-        let nicknameDuplicateInfo = UpdateNicknameDomain(
+        let nicknameDuplicateInfo = UpdateNicknameInformation(
             userID: 0,
             nickname: nickname
         )
@@ -49,7 +49,7 @@ final class SignupWithEmailViewModel {
         memberService.getEmailAuthCode(with: email) {[weak self] getEmailAuthCodeResult in
             switch getEmailAuthCodeResult {
             case .success(let emailAuthCode):
-                let emailAuthCodeDomain = EmailAuthCodeDomain(isDuplicated: emailAuthCode.isDuplicated, authCode: emailAuthCode.authCode)
+                let emailAuthCodeDomain = EmailAuthCode(isDuplicated: emailAuthCode.isDuplicated, authCode: emailAuthCode.authCode)
                 self?.emailAuthCodeInfo = emailAuthCodeDomain
                 self?.isDuplicatedEmail.onNext(.success(emailAuthCode.isDuplicated))
             case .failure(let error):
@@ -58,7 +58,7 @@ final class SignupWithEmailViewModel {
         }
     }
     
-    func signupWithEmail(_ signinWithEmailInfo: SigninWithEmailDomain) {
+    func signupWithEmail(_ signinWithEmailInfo: SigninWithEmail) {
         let signinWithEmailInfoRequestDTO = SigninWithEmailRequestDTO(
             nickname: signinWithEmailInfo.nickname,
             email: signinWithEmailInfo.email,

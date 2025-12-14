@@ -30,9 +30,9 @@ final class SpendingDetailsAddViewController: BaseUIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         settleGroupViewModel.loadGroupMemberInformation()
-        configureSettleGroupView()
+        configure()
         addSubviews()
-        setLayoutConstraintsSettleGroupView()
+        setLayoutConstraints()
         bindAll()
     }
     
@@ -43,7 +43,7 @@ final class SpendingDetailsAddViewController: BaseUIViewController {
 }
 
 extension SpendingDetailsAddViewController {
-    private func configureSettleGroupView() {
+    private func configure() {
         spendingDetailAddView.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .systemBackground
         navigationItem.title = "지출 내역 추가"
@@ -55,7 +55,7 @@ extension SpendingDetailsAddViewController {
         view.addSubview(spendingDetailAddView)
     }
     
-    private func setLayoutConstraintsSettleGroupView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             spendingDetailAddView.topAnchor.constraint(equalTo: view.topAnchor),
             spendingDetailAddView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -68,8 +68,8 @@ extension SpendingDetailsAddViewController {
         switch tag {
         case 0:
             view.tag = 1
-            view.classficationImage.tintColor = UIColor(named: "TitleColor")
-            view.classficationLabel.textColor = UIColor(named: "TitleColor")
+            view.classficationImage.tintColor = .titleColor
+            view.classficationLabel.textColor = .titleColor
             guard let classfication = view.classficationLabel.text,
                   !classfication.isEmpty else { return }
             settleGroupViewModel.selectExpenseClassfication(classfication)

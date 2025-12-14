@@ -18,7 +18,7 @@ struct ExpenseDetailInformationReponseDTO: Codable {
 }
 
 extension ExpenseDetailInformationReponseDTO {
-    func toDomain() -> ExpenseDetailInformationDomain {
+    func toDomain() -> ExpenseDetailInformation {
         return .init(
             expenseID: expenseID,
             groupID: groupID,

@@ -40,9 +40,9 @@ final class FriendRequestListViewController: BaseUIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         friendRequestViewModel.getFriendRequestList()
-        configureFriendRequestView()
+        configure()
         addSubivews()
-        setLayoutConstraintsFriendRequestListView()
+        setLayoutConstraints()
         bindAll()
         addInvitedFriendNotification()
     }
@@ -59,7 +59,7 @@ final class FriendRequestListViewController: BaseUIViewController {
 }
 
 extension FriendRequestListViewController {
-    private func configureFriendRequestView() {
+    private func configure() {
         friendReuqestListCollectionView.translatesAutoresizingMaskIntoConstraints = false
         friendReuqestListCollectionView.dataSource = self
         friendReuqestListCollectionView.delegate = self
@@ -72,7 +72,7 @@ extension FriendRequestListViewController {
         view.addSubview(friendReuqestListCollectionView)
     }
     
-    private func setLayoutConstraintsFriendRequestListView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             friendReuqestListCollectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 66.0),
             friendReuqestListCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct EmailMemberDomain {
+struct EmailMember {
     let userID: Int?
     let nickname: String?
     let email: String?

@@ -21,7 +21,7 @@ struct KakaoMemberReponseDTO: Codable {
 }
 
 extension KakaoMemberReponseDTO {
-    func toDomain() -> KakaoMemberDomain {
+    func toDomain() -> KakaoMember {
         return .init(
             userID: userID,
             nickname: nickname,

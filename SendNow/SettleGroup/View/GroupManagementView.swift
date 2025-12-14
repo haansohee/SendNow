@@ -56,7 +56,7 @@ final class GroupManagementView: UIView {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor(named: "TitleColor")
+        button.backgroundColor = .titleColor
         button.layer.cornerRadius = 5.0
         button.setTitle("변경하기", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 15.0)

@@ -25,15 +25,15 @@ final class SignupWithEmailViewController: BaseUIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureSignupWithEmailView()
+        configure()
         addSubviews()
-        setLayoutConstraintssignupWithEmailView()
+        setLayoutConstraints()
         bindAll()
     }
 }
 
 extension SignupWithEmailViewController {
-    private func configureSignupWithEmailView() {
+    private func configure() {
         signupWithEmailView.translatesAutoresizingMaskIntoConstraints = false
         navigationItem.title = "가입하기"
         view.backgroundColor = .systemBackground
@@ -43,7 +43,7 @@ extension SignupWithEmailViewController {
         view.addSubview(signupWithEmailView)
     }
     
-    private func setLayoutConstraintssignupWithEmailView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             signupWithEmailView.topAnchor.constraint(equalTo: view.topAnchor),
             signupWithEmailView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -163,7 +163,7 @@ extension SignupWithEmailViewController {
                     self?.confirmAlert(title: "바로보내 회원가입", message: "이메일 인증 및 아이디 중복 검사, 정확한 비밀번호 작성 등 모두 진행해 주세요!")
                     return }
                 let isSetNoti = UserDefaults.standard.bool(forKey: MemberInfoField.isSetNoti.rawValue)
-                let signinWithEmailInfo = SigninWithEmailDomain(nickname: nickname,
+                let signinWithEmailInfo = SigninWithEmail(nickname: nickname,
                                                                 email: "\(email)@\(emailAddress)",
                                                                 password: password,
                                                                 isSetNoti: isSetNoti,
@@ -212,7 +212,7 @@ extension SignupWithEmailViewController {
                 self?.signupWithEmailViewModel.setIsEnabledSignupButton(isValid)
                 self?.signupWithEmailView.nicknameLabel.text = isValid ? "" : "친구와 공유할 닉네임을 3~16자 이내로 입력해 주세요. \n 영어, 한글, 숫자만 입력 가능해요."
                 self?.signupWithEmailView.nicknameDuplicateButton.isEnabled = isValid
-                self?.signupWithEmailView.nicknameDuplicateButton.backgroundColor = isValid ? UIColor(named: "TitleColor") : .lightGray
+                self?.signupWithEmailView.nicknameDuplicateButton.backgroundColor = isValid ? .titleColor : .lightGray
             })
             .disposed(by: disposeBag)
     }

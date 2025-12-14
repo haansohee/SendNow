@@ -29,14 +29,14 @@ final class MyPageViewController: BaseUIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureMyPageView()
+        configure()
         addSubviews()
-        setLayoutConstraintsMyPageCollectionView()
+        setLayoutConstraints()
     }
 }
 
 extension MyPageViewController {
-    private func configureMyPageView() {
+    private func configure() {
         myPageCollectionView.translatesAutoresizingMaskIntoConstraints = false
         myPageCollectionView.delegate = self
         myPageCollectionView.dataSource = self
@@ -48,7 +48,7 @@ extension MyPageViewController {
         view.addSubview(myPageCollectionView)
     }
     
-    private func setLayoutConstraintsMyPageCollectionView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             myPageCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24.0),
             myPageCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),

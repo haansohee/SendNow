@@ -33,9 +33,9 @@ final class InvitedGroupViewController: BaseUIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.homeViewModel.loadMyFriend()
-        configureInvitedGroupView()
+        configure()
         addSubviews()
-        setLayoutConstraintsInvitedGroupView()
+        setLayoutConstraints()
         addInvitedFriendSuccess()
         bindAll()
     }
@@ -47,12 +47,12 @@ final class InvitedGroupViewController: BaseUIViewController {
 }
 
 extension InvitedGroupViewController {
-    private func configureInvitedGroupView() {
+    private func configure() {
         invitedGroupView.translatesAutoresizingMaskIntoConstraints = false
         invitedGroupView.invitedGroupCollectionView.delegate = self
         invitedGroupView.invitedGroupCollectionView.dataSource = self
         view.backgroundColor = .secondarySystemBackground
-        navigationController?.navigationBar.tintColor = UIColor(named: "TitleColor")
+        navigationController?.navigationBar.tintColor = .titleColor
         navigationItem.title = "친구 초대하기"
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: invitedGroupView.nextButton)
         self.modalPresentationCapturesStatusBarAppearance = true
@@ -63,7 +63,7 @@ extension InvitedGroupViewController {
         view.addSubview(invitedGroupView)
     }
     
-    private func setLayoutConstraintsInvitedGroupView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             invitedGroupView.topAnchor.constraint(equalTo: view.topAnchor),
             invitedGroupView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -160,14 +160,14 @@ extension InvitedGroupViewController: UICollectionViewDataSource {
               let myFriendList = homeViewModel.myFriendList,
               !myFriendList.isEmpty,
               let myFriend = myFriendList[safe: indexPath.row] else { return }
-        let isSelectedFriend = cell.selectedImage.tag == 1
-        cell.selectedImage.tag = isSelectedFriend ? 0 : 1
-        cell.selectedImage.image = isSelectedFriend ? UIImage(systemName: "circle.fill") : UIImage(systemName: "circle")
-        guard isSelectedFriend else {
+        let wasSelected = cell.selectedImage.tag == 1
+        cell.selectedImage.tag = wasSelected ? 0 : 1
+        cell.selectedImage.image = wasSelected ? UIImage(systemName: "circle") : UIImage(systemName: "circle.fill")
+        if wasSelected {
             groupListViewModel.deselectInvitedFriend(friendUserID: myFriend)
-            return
+        } else {
+            groupListViewModel.selectInvitedFriend(friendUserID: myFriend)
         }
-        groupListViewModel.selectInvitedFriend(friendUserID: myFriend)
     }
 }
 

@@ -27,16 +27,16 @@ final class SigninViewController: BaseUIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureSigninView()
+        configure()
         addSubviews()
-        setLayoutConstraintsSigninView()
+        setLayoutConstraints()
         registerForFCMTokenNotification()
         bindAll()
     }
 }
 
 extension SigninViewController {
-    private func configureSigninView() {
+    private func configure() {
         signinView.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .systemBackground
     }
@@ -45,7 +45,7 @@ extension SigninViewController {
         view.addSubview(signinView)
     }
     
-    private func setLayoutConstraintsSigninView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             signinView.topAnchor.constraint(equalTo: view.topAnchor),
             signinView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

@@ -20,7 +20,7 @@ struct AppleMemberResponseDTO: Codable {
 }
 
 extension AppleMemberResponseDTO {
-    func toDomain() -> AppleMemberDomain {
+    func toDomain() -> AppleMember {
         return .init(
             userID: userID,
             nickname: nickname,

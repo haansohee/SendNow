@@ -29,9 +29,9 @@ final class SettleGroupViewModel {
     private(set) var remainderUserID: Int?
     private(set) var expenseDate: Date?
     private(set) var expenseDetails: String?
-    private(set) var groupExpenseInformations: ExpenseInformationDomain?
-    private(set) var groupMemberInformations: [GroupMemberListDomain]?
-    private(set) var expenseDetailInformation: ExpenseDetailInformationDomain?
+    private(set) var groupExpenseInformations: ExpenseInformation?
+    private(set) var groupMemberInformations: [GroupMemberList]?
+    private(set) var expenseDetailInformation: ExpenseDetailInformation?
     private(set) var canSelectItems: Bool?
     private(set) var creatorUserIndex: Int?
     private(set) var remainderUserIndex: Int?
@@ -106,7 +106,7 @@ final class SettleGroupViewModel {
         guard let groupID = groupID,
               let amount = Int(expenseAmount) else { return }
         let date = expenseDate.dateToString()
-        let expenseUploadDomain = ExpenseUploadDomain(
+        let expenseUploadDomain = ExpenseUploadInformation(
             groupID: groupID,
             userID: userID,
             expenseClassfication: expenseClassfication,
@@ -135,12 +135,15 @@ final class SettleGroupViewModel {
         groupService.getGroupMemberList(with: groupID) {[weak self] getGroupMemberListResult in
             switch getGroupMemberListResult {
             case .success(let groupMemberListDomain):
+                guard !groupMemberListDomain.isEmpty else {
+                    self?.isLoadedGroupMemberInfo.onNext(.success(false))
+                    return }
                 let groupMemberInformation = groupMemberListDomain.filter { $0.userID != 0 }
                 self?.groupMemberInformations = groupMemberInformation
                 let groupMemberUserID = groupMemberInformation.map { $0.userID }
-                let creatorUserID = groupMemberListDomain[0].groupCreatorID
+                let creatorUserID = groupMemberInformation[0].groupCreatorID
                 let creatorUserIndex = groupMemberUserID.firstIndex(of: creatorUserID)
-                let remainderUserID = groupMemberListDomain[0].remainderUserID
+                let remainderUserID = groupMemberInformation[0].remainderUserID
                 let remainderUserIndex = groupMemberUserID.firstIndex(of: remainderUserID)
                 self?.remainderUserIndex = remainderUserIndex
                 self?.creatorUserIndex = creatorUserIndex
@@ -196,7 +199,7 @@ final class SettleGroupViewModel {
     }
     
     func deleteSpendingDetailInformation(expenseID: Int, groupID: Int) {
-        let spendingDetailInfo = DeleteSpendingDetailInformationDomain(
+        let spendingDetailInfo = DeleteSpendingDetailInformation(
             expenseID: expenseID,
             groupID: groupID
         )
@@ -220,7 +223,7 @@ final class SettleGroupViewModel {
         guard let groupID = self.groupID,
               let expenseID = self.expenseID else {
             return }
-        let spendingDetailInformation = UpdateSpendingDetailInformationDomain(
+        let spendingDetailInformation = UpdateSpendingDetailInformation(
             groupID: groupID,
             expenseID: expenseID,
             expenseClassfication: expensClassfication,
@@ -243,7 +246,7 @@ final class SettleGroupViewModel {
     
     func updateGroupManagementUser(_ updateUserID: Int) {
         guard let groupID = self.groupID else { return }
-        let updateGroupManagementUserDomain = UpdateGroupManagementUserDomain(
+        let updateGroupManagementUserDomain = UpdateGroupManagementUserInformation(
             groupID: groupID,
             updateUserID: updateUserID)
         let updateGroupManagementUserRequestDTO = UpdateGroupManagementUserRequestDTO(
@@ -256,7 +259,7 @@ final class SettleGroupViewModel {
     
     func updateGroupRemainderUser(_ newRemainderUserID: Int) {
         guard let groupID = self.groupID else { return }
-        let updateGroupRemainderUserDomain = UpdateGroupManagementUserDomain(
+        let updateGroupRemainderUserDomain = UpdateGroupManagementUserInformation(
             groupID: groupID,
             updateUserID: newRemainderUserID)
         let updateGroupRemainderUserRequestDTO = UpdateGroupManagementUserRequestDTO(
@@ -269,7 +272,7 @@ final class SettleGroupViewModel {
     
     func updateGroupName(_ newGroupName: String) {
         guard let groupID = self.groupID else { return }
-        let updateGroupNameDomain = UpdateGroupNameDomain(
+        let updateGroupNameDomain = UpdateGroupNameInformation(
             groupID: groupID,
             groupName: newGroupName)
         let updateGroupNameRequestDTO = UpdateGroupNameRequestDTO(

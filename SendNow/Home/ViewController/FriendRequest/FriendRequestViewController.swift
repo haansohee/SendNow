@@ -25,19 +25,19 @@ final class FriendRequestViewController: BaseUIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureFriendRequestView()
+        configure()
         addSubivews()
-        setLayoutConstraintsFriendRequestView()
+        setLayoutConstraints()
         bindAll()
     }
 }
 
 extension FriendRequestViewController {
-    private func configureFriendRequestView() {
+    private func configure() {
         friendRequestView.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .systemBackground
         navigationItem.title = "친구 추가하기"
-        navigationController?.navigationBar.tintColor = UIColor(named: "TitleColor")
+        navigationController?.navigationBar.tintColor = .titleColor
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: friendRequestView.requestListButton)
     }
     
@@ -45,7 +45,7 @@ extension FriendRequestViewController {
         view.addSubview(friendRequestView)
     }
     
-    private func setLayoutConstraintsFriendRequestView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             friendRequestView.topAnchor.constraint(equalTo: view.topAnchor),
             friendRequestView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

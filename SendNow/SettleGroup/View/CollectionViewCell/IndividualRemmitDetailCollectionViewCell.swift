@@ -73,7 +73,7 @@ final class IndividualRemmitDetailCollectionViewCell: UICollectionViewCell, Reus
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureIndividualRemmitDetailCollectionViewCell(information: SettlementDetailsDomain) {
+    func configureIndividualRemmitDetailCollectionViewCell(information: SettlementDetails) {
         senderNicknameLabel.text = information.fromNickname
         receiverNicknameLabel.text = information.toNickname
         amountLabel.text = "\(information.amount)원 송금해 주세요."
