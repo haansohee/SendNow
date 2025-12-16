@@ -1,5 +1,5 @@
 //
-//  FontCateogory.swift
+//  FontCategory.swift
 //  SendNow
 //
 //  Created by 한소희 on 12/16/25.
