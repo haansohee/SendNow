@@ -14,7 +14,7 @@ final class SigninView: UIView {
         label.text = "간편한 정산 앱 💸"
         label.textAlignment = .left
         label.textColor = .label
-        label.font = .systemFont(ofSize: 22.0, weight: .light)
+        label.font = UIFont(name: FontName.pretendardLight.rawValue, size: FontSize.large.rawValue)
         return label
     }()
     
@@ -24,7 +24,7 @@ final class SigninView: UIView {
         label.text = "바로 보내"
         label.textAlignment = .left
         label.textColor = .label
-        label.font = .systemFont(ofSize: 25.0, weight: .bold)
+        label.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.extraLarge.rawValue)
         return label
     }()
     
@@ -33,7 +33,7 @@ final class SigninView: UIView {
         textField.backgroundColor = .systemGray6
         textField.placeholder = "EMAIL"
         textField.borderStyle = .none
-        textField.font = .systemFont(ofSize: 12.0, weight: .light)
+        textField.font = UIFont(name: FontName.pretendardLight.rawValue, size: FontSize.small.rawValue)
         textField.keyboardType = .emailAddress
         return textField
     }()
@@ -43,7 +43,7 @@ final class SigninView: UIView {
         textField.backgroundColor = .systemGray6
         textField.placeholder = "PASSWORD"
         textField.borderStyle = .none
-        textField.font = .systemFont(ofSize: 12.0, weight: .light)
+        textField.font = UIFont(name: FontName.pretendardLight.rawValue, size: FontSize.small.rawValue)
         textField.keyboardType = .asciiCapable
         textField.isSecureTextEntry = true
         return textField
@@ -55,7 +55,7 @@ final class SigninView: UIView {
         button.setTitle("로그인", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .titleColor
-        button.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .medium)
+        button.titleLabel?.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.small.rawValue)
         button.layer.cornerRadius = 5.0
         return button
     }()
@@ -66,7 +66,7 @@ final class SigninView: UIView {
         button.setTitle("이메일로 가입하기", for: .normal)
         button.setTitleColor(.label, for: .normal)
         button.backgroundColor = .systemGray5
-        button.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .medium)
+        button.titleLabel?.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.small.rawValue)
         button.layer.cornerRadius = 5.0
         return button
     }()
@@ -77,7 +77,7 @@ final class SigninView: UIView {
         label.text = "SNS계정으로 이용해 보세요."
         label.textAlignment = .center
         label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 12.0, weight: .light)
+        label.font = UIFont(name: FontName.pretendardLight.rawValue, size: FontSize.small.rawValue)
         return label
     }()
     
@@ -90,7 +90,7 @@ final class SigninView: UIView {
         button.tintColor = .systemBackground
         button.backgroundColor = .label
         button.tintColor = .systemBackground
-        button.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .medium)
+        button.titleLabel?.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.small.rawValue)
         button.layer.cornerRadius = 5.0
         return button
     }()

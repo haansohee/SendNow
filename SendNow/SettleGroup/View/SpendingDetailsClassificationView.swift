@@ -22,7 +22,7 @@ final class SpendingDetailsclassficationView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
         label.textColor = .systemGray3
-        label.font = .systemFont(ofSize: 12.0)
+        label.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.extraSmall.rawValue)
         return label
     }()
     

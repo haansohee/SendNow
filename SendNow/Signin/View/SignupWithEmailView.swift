@@ -25,7 +25,7 @@ final class SignupWithEmailView: UIScrollView {
         let textField = PaddingTextField()
         textField.backgroundColor = .systemGray6
         textField.placeholder = "EMAIL"
-        textField.font = .systemFont(ofSize: 12.0, weight: .light)
+        textField.font = UIFont(name: FontName.pretendardLight.rawValue, size: FontSize.extraSmall.rawValue)
         textField.keyboardType = .asciiCapable
         return textField
     }()
@@ -40,7 +40,7 @@ final class SignupWithEmailView: UIScrollView {
         let textField = PaddingTextField()
         textField.backgroundColor = .systemGray6
         textField.placeholder = "이메일 양식을 선택하세요."
-        textField.font = .systemFont(ofSize: 12.0, weight: .light)
+        textField.font = UIFont(name: FontName.pretendardLight.rawValue, size: FontSize.extraSmall.rawValue)
         textField.keyboardType = .asciiCapable
         textField.isEnabled = false
         return textField
@@ -52,7 +52,7 @@ final class SignupWithEmailView: UIScrollView {
         button.setTitle("Naver", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .systemGreen
-        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
+        button.titleLabel?.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.extraSmall.rawValue)
         button.layer.cornerRadius = 3.0
         return button
     }()
@@ -63,7 +63,7 @@ final class SignupWithEmailView: UIScrollView {
         button.setTitle("Gmail", for: .normal)
         button.setTitleColor(.systemBackground, for: .normal)
         button.backgroundColor = .label
-        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
+        button.titleLabel?.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.extraSmall.rawValue)
         button.layer.cornerRadius = 3.0
         return button
     }()
@@ -74,7 +74,7 @@ final class SignupWithEmailView: UIScrollView {
         button.setTitle("iCloud", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .systemBlue
-        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
+        button.titleLabel?.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.extraSmall.rawValue)
         button.layer.cornerRadius = 3.0
         return button
     }()
@@ -85,7 +85,7 @@ final class SignupWithEmailView: UIScrollView {
         button.setTitle("직접 입력", for: .normal)
         button.setTitleColor(.label, for: .normal)
         button.backgroundColor = .systemGray5
-        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
+        button.titleLabel?.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.extraSmall.rawValue)
         button.layer.cornerRadius = 3.0
         return button
     }()
@@ -101,7 +101,7 @@ final class SignupWithEmailView: UIScrollView {
         let textField = PaddingTextField()
         textField.backgroundColor = .systemGray6
         textField.placeholder = "메일로 전송된 인증번호를 입력하세요."
-        textField.font = .systemFont(ofSize: 12.0, weight: .light)
+        textField.font = UIFont(name: FontName.pretendardLight.rawValue, size: FontSize.extraSmall.rawValue)
         textField.keyboardType = .numberPad
         return textField
     }()
@@ -112,7 +112,7 @@ final class SignupWithEmailView: UIScrollView {
         button.setTitle("인증번호 전송", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .titleColor
-        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
+        button.titleLabel?.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.extraSmall.rawValue)
         button.layer.cornerRadius = 3.0
         return button
     }()
@@ -123,7 +123,7 @@ final class SignupWithEmailView: UIScrollView {
         button.setTitle("인증번호 확인", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .titleColor
-        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
+        button.titleLabel?.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.extraSmall.rawValue)
         button.layer.cornerRadius = 3.0
         return button
     }()
@@ -139,7 +139,7 @@ final class SignupWithEmailView: UIScrollView {
         let textField = PaddingTextField()
         textField.backgroundColor = .systemGray6
         textField.placeholder = "PASSWORD"
-        textField.font = .systemFont(ofSize: 12.0, weight: .light)
+        textField.font = UIFont(name: FontName.pretendardLight.rawValue, size: FontSize.extraSmall.rawValue)
         textField.keyboardType = .asciiCapable
         textField.isSecureTextEntry = true
         return textField
@@ -149,7 +149,7 @@ final class SignupWithEmailView: UIScrollView {
         let textField = PaddingTextField()
         textField.backgroundColor = .systemGray6
         textField.placeholder = "REPASSWORD"
-        textField.font = .systemFont(ofSize: 12.0, weight: .light)
+        textField.font = UIFont(name: FontName.pretendardLight.rawValue, size: FontSize.extraSmall.rawValue)
         textField.keyboardType = .asciiCapable
         textField.isSecureTextEntry = true
         return textField
@@ -166,7 +166,7 @@ final class SignupWithEmailView: UIScrollView {
         let textField = PaddingTextField()
         textField.backgroundColor = .systemGray6
         textField.placeholder = "NICKNAME"
-        textField.font = .systemFont(ofSize: 12.0, weight: .light)
+        textField.font = UIFont(name: FontName.pretendardLight.rawValue, size: FontSize.extraSmall.rawValue)
         return textField
     }()
     
@@ -177,7 +177,7 @@ final class SignupWithEmailView: UIScrollView {
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .lightGray
         button.isEnabled = false
-        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
+        button.titleLabel?.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.extraSmall.rawValue)
         button.layer.cornerRadius = 3.0
         return button
     }()
@@ -188,7 +188,7 @@ final class SignupWithEmailView: UIScrollView {
         button.setTitle("가입하기", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .titleColor
-        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
+        button.titleLabel?.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.extraSmall.rawValue)
         button.layer.cornerRadius = 3.0
         return button
     }()

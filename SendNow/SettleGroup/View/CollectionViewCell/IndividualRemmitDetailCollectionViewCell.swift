@@ -17,7 +17,7 @@ final class IndividualRemmitDetailCollectionViewCell: UICollectionViewCell, Reus
         label.text = ""
         label.textAlignment = .right
         label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 13.0, weight: .bold)
+        label.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.extraSmall.rawValue)
         return label
     }()
     
@@ -35,7 +35,7 @@ final class IndividualRemmitDetailCollectionViewCell: UICollectionViewCell, Reus
         label.text = ""
         label.textAlignment = .left
         label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 13.0, weight: .bold)
+        label.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.extraSmall.rawValue)
         return label
     }()
     
@@ -45,7 +45,7 @@ final class IndividualRemmitDetailCollectionViewCell: UICollectionViewCell, Reus
         label.text = ""
         label.textAlignment = .center
         label.textColor = .label
-        label.font = .systemFont(ofSize: 18.0, weight: .bold)
+        label.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.medium.rawValue)
         return label
     }()
     

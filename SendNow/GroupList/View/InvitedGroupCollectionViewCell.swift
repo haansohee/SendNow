@@ -17,7 +17,7 @@ final class InvitedGroupCollectionViewCell: UICollectionViewCell, ReuseIdentifie
         label.textAlignment = .left
         label.textColor = .label
         label.text = "초대할 수 있는 친구가 없어요. 🥲"
-        label.font = .systemFont(ofSize: 14.0)
+        label.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.small.rawValue)
         return label
     }()
     

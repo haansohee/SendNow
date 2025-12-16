@@ -16,7 +16,7 @@ final class FriendRequestListCollectionViewCell: UICollectionViewCell, ReuseIden
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
         label.textColor = .label
-        label.font = .systemFont(ofSize: 14.0)
+        label.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.small.rawValue)
         label.text = "친구 요청이 없어요."
         return label
     }()
@@ -26,7 +26,7 @@ final class FriendRequestListCollectionViewCell: UICollectionViewCell, ReuseIden
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("요청 취소", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
+        button.titleLabel?.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.small.rawValue)
         button.backgroundColor = .systemRed
         button.layer.cornerRadius = 10.0
         button.isHidden = true
@@ -38,7 +38,7 @@ final class FriendRequestListCollectionViewCell: UICollectionViewCell, ReuseIden
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("요청 수락", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
+        button.titleLabel?.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.small.rawValue)
         button.backgroundColor = .titleColor
         button.layer.cornerRadius = 10.0
         button.isHidden = true

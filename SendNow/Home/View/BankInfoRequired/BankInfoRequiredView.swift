@@ -20,7 +20,7 @@ final class BankInfoRequiredView: UIView {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("다시보지않기", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .semibold)
+        button.titleLabel?.font = UIFont(name: FontName.pretendardSemiBold.rawValue, size: FontSize.extraSmall.rawValue)
         button.tintColor = .white
         button.backgroundColor = .systemGray4
         button.layer.cornerRadius = 12.0
@@ -34,7 +34,7 @@ final class BankInfoRequiredView: UIView {
         label.text = "친구에게 송금받을 카카오페이를 등록해 보세요! 간편한 정산 송금을 할 수 있어요. 😁"
         label.textColor = .secondaryLabel
         label.textAlignment = .center
-        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.font = UIFont(name: FontName.pretendardSemiBold.rawValue, size: FontSize.small.rawValue)
         return label
     }()
     
@@ -45,7 +45,7 @@ final class BankInfoRequiredView: UIView {
         label.text = "💡 카카오페이 송금 링크 등록하는 방법\n\n 카카오톡 [더보기] 탭에서 ⚙️ 버튼 옆에 있는 [QR코드 버튼] 클릭 후,\n송금코드 (￦) 버튼을 클릭 하면 카카오페이 송금 링크를 복사🔗 할 수 있어요."
         label.textColor = .secondaryLabel
         label.textAlignment = .center
-        label.font = .systemFont(ofSize: 14, weight: .light)
+        label.font = UIFont(name: FontName.pretendardLight.rawValue, size: FontSize.small.rawValue)
         return label
     }()
     
@@ -53,7 +53,7 @@ final class BankInfoRequiredView: UIView {
         let textField = PaddingTextField()
         textField.backgroundColor = .systemGray6
         textField.borderStyle = .none
-        textField.font = .systemFont(ofSize: 13.0, weight: .light)
+        textField.font = UIFont(name: FontName.pretendardLight.rawValue, size: FontSize.extraSmall.rawValue)
         textField.placeholder = "송금 코드 링크를 입력해 주세요."
         return textField
     }()
@@ -64,7 +64,7 @@ final class BankInfoRequiredView: UIView {
         button.setTitle("등록하기", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .titleColor
-        button.titleLabel?.font = .systemFont(ofSize: 13.5, weight: .semibold)
+        button.titleLabel?.font = UIFont(name: FontName.pretendardSemiBold.rawValue, size: FontSize.extraSmall.rawValue)
         button.layer.cornerRadius = 5.0
         return button
     }()
