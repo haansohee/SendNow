@@ -12,6 +12,9 @@ enum GroupAPIPath: String {
     case setExpensesUpload = "/SendNow/setExpenseUpload/"
     case setCompletedRemittace = "/SendNow/setCompletedRemittance/"
     case updateSpendingDetailInfo = "/SendNow/updateSpendingDetailInformations/"
+    case updateGroupManagementUser = "/SendNow/UpdateGroupManagementUser/"
+    case updateGroupRemainderUser = "/SendNow/UpdateGroupRemainderUser/"
+    case updateGroupName = "/SendNow/UpdateGroupName/"
     case deleteGroup = "/SendNow/deleteGroup"
     case deleteSpendingDetailInformation = "/SendNow/DeleteSpendingDetailInformation/"
     case getGroupList = "/SendNow/getGroupList"
@@ -52,7 +55,7 @@ final class GroupService {
         networkSessionManager.urlDeleteMethod(path: path, encodeValue: requestDTO, completion: completion)
     }
     
-    func getGroupList(with userID: Int, completion: @escaping(Result<[GroupListDomain], Error>)->Void) {
+    func getGroupList(with userID: Int, completion: @escaping(Result<[GroupListInformation], Error>)->Void) {
         let path = "\(GroupAPIPath.getGroupList.rawValue)?userID=\(userID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: [GroupListResponseDTO].self) { result in
             switch result {
@@ -66,7 +69,7 @@ final class GroupService {
         }
     }
     
-    func getGroupMemberList(with groupID: Int, completion: @escaping(Result<[GroupMemberListDomain], Error>)->Void) {
+    func getGroupMemberList(with groupID: Int, completion: @escaping(Result<[GroupMemberList], Error>)->Void) {
         let path = "\(GroupAPIPath.getGroupMemberList.rawValue)?groupID=\(groupID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: [GroupMemberListResponseDTO].self) { result in
             switch result {
@@ -80,7 +83,7 @@ final class GroupService {
         }
     }
     
-    func getGroupExpenseInformations(with userID: Int, groupID: Int, completion: @escaping(Result<ExpenseInformationDomain, Error>)->Void) {
+    func getGroupExpenseInformations(with userID: Int, groupID: Int, completion: @escaping(Result<ExpenseInformation, Error>)->Void) {
         let path = "\(GroupAPIPath.getGroupExpenseInformations.rawValue)?userID=\(userID)&groupID=\(groupID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: ExpenseInformationResponseDTO.self) { result in
             switch result {
@@ -94,7 +97,7 @@ final class GroupService {
         }
     }
     
-    func getGroupExpenseDetailInformation(with expenseID: Int, completion: @escaping(Result<ExpenseDetailInformationDomain, Error>)->Void) {
+    func getGroupExpenseDetailInformation(with expenseID: Int, completion: @escaping(Result<ExpenseDetailInformation, Error>)->Void) {
         let path = "\(GroupAPIPath.getGroupExpenseDetailInformation.rawValue)?expenseID=\(expenseID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: ExpenseDetailInformationReponseDTO.self) { result in
             switch result {
@@ -109,7 +112,7 @@ final class GroupService {
         
     }
     
-    func getGroupSettlementsInformations(with groupID: Int, completion: @escaping(Result<SettlementListDomain, Error>)->Void) {
+    func getGroupSettlementsInformations(with groupID: Int, completion: @escaping(Result<SettlementList, Error>)->Void) {
         let path = "\(GroupAPIPath.getGroupSettlementsInformations.rawValue)?groupID=\(groupID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: SettlementListReponseDTO.self) { result in
             switch result {
@@ -149,7 +152,7 @@ final class GroupService {
         }
     }
     
-    func getCompletedRemittanceInformation(with groupID: Int, userID: Int, completion: @escaping(Result<[CompletionRemittanceDomain], Error>)->Void) {
+    func getCompletedRemittanceInformation(with groupID: Int, userID: Int, completion: @escaping(Result<[CompletionRemittanceInformation], Error>)->Void) {
         let path = "\(GroupAPIPath.getCompletedRemittanceInformation.rawValue)?groupID=\(groupID)&userID=\(userID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: [CompletionRemittanceResponseDTO].self) { result in
             switch result {
@@ -165,6 +168,21 @@ final class GroupService {
     
     func updateSpendingDetailInformation(with requestDTO: UpdateSpendingDetailInformationRequestDTO, completion: @escaping(Bool, Int)->Void) {
         let path = GroupAPIPath.updateSpendingDetailInfo.rawValue
+        networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
+    }
+    
+    func updateGroupManagementUser(with requestDTO: UpdateGroupManagementUserRequestDTO, completion: @escaping(Bool, Int)->Void) {
+        let path = GroupAPIPath.updateGroupManagementUser.rawValue
+        networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
+    }
+    
+    func updateGroupRemainderUser(with requestDTO: UpdateGroupManagementUserRequestDTO, completion: @escaping(Bool, Int)->Void) {
+        let path = GroupAPIPath.updateGroupRemainderUser.rawValue
+        networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
+    }
+    
+    func updateGroupName(with requestDTO: UpdateGroupNameRequestDTO, completion: @escaping(Bool, Int)->Void) {
+        let path = GroupAPIPath.updateGroupName.rawValue
         networkSessionManager.urlPostMethod(path: path, encodeValue: requestDTO, completion: completion)
     }
 }

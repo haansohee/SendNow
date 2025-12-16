@@ -11,7 +11,7 @@ final class HomeView: UIView {
     private let memberContainerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor(named: "SubTitleColor")
+        view.backgroundColor = .subTitleColor
         view.layer.masksToBounds = false
         view.layer.cornerRadius = 12.0
         return view
@@ -80,7 +80,7 @@ final class HomeView: UIView {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 25.0, weight: .bold)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: "person.badge.plus", withConfiguration: imageConfig), for: .normal)
-        button.tintColor = UIColor(named: "TitleColor")
+        button.tintColor = .titleColor
         return button
     }()
     

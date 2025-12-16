@@ -32,9 +32,9 @@ final class MemberInfoUpdateViewController: BaseUIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         homeViewModel.loadMemberInformation()
-        configureMemberInfoView()
+        configure()
         addSubviews()
-        setLayoutConstraintsMemberInfoUpdateView()
+        setLayoutConstraints()
         bindAll()
     }
     
@@ -47,18 +47,18 @@ final class MemberInfoUpdateViewController: BaseUIViewController {
 }
 
 extension MemberInfoUpdateViewController {
-    private func configureMemberInfoView() {
+    private func configure() {
         memberInfoUpdateView.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .systemBackground
         navigationItem.title = "회원정보"
-        navigationController?.navigationBar.tintColor = UIColor(named: "TitleColor")
+        navigationController?.navigationBar.tintColor = .titleColor
     }
     
     private func addSubviews() {
         view.addSubview(memberInfoUpdateView)
     }
     
-    private func setLayoutConstraintsMemberInfoUpdateView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             memberInfoUpdateView.topAnchor.constraint(equalTo: view.topAnchor),
             memberInfoUpdateView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

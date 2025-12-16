@@ -75,7 +75,7 @@ final class MemberService {
         networkSessionManager.urlDeleteMethod(path: path, encodeValue: requestDTO, completion: completion)
     }
     
-    func getKakaoMemberInfo(with kakaoToken: String, completion: @escaping(Result<KakaoMemberDomain, Error>)->Void) {
+    func getKakaoMemberInfo(with kakaoToken: String, completion: @escaping(Result<KakaoMember, Error>)->Void) {
         let path = "\(MemberAPIPath.getKakaoMemberInfo.rawValue)?kakaoToken=(\(kakaoToken)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: KakaoMemberReponseDTO.self) { result in
             switch result {
@@ -89,7 +89,7 @@ final class MemberService {
         }
     }
     
-    func getAppleMemberInfo(with appleToken: String, completion: @escaping(Result<AppleMemberDomain, Error>)->Void) {
+    func getAppleMemberInfo(with appleToken: String, completion: @escaping(Result<AppleMember, Error>)->Void) {
         let path = "\(MemberAPIPath.getAppleMemberInfo.rawValue)?appleToken=\(appleToken)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: AppleMemberResponseDTO.self) { result in
             switch result {
@@ -104,7 +104,7 @@ final class MemberService {
         }
     }
     
-    func getEmailMemberInfo(with email: String, completion: @escaping(Result<EmailMemberDomain, Error>)->Void) {
+    func getEmailMemberInfo(with email: String, completion: @escaping(Result<EmailMember, Error>)->Void) {
         let path = "\(MemberAPIPath.getEmailMemberInfo.rawValue)?email=\(email)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: EmailMemberResponseDTO.self) { result in
             switch result {

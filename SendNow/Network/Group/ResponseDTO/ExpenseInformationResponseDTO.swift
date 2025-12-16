@@ -25,7 +25,7 @@ struct ExpenseInformationListResponseDTO: Codable {
 }
 
 extension ExpenseInformationListResponseDTO {
-    func toDomain() -> ExpenseInformationListDomain {
+    func toDomain() -> ExpenseInformationList {
         return .init(
             expenseID: expenseID,
             groupID: groupID,
@@ -40,7 +40,7 @@ extension ExpenseInformationListResponseDTO {
 }
 
 extension ExpenseInformationResponseDTO {
-    func toDomain() -> ExpenseInformationDomain {
+    func toDomain() -> ExpenseInformation {
         return .init(
             expenseInformations: expenseInformations.map { $0.toDomain()},
             myExpenses: myExpenses,

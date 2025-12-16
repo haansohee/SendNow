@@ -36,7 +36,7 @@ final class FriendService {
         networkSessionManager.urlDeleteMethod(path: path, encodeValue: requestDTO, completion: completion)
     }
     
-    func getFriendInformation(with nickname: String, completion: @escaping(Result<SearchFriendDomain, Error>)->Void) {
+    func getFriendInformation(with nickname: String, completion: @escaping(Result<SearchFriend, Error>)->Void) {
         let path = "\(FriendAPIPath.getFriendInformation.rawValue)?nickname=\(nickname)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: SearchFriendResponseDTO.self) { result in
             switch result {
@@ -51,7 +51,7 @@ final class FriendService {
         }
     }
     
-    func getFriendRequestListInformation(with userID: Int, completion: @escaping(Result<[FriendRequestListDomain], Error>)->Void) {
+    func getFriendRequestListInformation(with userID: Int, completion: @escaping(Result<[FriendRequestList], Error>)->Void) {
         let path = "\(FriendAPIPath.getFriendRequestListInformation.rawValue)?userID=\(userID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: [FriendRequestListResponseDTO].self) { result in
             switch result {
@@ -65,7 +65,7 @@ final class FriendService {
         }
     }
     
-    func getMyFriendList(with userID: Int, completion: @escaping(Result<[MyFriendListDomain], Error>)->Void) {
+    func getMyFriendList(with userID: Int, completion: @escaping(Result<[MyFriendList], Error>)->Void) {
         let path = "\(FriendAPIPath.getMyFriendList.rawValue)?userID=\(userID)"
         networkSessionManager.urlGetMethod(path: path, requestDTO: [MyFriendListResponseDTO].self) { result in
             switch result {

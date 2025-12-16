@@ -78,7 +78,7 @@ extension NotificationCollectionViewCell {
     func setReadNotificationCollectionViewCell(notificationBody: String, isRead: Bool, subject: NotificationSubject) {
         notificationBodyLabel.text = notificationBody
         notificationImage.isHidden = false
-        contentView.backgroundColor = isRead ? .systemBackground : UIColor(named: "SubTitleColor")
+        contentView.backgroundColor = isRead ? .systemBackground : .subTitleColor
         notificationBodyLabel.textColor = isRead ? .label : .black
         
         switch subject {

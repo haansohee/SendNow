@@ -16,7 +16,7 @@ final class SettleGroupInitViewController: BaseUIViewController {
     
     init(groupListViewModel: GroupListViewModel = GroupListViewModel(
         userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)),
-         invitedFriendList: [MyFriendListDomain]) {
+         invitedFriendList: [MyFriendList]) {
         self.groupListViewModel = groupListViewModel
         super.init(nibName: nil, bundle: nil)
         self.groupListViewModel.setInvitedFriendList(friendList: invitedFriendList)
@@ -30,15 +30,15 @@ final class SettleGroupInitViewController: BaseUIViewController {
         super.viewDidLoad()
         groupListViewModel.loadSelectedFriendList()
         addSubview()
-        configureSettleGroupInitViewContrller()
-        setLayoutConstraintsSettleGroupInitView()
+        configure()
+        setLayoutConstraints()
         bindAll()
     }
 }
 
 extension SettleGroupInitViewController {
     // MARK: Configure
-    private func configureSettleGroupInitViewContrller() {
+    private func configure() {
         self.isModalInPresentation = true
         self.modalPresentationCapturesStatusBarAppearance = true
         view.backgroundColor = .clear
@@ -52,7 +52,7 @@ extension SettleGroupInitViewController {
         view.addSubview(settleGroupInitView)
     }
     
-    private func setLayoutConstraintsSettleGroupInitView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             settleGroupInitView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100.0),
             settleGroupInitView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 48.0),
@@ -117,7 +117,7 @@ extension SettleGroupInitViewController: UICollectionViewDataSource {
         let invitedFriendList = groupListViewModel.invitedFriendList
         guard let selectedFriendInfo = invitedFriendList[safe: indexPath.row] else { return }
         cell.contentView.backgroundColor = .secondarySystemBackground
-        settleGroupInitView.doneButton.backgroundColor = UIColor(named: "TitleColor")
+        settleGroupInitView.doneButton.backgroundColor = .titleColor
         settleGroupInitView.doneButton.isEnabled = true
         groupListViewModel.selectRemainderUserID(selectedFriendInfo.userID)
         

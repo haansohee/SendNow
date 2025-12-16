@@ -54,7 +54,7 @@ final class SpendingDetailCollectionViewCell: UICollectionViewCell, ReuseIdentif
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "원"
         label.textAlignment = .right
-        label.textColor = UIColor(named: "TitleColor")
+        label.textColor = .titleColor
         label.font = .systemFont(ofSize: 14.0, weight: .bold)
         return label
     }()
@@ -131,7 +131,7 @@ extension SpendingDetailCollectionViewCell {
         contentView.backgroundColor = .systemBackground
     }
     
-    func setSpendingDetailCollectionViewCellLabel(groupExpenseInfo: ExpenseInformationListDomain) {
+    func setSpendingDetailCollectionViewCellLabel(groupExpenseInfo: ExpenseInformationList) {
         spendingclassficationNameLabel.text = groupExpenseInfo.expenseClassfication
         detailContentLabel.text = groupExpenseInfo.expenseDetails
         paidNameLabel.text = groupExpenseInfo.paidBy

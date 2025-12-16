@@ -111,7 +111,7 @@ final class SignupWithEmailView: UIScrollView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("인증번호 전송", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor(named: "TitleColor")
+        button.backgroundColor = .titleColor
         button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
         button.layer.cornerRadius = 3.0
         return button
@@ -122,7 +122,7 @@ final class SignupWithEmailView: UIScrollView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("인증번호 확인", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor(named: "TitleColor")
+        button.backgroundColor = .titleColor
         button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
         button.layer.cornerRadius = 3.0
         return button
@@ -187,7 +187,7 @@ final class SignupWithEmailView: UIScrollView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("가입하기", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor(named: "TitleColor")
+        button.backgroundColor = .titleColor
         button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
         button.layer.cornerRadius = 3.0
         return button

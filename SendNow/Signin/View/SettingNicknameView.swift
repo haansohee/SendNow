@@ -94,12 +94,12 @@ extension SettingNicknameView {
     
     func configureNicknameDuplicateButton(_ isEnabled: Bool) {
         nicknameDuplicateButton.isEnabled = isEnabled
-        nicknameDuplicateButton.backgroundColor = isEnabled ? UIColor(named: "SubTitleColor") : .lightGray
+        nicknameDuplicateButton.backgroundColor = isEnabled ? .subTitleColor : .lightGray
         nicknameDuplicateButton.setTitleColor(isEnabled ? .black : .white, for: .normal)
     }
     
     func configureSignupButton(_ isEnabled: Bool) {
         signupButton.isEnabled = isEnabled
-        signupButton.backgroundColor = isEnabled ? UIColor(named: "TitleColor") : .lightGray
+        signupButton.backgroundColor = isEnabled ? .titleColor : .lightGray
     }
 }

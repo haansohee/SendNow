@@ -33,9 +33,9 @@ final class InvitedGroupViewController: BaseUIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.homeViewModel.loadMyFriend()
-        configureInvitedGroupView()
+        configure()
         addSubviews()
-        setLayoutConstraintsInvitedGroupView()
+        setLayoutConstraints()
         addInvitedFriendSuccess()
         bindAll()
     }
@@ -47,12 +47,12 @@ final class InvitedGroupViewController: BaseUIViewController {
 }
 
 extension InvitedGroupViewController {
-    private func configureInvitedGroupView() {
+    private func configure() {
         invitedGroupView.translatesAutoresizingMaskIntoConstraints = false
         invitedGroupView.invitedGroupCollectionView.delegate = self
         invitedGroupView.invitedGroupCollectionView.dataSource = self
         view.backgroundColor = .secondarySystemBackground
-        navigationController?.navigationBar.tintColor = UIColor(named: "TitleColor")
+        navigationController?.navigationBar.tintColor = .titleColor
         navigationItem.title = "친구 초대하기"
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: invitedGroupView.nextButton)
         self.modalPresentationCapturesStatusBarAppearance = true
@@ -63,7 +63,7 @@ extension InvitedGroupViewController {
         view.addSubview(invitedGroupView)
     }
     
-    private func setLayoutConstraintsInvitedGroupView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             invitedGroupView.topAnchor.constraint(equalTo: view.topAnchor),
             invitedGroupView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -130,7 +130,7 @@ extension InvitedGroupViewController {
     private func configureInvitedGroupCollectionView(_ cell: InvitedGroupCollectionViewCell, _ indexPath: IndexPath) {
         guard let myFriendList = homeViewModel.myFriendList else { return }
         cell.friendNicknameLabel.text = myFriendList.isEmpty  ? "초대할 수 있는 친구가 없어요." : myFriendList[indexPath.row].nickname
-        cell.selectedButton.isHidden = myFriendList.isEmpty
+        cell.selectedImage.isHidden = myFriendList.isEmpty
     }
 
 }
@@ -160,13 +160,12 @@ extension InvitedGroupViewController: UICollectionViewDataSource {
               let myFriendList = homeViewModel.myFriendList,
               !myFriendList.isEmpty,
               let myFriend = myFriendList[safe: indexPath.row] else { return }
-        if cell.selectedButton.isSelected {
-            cell.selectedButton.isSelected = false
-            cell.selectedButton.setImage(UIImage(systemName: "circle"), for: .normal)
+        let wasSelected = cell.selectedImage.tag == 1
+        cell.selectedImage.tag = wasSelected ? 0 : 1
+        cell.selectedImage.image = wasSelected ? UIImage(systemName: "circle") : UIImage(systemName: "circle.fill")
+        if wasSelected {
             groupListViewModel.deselectInvitedFriend(friendUserID: myFriend)
         } else {
-            cell.selectedButton.isSelected = true
-            cell.selectedButton.setImage(UIImage(systemName: "circle.fill"), for: .selected)
             groupListViewModel.selectInvitedFriend(friendUserID: myFriend)
         }
     }

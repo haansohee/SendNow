@@ -33,7 +33,7 @@ final class MemberInfoUpdateViewModel {
     }
     
     func isDuplicatedNickname(_ inputNickname: String) {
-        let updateNicknameInfo = UpdateNicknameDomain(
+        let updateNicknameInfo = UpdateNicknameInformation(
             userID: userID,
             nickname: inputNickname
         )
@@ -47,7 +47,7 @@ final class MemberInfoUpdateViewModel {
     }
     
     func updateNickname(updateNickname: String) {
-        let updateNicknameInfo = UpdateNicknameDomain(
+        let updateNicknameInfo = UpdateNicknameInformation(
             userID: userID,
             nickname: updateNickname
         )
@@ -63,7 +63,7 @@ final class MemberInfoUpdateViewModel {
     }
     
     func updateKakaoPayUrl(kakaoPayUrl: String) {
-        let updateKakaoPayUrlDomain = UpdateKakaoPayUrlDomain(
+        let updateKakaoPayUrlDomain = UpdateKakaoPayUrlInformation(
             userID: userID,
             kakaoPayUrl: kakaoPayUrl
         )
@@ -93,7 +93,7 @@ final class MemberInfoUpdateViewModel {
                 })
                 .disposed(by: disposeBag)
         case .apple:
-            let cancelAccountDomain = CancelAccountDomain(userID: userID)
+            let cancelAccountDomain = CancelAccountInformation(userID: userID)
             let cancelAccountRequestDTO = CancelAccountRequestDTO(userID: cancelAccountDomain.userID)
             memberService.revokeAppleToken(with: cancelAccountRequestDTO) {[weak self] isRevoked, _ in
                 guard isRevoked else {
@@ -108,7 +108,7 @@ final class MemberInfoUpdateViewModel {
     }
     
     private func cancelAccountService() {
-        let cancelAccountDomain = CancelAccountDomain(userID: userID)
+        let cancelAccountDomain = CancelAccountInformation(userID: userID)
         let cancelAccountRequestDTO = CancelAccountRequestDTO(userID: cancelAccountDomain.userID)
         memberService.cancelAccount(with: cancelAccountRequestDTO) {[weak self] isCanceledAccount in
             self?.isCanceledAccount.onNext(isCanceledAccount)

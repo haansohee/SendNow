@@ -15,7 +15,7 @@ struct CompletionRemittanceResponseDTO: Codable {
 }
 
 extension CompletionRemittanceResponseDTO {
-    func toDomain() -> CompletionRemittanceDomain {
+    func toDomain() -> CompletionRemittanceInformation {
         return .init(
             settlementID: settlementID,
             receiverNickname: receiverNickname,

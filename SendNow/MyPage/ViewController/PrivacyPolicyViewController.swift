@@ -71,7 +71,7 @@ final class PrivacyPolicyViewController: BaseUIViewController {
     
     private func setupPrivacyPolicyView() {
         view.backgroundColor = .systemBackground
-        navigationController?.navigationBar.tintColor = UIColor(named: "TitleColor")
+        navigationController?.navigationBar.tintColor = .titleColor
         navigationItem.title = "개인정보처리방침"
         
         

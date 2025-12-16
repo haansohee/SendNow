@@ -35,9 +35,9 @@ final class HomeViewController: BaseUIViewController {
         homeViewModel.loadMemberInformation()
         homeViewModel.loadMyFriend()
         notificationViewModel.getNotificationList()
-        configureHomeView()
+        configure()
         addSubviews()
-        setLayoutConstraintsHomeView()
+        setLayoutConstraints()
         registerForFCMTokenNotification()
         bindAll()
     }
@@ -50,7 +50,7 @@ final class HomeViewController: BaseUIViewController {
 }
 
 extension HomeViewController {
-    private func configureHomeView() {
+    private func configure() {
         homeView.translatesAutoresizingMaskIntoConstraints = false
         homeView.friendListCollectionView.delegate = self
         homeView.friendListCollectionView.dataSource = self
@@ -64,7 +64,7 @@ extension HomeViewController {
         view.addSubview(homeView)
     }
     
-    private func setLayoutConstraintsHomeView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             homeView.topAnchor.constraint(equalTo: view.topAnchor),
             homeView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

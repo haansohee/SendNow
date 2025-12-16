@@ -21,8 +21,8 @@ final class IndividualRemmitDetailViewModel {
     private let groupService: GroupService
     private let notificationService = NotificationService()
     private(set) var groupID: Int?
-    private(set) var groupSettlementInformations: SettlementListDomain?
-    private(set) var remittanceInformations: [CompletionRemittanceDomain]?
+    private(set) var groupSettlementInformations: SettlementList?
+    private(set) var remittanceInformations: [CompletionRemittanceInformation]?
     let isLoadedGroupSettlementInfo = PublishSubject<Result<Void, Error>>()
     let isLoadedCompletionRemittanceInfo = PublishSubject<Result<Void, Error>>()
     
@@ -62,7 +62,7 @@ final class IndividualRemmitDetailViewModel {
         }
     }
     
-    func setCompletedRemittance(_ remittanceInfo: RemittanceStatusDomain, completion: @escaping(Bool)->Void) {
+    func setCompletedRemittance(_ remittanceInfo: RemittanceStatusInformation, completion: @escaping(Bool)->Void) {
         let remittanceInfoRequestDTO = RemittanceStatusRequestDTO(
             settlementID: remittanceInfo.settlementID,
             isCompletedRemittance: remittanceInfo.isCompletedRemittance
@@ -89,7 +89,7 @@ final class IndividualRemmitDetailViewModel {
         return Int(cleanNumberToInt)
     }
     
-    func comparedAmount(_ balanceInformation: SettlementBalanceDomain) -> TransactionRole {
+    func comparedAmount(_ balanceInformation: SettlementBalance) -> TransactionRole {
         guard let receiveAmount = balanceInformation.receiveAmount,
               let sendAmount = balanceInformation.sendAmount else { return TransactionRole.error }
         let receiveAmountInt = parseFormattednumberSimple(receiveAmount)

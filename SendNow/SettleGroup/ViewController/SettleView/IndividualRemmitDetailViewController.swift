@@ -11,6 +11,7 @@ import RxSwift
 
 final class IndividualRemmitDetailViewController: BaseUIViewController {
     private let individualRemmitDetailView = IndividualRemmitDetailView()
+    private let settleGroupView = SettleGroupView()
     private let individualRemmitDetailViewModel: IndividualRemmitDetailViewModel
     private let disposeBag = DisposeBag()
     
@@ -29,9 +30,9 @@ final class IndividualRemmitDetailViewController: BaseUIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureIndividualRemmitDetailView()
+        configure()
         addSubviews()
-        setLayoutConstraintsIndividualRemmitDetailView()
+        setLayoutConstraints()
         bindAll()
     }
     
@@ -43,7 +44,7 @@ final class IndividualRemmitDetailViewController: BaseUIViewController {
 }
 
 extension IndividualRemmitDetailViewController {
-    private func configureIndividualRemmitDetailView() {
+    private func configure() {
         individualRemmitDetailView.translatesAutoresizingMaskIntoConstraints = false
         [
             individualRemmitDetailView.individualRemmitCollectionView,
@@ -60,7 +61,7 @@ extension IndividualRemmitDetailViewController {
         view.addSubview(individualRemmitDetailView)
     }
     
-    private func setLayoutConstraintsIndividualRemmitDetailView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             individualRemmitDetailView.topAnchor.constraint(equalTo: view.topAnchor),
             individualRemmitDetailView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -74,8 +75,19 @@ extension IndividualRemmitDetailViewController {
     }
     
     private func bindAll() {
+        bindGroupManagementButton()
         bindIsLoadedGroupSettlementInfo()
         bindIsLoadedCompletionRemittanceInfo()
+    }
+    
+    private func bindGroupManagementButton() {
+        settleGroupView.groupManagementButton.rx.tap
+            .asDriver()
+            .drive(onNext: {[weak self] _ in
+                guard let groupID = self?.individualRemmitDetailViewModel.groupID else { return }
+                self?.navigationController?.pushViewController(GroupManagementViewController(groupID: groupID), animated: true)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func bindIsLoadedGroupSettlementInfo() {
@@ -183,7 +195,7 @@ extension IndividualRemmitDetailViewController: UICollectionViewDataSource {
             cell.rx.didTapCompletedButton
                 .subscribe(onNext: { [weak self] in
                     let remittanceUpdatedStatus = !remittanceInformation.isCompletedRemittance
-                    let remittanceStatusDomain = RemittanceStatusDomain(settlementID: remittanceInformation.settlementID,
+                    let remittanceStatusDomain = RemittanceStatusInformation(settlementID: remittanceInformation.settlementID,
                                                                         isCompletedRemittance: remittanceUpdatedStatus)
                     self?.individualRemmitDetailViewModel.setCompletedRemittance(remittanceStatusDomain) { isUpdated in
                         guard isUpdated else { return }

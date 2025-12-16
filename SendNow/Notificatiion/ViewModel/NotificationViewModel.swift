@@ -17,8 +17,8 @@ final class NotificationViewModel {
     let isUpdatedNotificationAll = PublishSubject<Bool>()
     let isUpdatedNotificationState = PublishSubject<Bool>()
     let isDeletedNotification = PublishSubject<Bool>()
-    var readNotificationList: [NotificationListDomain]?
-    var unreadNotificationList: [NotificationListDomain]?
+    var readNotificationList: [NotificationList]?
+    var unreadNotificationList: [NotificationList]?
     private let userID: Int
     
     init(with notificatinoService: NotificationService = NotificationService(),
@@ -74,7 +74,7 @@ final class NotificationViewModel {
         let state = !(UserDefaults.standard.bool(forKey: MemberInfoField.isSetNoti.rawValue))
         UNUserNotificationCenter.current().getNotificationSettings {[weak self] settings in
             guard let userID = self?.userID else { return }
-            let notificationStateDomain = NotificationStateDomain(
+            let notificationStateDomain = NotificationStateInformation(
                 userID: userID,
                 state: settings.authorizationStatus == .authorized ? state : false
             )

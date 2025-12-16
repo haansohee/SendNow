@@ -39,7 +39,7 @@ final class FriendRequestListCollectionViewCell: UICollectionViewCell, ReuseIden
         button.setTitle("요청 수락", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
-        button.backgroundColor = UIColor(named: "TitleColor")
+        button.backgroundColor = .titleColor
         button.layer.cornerRadius = 10.0
         button.isHidden = true
         return button

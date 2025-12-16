@@ -16,7 +16,7 @@ struct GroupListResponseDTO: Codable {
 }
 
 extension GroupListResponseDTO {
-    func toDomain() -> GroupListDomain {
+    func toDomain() -> GroupListInformation {
         return .init(
             groupID: groupID,
             groupName: groupName,

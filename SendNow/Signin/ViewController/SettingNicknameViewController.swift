@@ -27,15 +27,15 @@ final class SettingNicknameViewController: BaseUIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureSettingNicknameView()
+        configure()
         addSubviews()
-        setLayoutConstraintsSigninView()
+        setLayoutConstraints()
         bindAll()
     }
 }
 
 extension SettingNicknameViewController {
-    private func configureSettingNicknameView() {
+    private func configure() {
         settingNicknameView.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .systemBackground
     }
@@ -44,7 +44,7 @@ extension SettingNicknameViewController {
         view.addSubview(settingNicknameView)
     }
     
-    private func setLayoutConstraintsSigninView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             settingNicknameView.topAnchor.constraint(equalTo: view.topAnchor),
             settingNicknameView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

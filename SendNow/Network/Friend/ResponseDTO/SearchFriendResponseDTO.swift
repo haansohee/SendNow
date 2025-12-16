@@ -14,7 +14,7 @@ struct SearchFriendResponseDTO: Codable {
 }
 
 extension SearchFriendResponseDTO {
-    func toDomain() -> SearchFriendDomain {
+    func toDomain() -> SearchFriend {
         return .init(
             userID: userID,
             nickname: nickname,

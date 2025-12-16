@@ -64,14 +64,14 @@ extension AmountBalanceCollectionViewCell {
         ])
     }
     
-    func configureCell(_ transactionRole: TransactionRole, _ balanceInformation: SettlementBalanceDomain) {
+    func configureCell(_ transactionRole: TransactionRole, _ balanceInformation: SettlementBalance) {
         nicknameLabel.text = "\(balanceInformation.nickname) 님"
         guard let receiveAmount = balanceInformation.receiveAmount,
               let sendAmount = balanceInformation.sendAmount else { return }
         switch transactionRole {
         case .receiver:
             amountValueLabel.text = "\(receiveAmount) ₩"
-            amountValueLabel.textColor = UIColor(named: "TitleColor")
+            amountValueLabel.textColor = .titleColor
         case .sender:
             amountValueLabel.text = "\(sendAmount) ₩"
             amountValueLabel.textColor = .systemRed

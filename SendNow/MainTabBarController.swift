@@ -16,7 +16,7 @@ final class MainTabBarController: UITabBarController {
     }
     
     private func setupMainTabBar() {
-        tabBar.tintColor = UIColor(named: "TitleColor")
+        tabBar.tintColor = .titleColor
         tabBar.isTranslucent = false
         tabBar.backgroundColor = .systemBackground
         let homeTab = UINavigationController(rootViewController: HomeViewController())

@@ -54,7 +54,7 @@ final class SigninView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("로그인", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor(named: "TitleColor")
+        button.backgroundColor = .titleColor
         button.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .medium)
         button.layer.cornerRadius = 5.0
         return button

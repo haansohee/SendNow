@@ -26,9 +26,9 @@ final class BankInfoRequiredViewController: BaseUIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureBankInfoRequiredView()
+        configure()
         addSubivews()
-        setLayoutConstraintsBankInfoRequiredView()
+        setLayoutConstraints()
         bind()
     }
 }
@@ -36,7 +36,7 @@ final class BankInfoRequiredViewController: BaseUIViewController {
 extension BankInfoRequiredViewController {
     
     // MARK: Configure
-    private func configureBankInfoRequiredView() {
+    private func configure() {
         self.isModalInPresentation = true
         self.modalPresentationCapturesStatusBarAppearance = true
         view.backgroundColor = .clear
@@ -48,7 +48,7 @@ extension BankInfoRequiredViewController {
         view.addSubview(bankInfoRequiredView)
     }
     
-    private func setLayoutConstraintsBankInfoRequiredView() {
+    private func setLayoutConstraints() {
         NSLayoutConstraint.activate([
             bankInfoRequiredView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 140.0),
             bankInfoRequiredView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 60.0),

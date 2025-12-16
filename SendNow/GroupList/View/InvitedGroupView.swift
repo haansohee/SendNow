@@ -12,7 +12,7 @@ final class InvitedGroupView: UIView {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("다음 >", for: .normal)
-        button.setTitleColor(UIColor(named: "TitleColor"), for: .normal)
+        button.setTitleColor(.titleColor, for: .normal)
         return button
     }()
     

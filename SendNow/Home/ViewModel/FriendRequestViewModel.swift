@@ -12,9 +12,9 @@ final class FriendRequestViewModel {
     private let friendService: FriendService
     private let notificationService: NotificationService
     private let userID: Int
-    private(set) var searchFriendInformation: SearchFriendDomain?
-    private(set) var friendRequestSendListInfo: [FriendRequestListDomain]?
-    private(set) var friendRequestReceiveListInfo: [FriendRequestListDomain]?
+    private(set) var searchFriendInformation: SearchFriend?
+    private(set) var friendRequestSendListInfo: [FriendRequestList]?
+    private(set) var friendRequestReceiveListInfo: [FriendRequestList]?
     private(set) var friendRequestReceivedUserID: Int?
     let isEmptySearchFriend = PublishSubject<Result<Bool, Error>>()
     let isSendedFriendRequest = PublishSubject<Bool>()
@@ -33,7 +33,7 @@ final class FriendRequestViewModel {
     func sendFriendRequest(toUserID: Int) {
         guard let fromUserNickname = UserDefaults.standard.string(forKey: MemberInfoField.nickname.rawValue) else {
             return }
-        let friendAddInfo = FriendAddDomain(
+        let friendAddInfo = FriendAddInformation(
             fromUserID: userID,
             fromUserNickname: fromUserNickname,
             toUserID: toUserID
@@ -82,7 +82,7 @@ final class FriendRequestViewModel {
     }
     
     func deleteFriendRequest(toUserID: Int, fromUserID: Int) {
-        let deleteFriendDomain = DeleteFriendDomain(
+        let deleteFriendDomain = DeleteFriendInformation(
             fromUserID: fromUserID,
             toUserID: toUserID
         )
@@ -96,7 +96,7 @@ final class FriendRequestViewModel {
     }
     
     func updateFriendRequestState(toUserID: Int, fromUserID: Int) {
-        let updateFriendStateDomain = UpdateFriendStateDomain(
+        let updateFriendStateDomain = UpdateFriendStateInformation(
             fromUserID: fromUserID,
             toUserID: toUserID,
             isFriended: true
@@ -116,7 +116,7 @@ final class FriendRequestViewModel {
     
     func sendFriendNotification() {
         guard let receiverUserID = friendRequestReceivedUserID else { return }
-        let friendNotificationInfo = FriendNotificationDomain(
+        let friendNotificationInfo = FriendNotificationInformation(
             senderUserID: userID,
             receiverUserID: receiverUserID
         )

@@ -11,7 +11,7 @@ final class FriendRequestView: UIView {
     let requestListButton: AnimationButton = {
         let button = AnimationButton(frame: CGRect(x: 0, y: 0, width: 34, height: 34))
         button.setImage(UIImage(systemName: "list.bullet"), for: .normal)
-        button.tintColor = UIColor(named: "TitleColor")
+        button.tintColor = .titleColor
         return button
     }()
     
@@ -34,7 +34,7 @@ final class FriendRequestView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("검색", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor(named: "TitleColor")
+        button.backgroundColor = .titleColor
         button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
         button.layer.cornerRadius = 3.0
         return button
@@ -64,7 +64,7 @@ final class FriendRequestView: UIView {
         let button = AnimationButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
-        button.tintColor = UIColor(named: "TitleColor")
+        button.tintColor = .titleColor
         button.layer.cornerRadius = 3.0
         button.isHidden = true
         return button
