@@ -16,7 +16,7 @@ final class CompletedRemittanceCollectionViewCell: UICollectionViewCell, ReuseId
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "송금해야 할 내역이\n아직 없어요."
         label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 12, weight: .semibold)
+        label.font = .customFont(.pretendardSemiBold, size: 12.0)
         label.textColor = .label
         label.textAlignment = .left
         return label
@@ -26,7 +26,7 @@ final class CompletedRemittanceCollectionViewCell: UICollectionViewCell, ReuseId
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "완료"
-        label.font = .systemFont(ofSize: 14)
+        label.font = .customFont(.pretendardRegular, size: 15.0)
         label.textColor = .label
         label.textAlignment = .right
         label.isHidden = true

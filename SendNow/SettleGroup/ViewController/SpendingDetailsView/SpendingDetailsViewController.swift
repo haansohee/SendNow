@@ -19,7 +19,7 @@ final class SpendingDetailsViewController: BaseUIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("수정", for: .normal)
         button.setTitleColor(.titleColor, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 14.0, weight: .bold)
+        button.titleLabel?.font = .customFont(.pretendardBold, size: 15.0)
         button.tag = 0
         return button
     }()
@@ -29,7 +29,7 @@ final class SpendingDetailsViewController: BaseUIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("< 뒤로가기", for: .normal)
         button.setTitleColor(.titleColor, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 14.0, weight: .light)
+        button.titleLabel?.font = .customFont(.pretendardLight, size: 15.0)
         return button
     }()
     
@@ -38,7 +38,7 @@ final class SpendingDetailsViewController: BaseUIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("저장하기", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .bold)
+        button.titleLabel?.font = .customFont(.pretendardBold, size: 12.0)
         button.backgroundColor = .titleColor
         button.layer.cornerRadius = 12.0
         button.isEnabled = false
@@ -51,7 +51,7 @@ final class SpendingDetailsViewController: BaseUIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("삭제하기", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .bold)
+        button.titleLabel?.font = .customFont(.pretendardBold, size: 12.0)
         button.backgroundColor = .red
         button.layer.cornerRadius = 12.0
         button.isEnabled = false

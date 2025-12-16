@@ -47,7 +47,7 @@ final class SettleGroupView: UIView {
         label.text = "내가 낸 비용"
         label.textAlignment = .left
         label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 13.0, weight: .semibold)
+        label.font = .customFont(.pretendardSemiBold, size: 12.0)
         return label
     }()
     
@@ -57,7 +57,7 @@ final class SettleGroupView: UIView {
         label.text = "0원"
         label.textAlignment = .left
         label.textColor = .label
-        label.font = .systemFont(ofSize: 15.0, weight: .bold)
+        label.font = .customFont(.pretendardBold, size: 15.0)
         return label
     }()
     
@@ -67,7 +67,7 @@ final class SettleGroupView: UIView {
         label.text = "우리 모임의 총 비용"
         label.textAlignment = .right
         label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 13.0, weight: .semibold)
+        label.font = .customFont(.pretendardSemiBold, size: 12.0)
         return label
     }()
     
@@ -77,7 +77,7 @@ final class SettleGroupView: UIView {
         label.text = "0원"
         label.textAlignment = .right
         label.textColor = .label
-        label.font = .systemFont(ofSize: 15.0, weight: .bold)
+        label.font = .customFont(.pretendardBold, size: 15.0)
         return label
     }()
     

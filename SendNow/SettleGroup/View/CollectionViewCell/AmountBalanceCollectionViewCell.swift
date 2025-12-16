@@ -13,7 +13,7 @@ final class AmountBalanceCollectionViewCell: UICollectionViewCell, ReuseIdentifi
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
         label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 12.0)
+        label.font = .customFont(.pretendardRegular, size: 12.0)
         return label
     }()
     
@@ -22,7 +22,7 @@ final class AmountBalanceCollectionViewCell: UICollectionViewCell, ReuseIdentifi
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
         label.textColor = .label
-        label.font = .systemFont(ofSize: 13.0, weight: .bold)
+        label.font = .customFont(.pretendardBold, size: 12.0)
         label.layer.cornerRadius = 24.0
         label.layer.masksToBounds = false
         return label

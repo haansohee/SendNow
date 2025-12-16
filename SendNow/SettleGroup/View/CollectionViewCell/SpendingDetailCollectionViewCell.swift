@@ -14,7 +14,7 @@ final class SpendingDetailCollectionViewCell: UICollectionViewCell, ReuseIdentif
         label.text = ""
         label.textAlignment = .left
         label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 15.0, weight: .bold)
+        label.font = .customFont(.pretendardBold, size: 15.0)
         return label
     }()
     
@@ -24,7 +24,7 @@ final class SpendingDetailCollectionViewCell: UICollectionViewCell, ReuseIdentif
         label.text = ""
         label.textAlignment = .left
         label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 14.0, weight: .light)
+        label.font = .customFont(.pretendardLight, size: 15.0)
         return label
     }()
     
@@ -35,7 +35,7 @@ final class SpendingDetailCollectionViewCell: UICollectionViewCell, ReuseIdentif
         label.textAlignment = .left
         label.textColor = .label
         label.sizeToFit()
-        label.font = .systemFont(ofSize: 12.0, weight: .light)
+        label.font = .customFont(.pretendardLight, size: 12.0)
         return label
     }()
     
@@ -45,7 +45,7 @@ final class SpendingDetailCollectionViewCell: UICollectionViewCell, ReuseIdentif
         label.text = "paid by"
         label.textAlignment = .left
         label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 12.0, weight: .light)
+        label.font = .customFont(.pretendardLight, size: 12.0)
         return label
     }()
     
@@ -55,7 +55,7 @@ final class SpendingDetailCollectionViewCell: UICollectionViewCell, ReuseIdentif
         label.text = "원"
         label.textAlignment = .right
         label.textColor = .titleColor
-        label.font = .systemFont(ofSize: 14.0, weight: .bold)
+        label.font = .customFont(.pretendardBold, size: 15.0)
         return label
     }()
     
@@ -65,7 +65,7 @@ final class SpendingDetailCollectionViewCell: UICollectionViewCell, ReuseIdentif
         label.text = ""
         label.textAlignment = .right
         label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 12.0, weight: .light)
+        label.font = .customFont(.pretendardLight, size: 12.0)
         return label
     }()
     

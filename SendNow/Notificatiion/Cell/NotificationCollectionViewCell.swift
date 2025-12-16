@@ -25,7 +25,7 @@ final class NotificationCollectionViewCell: UICollectionViewCell, ReuseIdentifie
         label.text = "알림이 아직 없어요. 😲"
         label.textAlignment = .left
         label.textColor = .label
-        label.font = .systemFont(ofSize: 14.0)
+        label.font = .customFont(.pretendardRegular, size: 15.0)
         label.numberOfLines = 0
         return label
     }()

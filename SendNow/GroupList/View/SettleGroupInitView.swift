@@ -10,7 +10,7 @@ import UIKit
 final class SettleGroupInitView: UIView {
     private let groupNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14.0, weight: .semibold)
+        label.font = .customFont(.pretendardSemiBold, size: 15.0)
         label.textColor = .label
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -25,13 +25,13 @@ final class SettleGroupInitView: UIView {
         textField.backgroundColor = .secondarySystemBackground
         textField.borderStyle = .roundedRect
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.font = .systemFont(ofSize: 13.0, weight: .bold)
+        textField.font = .customFont(.pretendardBold, size: 12.0)
         return textField
     }()
     
     private let remainderLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14.0, weight: .semibold)
+        label.font = .customFont(.pretendardBold, size: 15.0)
         label.textColor = .label
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -57,7 +57,7 @@ final class SettleGroupInitView: UIView {
         let button = AnimationButton()
         button.setTitle("확인", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 14.0, weight: .bold)
+        button.titleLabel?.font = .customFont(.pretendardBold, size: 15.0)
         button.backgroundColor = .systemGray
         button.isEnabled = false
         button.layer.cornerRadius = 5.0
@@ -69,7 +69,7 @@ final class SettleGroupInitView: UIView {
         let button = AnimationButton()
         button.setTitle("취소", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 14.0, weight: .bold)
+        button.titleLabel?.font = .customFont(.pretendardBold, size: 15.0)
         button.backgroundColor = .systemRed
         button.layer.cornerRadius = 5.0
         button.translatesAutoresizingMaskIntoConstraints = false

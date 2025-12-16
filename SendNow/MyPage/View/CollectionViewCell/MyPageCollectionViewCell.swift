@@ -11,7 +11,7 @@ final class MyPageCollectionViewCell: UICollectionViewCell, ReuseIdentifierProto
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.font = .customFont(.pretendardRegular, size: 15.0)
         label.textColor = .label
         label.textAlignment = .left
         return label

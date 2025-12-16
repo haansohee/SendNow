@@ -26,7 +26,7 @@ final class GroupManagementView: UIView {
         label.text = "그룹 이름 변경하기"
         label.textColor = .label
         label.textAlignment = .left
-        label.font = .systemFont(ofSize: 17.0, weight: .semibold)
+        label.font = .customFont(.pretendardSemiBold, size: 18.0)
         label.numberOfLines = 0
         return label
     }()
@@ -37,7 +37,7 @@ final class GroupManagementView: UIView {
         label.text = "변경할 그룹 이름을 입력한 후 '변경하기' 버튼을 눌러 주세요."
         label.textColor = .secondaryLabel
         label.textAlignment = .left
-        label.font = .systemFont(ofSize: 14.0, weight: .light)
+        label.font = .customFont(.pretendardLight, size: 15.0)
         label.numberOfLines = 0
         return label
     }()
@@ -47,7 +47,7 @@ final class GroupManagementView: UIView {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.borderStyle = .roundedRect
         textField.textColor = .label
-        textField.font = .systemFont(ofSize: 14.0)
+        textField.font = .customFont(.pretendardRegular, size: 15.0)
         textField.placeholder = "그룹 이름"
         return textField
     }()
@@ -59,7 +59,7 @@ final class GroupManagementView: UIView {
         button.backgroundColor = .titleColor
         button.layer.cornerRadius = 5.0
         button.setTitle("변경하기", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 15.0)
+        button.titleLabel?.font = .customFont(.pretendardRegular, size: 15.0)
         return button
     }()
     
@@ -77,7 +77,7 @@ final class GroupManagementView: UIView {
         label.text = "나머지 정산 금액 지불할 친구 변경하기"
         label.textColor = .label
         label.textAlignment = .left
-        label.font = .systemFont(ofSize: 17.0, weight: .semibold)
+        label.font = .customFont(.pretendardSemiBold, size: 18.0)
         label.numberOfLines = 0
         return label
     }()
@@ -88,7 +88,7 @@ final class GroupManagementView: UIView {
         label.text = "나머지 정산 금액을 지불할 그룹원을 선택해 주세요.\n현재 관리자만 변경할 수 있어요."
         label.textColor = .secondaryLabel
         label.textAlignment = .left
-        label.font = .systemFont(ofSize: 14.0, weight: .light)
+        label.font = .customFont(.pretendardLight, size: 15.0)
         label.numberOfLines = 0
         return label
     }()
@@ -121,7 +121,7 @@ final class GroupManagementView: UIView {
         label.text = "그룹 관리자 변경하기"
         label.textColor = .label
         label.textAlignment = .left
-        label.font = .systemFont(ofSize: 17.0, weight: .semibold)
+        label.font = .customFont(.pretendardSemiBold, size: 18.0)
         label.numberOfLines = 0
         return label
     }()
@@ -132,7 +132,7 @@ final class GroupManagementView: UIView {
         label.text = "변경할 그룹 관리자를 선택해 주세요.\n현재 관리자만 변경할 수 있어요."
         label.textColor = .secondaryLabel
         label.textAlignment = .left
-        label.font = .systemFont(ofSize: 14.0, weight: .light)
+        label.font = .customFont(.pretendardLight, size: 15.0)
         label.numberOfLines = 0
         return label
     }()
@@ -165,7 +165,7 @@ final class GroupManagementView: UIView {
         label.text = "그룹 관리자만 그룹을 삭제할 수 있어요.\n⚠️ 그룹 삭제 시, 삭제된 내역은 복구할 수 없습니다."
         label.textColor = .secondaryLabel
         label.textAlignment = .left
-        label.font = .systemFont(ofSize: 14.0, weight: .light)
+        label.font = .customFont(.pretendardLight, size: 15.0)
         label.numberOfLines = 0
         return label
     }()
@@ -177,7 +177,7 @@ final class GroupManagementView: UIView {
         button.backgroundColor = .systemGray
         button.layer.cornerRadius = 5.0
         button.setTitle("그룹 삭제하기", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .bold)
+        button.titleLabel?.font = .customFont(.pretendardBold, size: 15.0)
         button.isEnabled = false
         return button
     }()

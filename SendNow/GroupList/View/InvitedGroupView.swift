@@ -21,7 +21,7 @@ final class InvitedGroupView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("앱을 사용하지 않는 친구와 사용하고 싶은가요? >", for: .normal)
         button.setTitleColor(.systemRed, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .bold)
+        button.titleLabel?.font = .customFont(.pretendardBold, size: 12.0)
         return button
     }()
     

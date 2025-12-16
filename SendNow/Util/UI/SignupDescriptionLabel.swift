@@ -14,7 +14,7 @@ final class SignupDescriptionLabel: UILabel {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.textAlignment = .center
         self.textColor = .secondaryLabel
-        self.font = .systemFont(ofSize: 12.0, weight: .light)
+        self.font = .customFont(.pretendardLight, size: 12.0)
     }
     
     required init?(coder: NSCoder) {

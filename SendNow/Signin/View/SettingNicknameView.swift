@@ -19,7 +19,7 @@ final class SettingNicknameView: UIView {
         let textField = PaddingTextField()
         textField.backgroundColor = .systemGray6
         textField.placeholder = "NICKNAME"
-        textField.font = .systemFont(ofSize: 12.0, weight: .light)
+        textField.font = .customFont(.pretendardLight, size: 12.0)
         return textField
     }()
     
@@ -30,7 +30,7 @@ final class SettingNicknameView: UIView {
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .lightGray
         button.isEnabled = false
-        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
+        button.titleLabel?.font = .customFont(.pretendardRegular, size: 12.0)
         button.layer.cornerRadius = 3.0
         return button
     }()
@@ -42,7 +42,7 @@ final class SettingNicknameView: UIView {
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .lightGray
         button.isEnabled = false
-        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
+        button.titleLabel?.font = .customFont(.pretendardRegular, size: 12.0)
         button.layer.cornerRadius = 3.0
         return button
     }()

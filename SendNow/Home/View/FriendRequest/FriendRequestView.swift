@@ -25,7 +25,7 @@ final class FriendRequestView: UIView {
         let textField = PaddingTextField()
         textField.placeholder = "FRIEND NICKNAME"
         textField.backgroundColor = .systemGray6
-        textField.font = .systemFont(ofSize: 12.0, weight: .light)
+        textField.font = .customFont(.pretendardLight, size: 12.0)
         return textField
     }()
     
@@ -35,7 +35,7 @@ final class FriendRequestView: UIView {
         button.setTitle("검색", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .titleColor
-        button.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .medium)
+        button.titleLabel?.font = .customFont(.pretendardRegular, size: 12.0)
         button.layer.cornerRadius = 3.0
         return button
     }()
@@ -46,7 +46,7 @@ final class FriendRequestView: UIView {
         label.text = "검색 결과 🔍"
         label.textAlignment = .center
         label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 13.0, weight: .bold)
+        label.font = .customFont(.pretendardBold, size: 15.0)
         return label
     }()
     
@@ -55,7 +55,7 @@ final class FriendRequestView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
         label.textColor = .label
-        label.font = .systemFont(ofSize: 13.0)
+        label.font = .customFont(.pretendardRegular, size: 12.0)
         label.text = ""
         return label
     }()

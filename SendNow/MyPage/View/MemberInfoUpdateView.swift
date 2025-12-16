@@ -19,7 +19,7 @@ final class MemberInfoUpdateView: UIView {
         let textField = PaddingTextField()
         textField.backgroundColor = .systemGray6
         textField.borderStyle = .none
-        textField.font = .systemFont(ofSize: 12.0, weight: .light)
+        textField.font = .customFont(.pretendardLight, size: 12.0)
         return textField
     }()
     
@@ -30,7 +30,7 @@ final class MemberInfoUpdateView: UIView {
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .lightGray
         button.isEnabled = false
-        button.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .medium)
+        button.titleLabel?.font = .customFont(.pretendardRegular, size: 15.0)
         button.layer.cornerRadius = 5.0
         return button
     }()
@@ -42,7 +42,7 @@ final class MemberInfoUpdateView: UIView {
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .lightGray
         button.isEnabled = false
-        button.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .medium)
+        button.titleLabel?.font = .customFont(.pretendardRegular, size: 15.0)
         button.layer.cornerRadius = 5.0
         return button
     }()
@@ -58,7 +58,7 @@ final class MemberInfoUpdateView: UIView {
         let textField = PaddingTextField()
         textField.backgroundColor = .systemGray6
         textField.borderStyle = .none
-        textField.font = .systemFont(ofSize: 12.0, weight: .light)
+        textField.font = .customFont(.pretendardLight, size: 12.0)
         textField.placeholder = "송금 코드 링크를 입력해 주세요."
         return textField
     }()
@@ -69,7 +69,7 @@ final class MemberInfoUpdateView: UIView {
         button.setTitle("등록하기", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .titleColor
-        button.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .medium)
+        button.titleLabel?.font = .customFont(.pretendardRegular, size: 15.0)
         button.layer.cornerRadius = 5.0
         return button
     }()
@@ -81,7 +81,7 @@ final class MemberInfoUpdateView: UIView {
         label.textAlignment = .center
         label.textColor = .lightGray
         label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 13.0, weight: .bold)
+        label.font = .customFont(.pretendardBold, size: 12.0)
         return label
     }()
     
@@ -124,7 +124,7 @@ final class MemberInfoUpdateView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("탈퇴하기", for: .normal)
         button.setTitleColor(.systemRed, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 14.0, weight: .bold)
+        button.titleLabel?.font = .customFont(.pretendardBold, size: 15.0)
         return button
     }()
     
