@@ -14,7 +14,7 @@ final class FriendListCollectionViewCell: UICollectionViewCell, ReuseIdentifierP
         label.text = "바로보내 친구가 존재하지 않아요. 🥲 \n 친구를 초대하여 바로보내를 같이 사용해 보세요!"
         label.textAlignment = .left
         label.textColor = .label
-        label.font = UIFont(name: FontName.pretendardSemiBold.rawValue, size: FontSize.small.rawValue)
+        label.font = .customFont(.pretendardSemiBold, size: 15.0)
         return label
     }()
     
@@ -23,7 +23,7 @@ final class FriendListCollectionViewCell: UICollectionViewCell, ReuseIdentifierP
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("친구 삭제", for: .normal)
         button.setTitleColor(.systemRed, for: .normal)
-        button.titleLabel?.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.extraSmall.rawValue)
+        button.titleLabel?.font = .customFont(.pretendardBold, size: 12.0)
         button.isHidden = true
         return button
     }()

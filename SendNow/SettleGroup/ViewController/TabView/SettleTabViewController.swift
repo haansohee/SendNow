@@ -46,7 +46,7 @@ final class SettleTabViewController: TabmanViewController {
         bar.buttons.customize { (button) in
             button.tintColor = .label
             button.selectedTintColor = .titleColor
-            button.font = UIFont(name: FontName.pretendardSemiBold.rawValue, size: FontSize.small.rawValue)
+            button.font = .customFont(.pretendardSemiBold, size: 15.0)
             button.backgroundColor = .secondarySystemBackground
         }
         

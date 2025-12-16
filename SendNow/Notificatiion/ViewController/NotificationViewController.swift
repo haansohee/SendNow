@@ -15,7 +15,7 @@ final class NotificationViewController: BaseUIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(.titleColor, for: .normal)
         button.setTitle("알림 끄기", for: .normal)
-        button.titleLabel?.font = UIFont(name: FontName.pretendardSemiBold.rawValue, size: FontSize.small.rawValue)
+        button.titleLabel?.font = .customFont(.pretendardSemiBold, size: 15.0)
         button.tag = 0
         return button
     }()
@@ -25,7 +25,7 @@ final class NotificationViewController: BaseUIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(.systemRed, for: .normal)
         button.setTitle("알림 삭제", for: .normal)
-        button.titleLabel?.font = UIFont(name: FontName.pretendardSemiBold.rawValue, size: FontSize.small.rawValue)
+        button.titleLabel?.font = .customFont(.pretendardSemiBold, size: 15.0)
         return button
     }()
     

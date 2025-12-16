@@ -19,7 +19,7 @@ final class SummaryCardCollectionViewCell: UICollectionViewCell, ReuseIdentifier
     private let subTitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: FontName.pretendardLight.rawValue, size: FontSize.extraSmall.rawValue)
+        label.font = .customFont(.pretendardLight, size: 12.0)
         label.text = "보낼 금액"
         label.textColor = .black
         label.textAlignment = .left
@@ -30,7 +30,7 @@ final class SummaryCardCollectionViewCell: UICollectionViewCell, ReuseIdentifier
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.small.rawValue)
+        label.font = .customFont(.pretendardBold, size: 15.0)
         label.text = "0 ₩"
         label.textColor = .black
         label.textAlignment = .left

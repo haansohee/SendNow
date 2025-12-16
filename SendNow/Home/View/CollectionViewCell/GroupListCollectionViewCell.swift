@@ -17,7 +17,7 @@ final class GroupListCollectionViewCell: UICollectionViewCell, ReuseIdentifierPr
         label.text = "정산 모임이 아직 없어요. 🥲"
         label.textAlignment = .left
         label.textColor = .label
-        label.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.small.rawValue)
+        label.font = .customFont(.pretendardBold, size: 15.0)
         return label
     }()
     
@@ -27,7 +27,7 @@ final class GroupListCollectionViewCell: UICollectionViewCell, ReuseIdentifierPr
         label.text = ""
         label.textAlignment = .right
         label.textColor = .label
-        label.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.extraSmall.rawValue)
+        label.font = .customFont(.pretendardRegular, size: 12.0)
         return label
     }()
     
@@ -37,7 +37,7 @@ final class GroupListCollectionViewCell: UICollectionViewCell, ReuseIdentifierPr
         label.text = "친구를 초대해 정산 모임을 만들어 보세요!"
         label.textAlignment = .left
         label.textColor = .secondaryLabel
-        label.font = UIFont(name: FontName.pretendardLight.rawValue, size: FontSize.extraSmall.rawValue)
+        label.font = .customFont(.pretendardLight, size: 12.0)
         return label
     }()
     

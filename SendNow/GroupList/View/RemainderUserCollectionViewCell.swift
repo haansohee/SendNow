@@ -11,7 +11,7 @@ final class RemainderUserCollectionViewCell: UICollectionViewCell,ReuseIdentifie
     private let nicknameLabel: UILabel = {
         let label = UILabel()
         label.textColor = .label
-        label.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.small.rawValue)
+        label.font = .customFont(.pretendardRegular, size: 15.0)
         label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

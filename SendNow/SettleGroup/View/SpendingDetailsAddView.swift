@@ -32,7 +32,7 @@ final class SpendingDetailsAddView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("닫기", for: .normal)
         button.setTitleColor(.systemRed, for: .normal)
-        button.titleLabel?.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.small.rawValue)
+        button.titleLabel?.font = .customFont(.pretendardBold, size: 15.0)
         return button
     }()
     
@@ -52,7 +52,7 @@ final class SpendingDetailsAddView: UIView {
         label.sizeToFit()
         label.text = "날짜"
         label.textAlignment = .left
-        label.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.extraSmall.rawValue)
+        label.font = .customFont(.pretendardBold, size: 12.0)
         return label
     }()
     
@@ -90,7 +90,7 @@ final class SpendingDetailsAddView: UIView {
         label.sizeToFit()
         label.text = "분류"
         label.textAlignment = .left
-        label.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.extraSmall.rawValue)
+        label.font = .customFont(.pretendardBold, size: 12.0)
         return label
     }()
     
@@ -145,7 +145,7 @@ final class SpendingDetailsAddView: UIView {
         label.sizeToFit()
         label.text = "내용"
         label.textAlignment = .left
-        label.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.extraSmall.rawValue)
+        label.font = .customFont(.pretendardBold, size: 12.0)
         return label
     }()
     
@@ -155,7 +155,7 @@ final class SpendingDetailsAddView: UIView {
         textField.backgroundColor = .systemGray6
         textField.textColor = .label
         textField.textAlignment = .right
-        textField.font = UIFont(name: FontName.pretendardLight.rawValue, size: FontSize.extraSmall.rawValue)
+        textField.font = .customFont(.pretendardBold, size: 12.0)
         textField.layer.masksToBounds = false
         textField.layer.cornerRadius = 5.0
         return textField
@@ -177,7 +177,7 @@ final class SpendingDetailsAddView: UIView {
         label.sizeToFit()
         label.text = "결제금액"
         label.textAlignment = .left
-        label.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.extraSmall.rawValue)
+        label.font = .customFont(.pretendardBold, size: 12.0)
         return label
     }()
     
@@ -187,7 +187,7 @@ final class SpendingDetailsAddView: UIView {
         textField.backgroundColor = .systemGray6
         textField.textColor = .label
         textField.textAlignment = .right
-        textField.font = UIFont(name: FontName.pretendardLight.rawValue, size: FontSize.extraSmall.rawValue)
+        textField.font = .customFont(.pretendardBold, size: 12.0)
         textField.layer.masksToBounds = false
         textField.layer.cornerRadius = 5.0
         textField.keyboardType = .numberPad

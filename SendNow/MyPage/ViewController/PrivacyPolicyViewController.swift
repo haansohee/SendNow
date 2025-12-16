@@ -58,7 +58,7 @@ final class PrivacyPolicyViewController: BaseUIViewController {
         
         📩 balobonae@gmail.com
         """
-        label.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.small.rawValue)
+        label.font = .customFont(.pretendardRegular, size: 15.0)
         label.numberOfLines = 0
         label.textColor = .label
         return label

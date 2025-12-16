@@ -20,7 +20,7 @@ final class HomeView: UIView {
     let memberNicknameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.medium.rawValue)
+        label.font = .customFont(.pretendardBold, size: 18.0)
         label.textColor = .black
         label.textAlignment = .left
         label.numberOfLines = 0
@@ -31,7 +31,7 @@ final class HomeView: UIView {
     private let welcomeLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: FontName.pretendardRegular.rawValue, size: FontSize.small.rawValue)
+        label.font = .customFont(.pretendardRegular, size: 15.0)
         label.text = "님, 안녕하세요! 👋🏼"
         label.textColor = .black
         label.textAlignment = .left
@@ -42,7 +42,7 @@ final class HomeView: UIView {
     private let summaryLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.large.rawValue)
+        label.font = .customFont(.pretendardBold, size: 21.0)
         label.text = "오늘의 정산 현황이에요"
         label.textColor = .black
         label.textAlignment = .left
@@ -67,7 +67,7 @@ final class HomeView: UIView {
     private let friendListLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: FontName.pretendardBold.rawValue, size: FontSize.large.rawValue)
+        label.font = .customFont(.pretendardBold, size: 21.0)
         label.text = "내 친구"
         label.textColor = .label
         label.textAlignment = .left
