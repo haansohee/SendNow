@@ -8,9 +8,9 @@
 import UIKit
 
 final class PrivacyPolicyViewController: BaseUIViewController {
-    
     private let scrollView = UIScrollView()
     private let contentView = UIView()
+    private let padding: CGFloat = 20
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -91,18 +91,19 @@ final class PrivacyPolicyViewController: BaseUIViewController {
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
-            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
             
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: padding),
             titleLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             
-            policyTextLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
-            policyTextLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            policyTextLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20)
+            policyTextLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: padding),
+            policyTextLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding),
+            policyTextLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding),
+            policyTextLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -padding)
 
         ])
     }
