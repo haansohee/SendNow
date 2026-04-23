@@ -133,8 +133,8 @@ extension SigninViewController {
                     let rootViewController = MainTabBarController()
                     guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
                     sceneDelegate.changeRootViewController(rootViewController, animated: true)
-                case .failure(_):
-                    self?.serverErrorAlert()
+                case .failure(let error):
+                    self?.serverErrorAlert(errorContent: error.localizedDescription)
                 }
             })
             .disposed(by: disposeBag)
