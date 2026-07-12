@@ -1,0 +1,190 @@
+//
+//  SettleGroupViewController.swift
+//  SendNow
+//
+//  Created by 한소희 on 5/14/24.
+//
+
+import Foundation
+import UIKit
+import RxSwift
+import Toast
+
+final class SettleGroupViewController: BaseUIViewController {
+    private let settleGroupView = SettleGroupView()
+    private let settleGroupViewModel: SettleGroupViewModel
+    private let disposeBag = DisposeBag()
+    
+    init(
+        viewModel: SettleGroupViewModel = SettleGroupViewModel(
+            userID: UserDefaults.standard.integer(forKey: MemberInfoField.userID.rawValue)),
+        groupID: Int? = nil,
+        isActiveSettlement: Bool
+    ) {
+        self.settleGroupViewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+        guard let id = groupID else { return }
+        settleGroupViewModel.setIsActiveSettlement(isActiveSettlement)
+        settleGroupViewModel.setGroupID(id)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        settleGroupViewModel.loadGroupExpenseInformation()
+        configure()
+        addSubviews()
+        configureSettlementGroupViewState()
+        setLayoutConstraints()
+        notificationInvitedFriendObsever()
+        bindAll()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        settleGroupViewModel.loadGroupExpenseInformation()
+    }
+}
+
+extension SettleGroupViewController {
+    private func configure() {
+        settleGroupView.translatesAutoresizingMaskIntoConstraints = false
+        settleGroupView.spendingDetailCollectionView.dataSource = self
+        settleGroupView.spendingDetailCollectionView.delegate = self
+        view.backgroundColor = .secondarySystemBackground
+        navigationController?.topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: settleGroupView.groupManagementButton)
+    }
+    
+    private func configureSettlementGroupViewState() {
+        guard let isActive = settleGroupViewModel.isActiveSettlement else { return }
+        DispatchQueue.main.async {[weak self] in
+            self?.settleGroupView.spendingDetailAddButton.isHidden = !isActive
+            self?.settleGroupView.spendingDetailAddButton.isEnabled = isActive
+            guard !isActive else { return }
+            self?.settlementDisableAlert()
+        }
+    }
+    
+    private func addSubviews() {
+        view.addSubview(settleGroupView)
+    }
+    
+    private func setLayoutConstraints() {
+        NSLayoutConstraint.activate([
+            settleGroupView.topAnchor.constraint(equalTo: view.topAnchor),
+            settleGroupView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            settleGroupView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            settleGroupView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+    
+    private func notificationInvitedFriendObsever() {
+        NotificationCenter.default.addObserver(self, selector: #selector(dataReceived), name: NSNotification.Name(NotificationName.uploadExpense.rawValue), object: nil)
+    }
+    
+    @objc private func dataReceived() {
+        settleGroupViewModel.loadGroupExpenseInformation()
+    }
+    
+    private func bindAll() {
+        groupManagementButton()
+        bindSpendingDetailAddButton()
+        bindIsLoadedGroupExpenseInfo()
+    }
+    
+    private func groupManagementButton() {
+        settleGroupView.groupManagementButton.rx.tap
+            .asDriver()
+            .drive(onNext: {[weak self] _ in
+                guard let groupID = self?.settleGroupViewModel.groupID else { return }
+                self?.navigationController?.pushViewController(GroupManagementViewController(groupID: groupID), animated: true)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindSpendingDetailAddButton() {
+        settleGroupView.spendingDetailAddButton.rx.tap
+            .asDriver()
+            .drive(onNext: {[weak self] _ in
+                guard let groupID = self?.settleGroupViewModel.groupID else { return }
+                let spendingDetailViewController = UINavigationController(rootViewController: SpendingDetailsAddViewController(groupID: groupID))
+                spendingDetailViewController.modalPresentationStyle = UIModalPresentationStyle.fullScreen
+                self?.present(spendingDetailViewController, animated: true)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindIsLoadedGroupExpenseInfo() {
+        settleGroupViewModel.groupExpenseInfoSubject
+            .asDriver(onErrorJustReturn: .failure(ErrorName.serverError))
+            .drive(onNext: {[weak self] isLoadedGroupExpenseInfoResult in
+                switch isLoadedGroupExpenseInfoResult {
+                case .success(let groupExpenseInfo):
+                    self?.settleGroupView.spendingDetailCollectionView.reloadData()
+                    self?.settleGroupView.configurePaymentLabel(group: groupExpenseInfo.group, personal: groupExpenseInfo.personal)
+                case .failure(_):
+                    self?.serverErrorAlert()
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    // MARK: Alert    
+    private func settlementDisableAlert() {
+        let alertController = UIAlertController(title: "바로보내", message: "현재 이 그룹에는 탈퇴한 회원이 포함되어 있어 정산 기능을 사용할 수 없습니다. 해당 그룹을 삭제 후 새로운 그룹으로 정산을 해 주세요.", preferredStyle: .alert)
+        let doneAction = UIAlertAction(title: "확인", style: .cancel) { _ in }
+        alertController.addAction(doneAction)
+        present(alertController, animated: true)
+    }
+}
+
+extension SettleGroupViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return settleGroupViewModel.groupExpenseInformations?.expenseInformations?.count ?? 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SpendingDetailCollectionViewCell.reuseIdentifier, for: indexPath) as? SpendingDetailCollectionViewCell else { return UICollectionViewCell() }
+        guard let groupExpenseDetailInformationList = settleGroupViewModel.groupExpenseInformations?.expenseInformations,
+              let groupExpenseDetailInformation = groupExpenseDetailInformationList[safe: indexPath.row] else { return cell }
+        cell.setSpendingDetailCollectionViewCellLabel(groupExpenseInfo: groupExpenseDetailInformation)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let groupExpenseInformationList = settleGroupViewModel.groupExpenseInformations,
+              let groupExpensDetailInformationList = groupExpenseInformationList.expenseInformations,
+              let isActiveSettlement = settleGroupViewModel.isActiveSettlement,
+              let groupExpensDetailInformation = groupExpensDetailInformationList[safe: indexPath.row]
+        else { return }
+        let expenseID = groupExpensDetailInformation.expenseID
+        let groupID = groupExpensDetailInformation.groupID
+        let expenseClassfication = groupExpensDetailInformation.expenseClassfication
+        let expenseDate = groupExpensDetailInformation.expenseDate
+        let expenseDetails = groupExpensDetailInformation.expenseDetails
+        let viewController = SpendingDetailsViewController(
+            expenseID: expenseID,
+            groupID: groupID,
+            expenseClassfication: expenseClassfication,
+            expenseDate: expenseDate,
+            expenseDetails: expenseDetails,
+            isActiveSettlement: isActiveSettlement
+        )
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+}
+
+extension SettleGroupViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = (UIScreen.main.bounds.width) - 36.0
+        let height = 80.0
+        return CGSize(width: width, height: height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+    }
+}
